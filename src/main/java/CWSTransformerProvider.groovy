@@ -1,13 +1,14 @@
-import static Jenkins.getTestFigure
 import static TestCount.Fail
 import static TestCount.Pass
 
 public class CWSTransformerProvider extends TransformerProvider {
-    private static final String JUNIT_LINUX = 'cws-wip-junit-l'
-    private static final String JUNIT_W = 'cws-wip-junit-w'
-    private static final String GMF_C = 'cws-wip-gmf-chrome'
-    private static final String GMF_F = 'cws-wip-gmf-ff'
-    private static final String GMF_S = 'cws-wip-gmf-safari'
+    private static final BUILDMASTER_NL = new Jenkins("http://buildmaster-nl.vanenburg.com/jenkins")
+
+    private static final JenkinsJob JUNIT_LINUX = BUILDMASTER_NL.withJob('cws-wip-junit-l')
+    private static final JenkinsJob JUNIT_W = BUILDMASTER_NL.withJob('cws-wip-junit-w')
+    private static final JenkinsJob GMF_C = BUILDMASTER_NL.withJob('cws-wip-gmf-chrome')
+    private static final JenkinsJob GMF_F = BUILDMASTER_NL.withJob('cws-wip-gmf-ff')
+    private static final JenkinsJob GMF_S = BUILDMASTER_NL.withJob('cws-wip-gmf-safari')
 
     final String AFTER = "After"
     final String BEFORE = "Before"
@@ -16,21 +17,21 @@ public class CWSTransformerProvider extends TransformerProvider {
     @Override
     Map<String, Closure<String>> getTransformer(Properties props) {
         def transformers = [
-                Team: { item -> selectOption(item, 'CWS') },
+                Team: { item -> CordysWiki.selectOption(item, 'CWS') },
 
                 ProductManagerName: { getUserLink('hkastenb', 'Harmen Kastenberg') },
                 ArchitectName: { ' ' + getUserLink('rprins', 'Rene Prins') },
                 ScrumMasterName: { ' ' + getUserLink('rprins', 'Rene Prins') },
 
-                SuccesfulTests: { getTestFigure(JUNIT_LINUX, Pass) },
-                FailedTests: { getTestFigure(JUNIT_LINUX, Fail) },
+                SuccesfulTests: { JUNIT_LINUX.getTestFigure(Pass) },
+                FailedTests: { JUNIT_LINUX.getTestFigure(Fail) },
 
                 SuccessfulRegressionTestsComment: withTable { WikiTableBuilder table ->
-                    table.addRow(Type: 'JUnit', OS: 'Linux', Successfull: getTestFigure(JUNIT_LINUX, Pass), Failures: getTestFigure(JUNIT_LINUX, Fail), Explanation: '')
-                    table.addRow(Type: 'JUnit', OS: 'Windows', Successfull: getTestFigure(JUNIT_W, Pass), Failures: getTestFigure(JUNIT_W, Fail), Explanation: '')
-                    table.addRow(Type: 'GMF', OS: 'Chrome', Successfull: getTestFigure(GMF_C, Pass), Failures: getTestFigure(GMF_C, Fail), Explanation: '')
-                    table.addRow(Type: 'GMF', OS: 'Firefox', Successfull: getTestFigure(GMF_F, Pass), Failures: getTestFigure(GMF_F, Fail), Explanation: '')
-                    table.addRow(Type: 'GMF', OS: 'Safari', Successfull: getTestFigure(GMF_S, Pass), Failures: getTestFigure(GMF_S, Fail), Explanation: '')
+                    table.addRow(Type: 'JUnit', OS: 'Linux', Successfull: JUNIT_LINUX.getTestFigure(Pass), Failures: JUNIT_LINUX.getTestFigure(Fail), Explanation: '')
+                    table.addRow(Type: 'JUnit', OS: 'Windows', Successfull: JUNIT_W.getTestFigure(Pass), Failures: JUNIT_W.getTestFigure(Fail), Explanation: '')
+                    table.addRow(Type: 'GMF', OS: 'Chrome', Successfull: GMF_C.getTestFigure(Pass), Failures: GMF_C.getTestFigure(Fail), Explanation: '')
+                    table.addRow(Type: 'GMF', OS: 'Firefox', Successfull: GMF_F.getTestFigure(Pass), Failures: GMF_F.getTestFigure(Fail), Explanation: '')
+                    table.addRow(Type: 'GMF', OS: 'Safari', Successfull: GMF_S.getTestFigure(Pass), Failures: GMF_S.getTestFigure(Fail), Explanation: '')
                 },
         ]
 

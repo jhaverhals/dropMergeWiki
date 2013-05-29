@@ -48,8 +48,8 @@ public abstract class TransformerProvider {
         return new MarkupBuilder(new IndentPrinter(writer, '', false))
     }
 
-    static String selectOptionByStatus(def item, String job, Map<String, String> statusToOptionName) {
-        String result = Jenkins.getLastBuildResult(job)
+    static String selectOptionByStatus(def item, JenkinsJob job, Map<String, String> statusToOptionName) {
+        String result = job.lastBuildResult
         if (statusToOptionName.containsKey(result)) {
             return CordysWiki.selectOption(item, statusToOptionName[result])
         } else {
