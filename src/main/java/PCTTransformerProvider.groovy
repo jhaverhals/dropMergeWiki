@@ -3,7 +3,7 @@ import static WarningLevel.High
 import static WarningLevel.Normal
 
 public class PCTTransformerProvider extends TransformerProvider {
-    private static final BUILDMASTER_NL = new Jenkins("http://buildmaster-nl.vanenburg.com/jenkins")
+    private static final BUILDMASTER_NL = new Jenkins('http://buildmaster-nl.vanenburg.com/jenkins')
 
     private static final JenkinsJob TRUNK_BVT_L = BUILDMASTER_NL.withJob('pct-trunk-build-installer-l-x64')
     private static final JenkinsJob TRUNK_CW_L = TRUNK_BVT_L

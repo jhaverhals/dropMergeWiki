@@ -1,7 +1,7 @@
+import CordysWiki
 @Grab(group = 'org.codehaus.groovy.modules.http-builder', module = 'http-builder', version = '0.6')
 
 import TransformerProvider
-import CordysWiki
 
 // properties
 def props = new Properties()
@@ -16,7 +16,6 @@ public static void loadProperties(Properties props, String fileName) {
 }
 
 // script
-
 CordysWiki wiki = new CordysWiki();
 
 wiki.authenticate(props.wikiUserName, props.wikiPassword)

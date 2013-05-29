@@ -2,7 +2,7 @@ import static TestCount.Fail
 import static TestCount.Pass
 
 public class CWSTransformerProvider extends TransformerProvider {
-    private static final BUILDMASTER_NL = new Jenkins("http://buildmaster-nl.vanenburg.com/jenkins")
+    private static final BUILDMASTER_NL = new Jenkins('http://buildmaster-nl.vanenburg.com/jenkins')
 
     private static final JenkinsJob JUNIT_LINUX = BUILDMASTER_NL.withJob('cws-wip-junit-l')
     private static final JenkinsJob JUNIT_W = BUILDMASTER_NL.withJob('cws-wip-junit-w')
@@ -10,8 +10,8 @@ public class CWSTransformerProvider extends TransformerProvider {
     private static final JenkinsJob GMF_F = BUILDMASTER_NL.withJob('cws-wip-gmf-ff')
     private static final JenkinsJob GMF_S = BUILDMASTER_NL.withJob('cws-wip-gmf-safari')
 
-    final String AFTER = "After"
-    final String BEFORE = "Before"
+    final String AFTER = 'After'
+    final String BEFORE = 'Before'
     final fieldFromPreviousPage = ['SuccesfulTests', 'FailedTests', 'MBViolationsHigh', 'MBViolationsMedium', 'CompilerWarnings', 'PMDViolationsHigh', 'PMDViolationsMedium']
 
     @Override
@@ -35,8 +35,8 @@ public class CWSTransformerProvider extends TransformerProvider {
                 },
         ]
 
-
-
+        // Read fields ending with 'After' and beginning with one of the elements of 'fieldFromPreviousPage'
+        // and transfer them to the corresponding 'Before'-field of this page
         CordysWiki wiki = new CordysWiki();
         wiki.authenticate(props.wikiUserName, props.wikiPassword)
         wiki.eachDropMergeField(props.previousWikiDropMergePageId) { CordysWiki.FormField formField ->

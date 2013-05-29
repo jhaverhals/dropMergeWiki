@@ -63,7 +63,7 @@ class JenkinsJob {
 
     private def jsonForJob(String build, String subPage, String jsonPath) {
         invocationCount++
-        final url = getBuildUrl(build) + "/" + (subPage ? subPage + '/' : '') + "api/json" + (jsonPath ? '?tree=' + jsonPath : '')
+        final url = getBuildUrl(build) + '/' + (subPage ? subPage + '/' : '') + 'api/json' + (jsonPath ? '?tree=' + jsonPath : '')
         jsonCache[url] ?: (jsonCache[url] = new JsonSlurper().parseText(new URL(url).text))
     }
 
@@ -76,7 +76,7 @@ class JenkinsJob {
     }
 
     public String getJobUrl() {
-        onInstance.rootUrl + "/job/" + name
+        onInstance.rootUrl + '/job/' + name
     }
 
     public String getBuildUrl(String build) {
