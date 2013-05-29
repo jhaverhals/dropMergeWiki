@@ -1,12 +1,5 @@
 import groovy.json.JsonSlurper
 
-/**
- * Created with IntelliJ IDEA.
- * User: astellingwerf
- * Date: 29-5-13
- * Time: 14:39
- * To change this template use File | Settings | File Templates.
- */
 class JenkinsJob {
     private static int invocationCount = 0
     private static final Map<String, Object> jsonCache = new HashMap<>()

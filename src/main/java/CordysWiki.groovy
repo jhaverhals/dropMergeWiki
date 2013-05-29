@@ -11,7 +11,7 @@ class CordysWiki {
     private HTTPBuilder wikiHttp = new HTTPBuilder('https://wiki.cordys.com')
 
     public void authenticate(String wikiUserName, String wikiPassword) {
-        def tokenKey = null
+        String tokenKey = null
         new HTTPBuilder('https://auth.cordys.com').post(path: '/sso/validate.do',
                 contentType: URLENC,
                 query: [userName: wikiUserName, password: wikiPassword, serviceUrl: 'www.cordys.com', Submit: '']) { resp, reader ->

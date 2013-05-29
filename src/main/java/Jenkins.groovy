@@ -29,7 +29,7 @@ public class Jenkins {
         }
     }
 
-    private static Map<String, Integer> getTestDiffsPerSuite(JenkinsJob beforeJob, JenkinsJob afterJob) {
+    public static Map<String, Integer> getTestDiffsPerSuite(JenkinsJob beforeJob, JenkinsJob afterJob) {
 
         //Metaclass extension
         ArrayList.metaClass.collectMap = { Closure<List<Object>> callback ->
@@ -46,15 +46,15 @@ public class Jenkins {
         def suitesBefore = casesPerSuite(beforeJob.testReport)
         def suitesAfter = casesPerSuite(afterJob.testReport)
 
-        def diffsPerSuite = new TreeMap<String, Integer>()
+        Map<String, Integer> diffsPerSuite = new TreeMap<String, Integer>()
 
-        for (def kvp : suitesAfter) {
+        for (Map.Entry<String, Integer> kvp : suitesAfter) {
             if (!suitesBefore.containsKey(kvp.key))
                 diffsPerSuite.put(kvp.key, kvp.value)
             else if (suitesBefore[kvp.key] != kvp.value)
                 diffsPerSuite.put(kvp.key, kvp.value - suitesBefore[kvp.key])
         }
-        for (def kvp : suitesBefore) {
+        for (Map.Entry<String, Integer> kvp : suitesBefore) {
             if (!suitesAfter.containsKey(kvp.key))
                 diffsPerSuite.put(kvp.key, -kvp.value)
         }

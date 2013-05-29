@@ -34,9 +34,9 @@ class WikiTableBuilder {
     }
 
     void addRow(List<String> values) {
-        Map<String,String> m = new HashMap<>()
+        Map<String, String> m = new HashMap<>()
         values.eachWithIndex { String entry, int i ->
-             m[headers[i]] = entry
+            m[headers[i]] = entry
         }
         rows.add(m)
     }
@@ -54,8 +54,6 @@ class WikiTableBuilder {
                     rows.each { map ->
                         tr {
                             headers.each { header ->
-                                def value = map[header]
-
                                 td(class: 'confluenceTd', map[header])
                             }
                         }

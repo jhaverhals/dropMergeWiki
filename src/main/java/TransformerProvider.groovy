@@ -66,11 +66,11 @@ public abstract class TransformerProvider {
         }
     }
 
-    static Closure<String> withTable(Closure<String> c) {
+    static Closure<String> withTable(Closure<Void> c) {
         return withHtml { MarkupBuilder html ->
-            WikiTableBuilder table = new WikiTableBuilder(html);
+            WikiTableBuilder table = new WikiTableBuilder(html)
             c(table)
-            table.process()
+            return table.process()
         }
     }
 

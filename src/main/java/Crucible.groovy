@@ -24,7 +24,7 @@ class Crucible {
     }
 
     public static String getCrucibleAuthToken(String username, String password) {
-        String authToken
+        String authToken = null
         new HTTPBuilder('http://srv-ind-scrat.vanenburg.com:8060/').get(path: '/rest-service/auth-v1/login',
                 query: [userName: username, password: password]) { resp, reader ->
             assert resp.statusLine.statusCode == 200
