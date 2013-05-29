@@ -5,6 +5,13 @@ import groovy.xml.MarkupBuilder
 public abstract class TransformerProvider {
     private static final String JIRA_MACRO_PARAMS_PREFIX = 'renderMode=static|columns=type,key,summary,status|url=https://jira.cordys.com/jira/sr/jira.issueviews:searchrequest-xml/temp/SearchRequest.xml?jqlQuery'
 
+    public static Map<String, Closure<String>> loadTransformers(String transformerProviderClass, Properties props) {
+        GroovyClassLoader gcl = new GroovyClassLoader();
+        Class clazz = gcl.parseClass(new File(transformerProviderClass))
+        TransformerProvider ifc = (TransformerProvider) clazz.newInstance()
+        return ifc.getTransformer(props)
+    }
+
     public abstract Map<String, Closure<String>> getTransformer(Properties p);
 
     static String getUserLink(String shortName, String fullName) {
