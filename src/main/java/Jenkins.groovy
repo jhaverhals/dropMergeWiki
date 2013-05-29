@@ -32,10 +32,10 @@ public class Jenkins {
     private static Map<String, Integer> getTestDiffsPerSuite(JenkinsJob beforeJob, JenkinsJob afterJob) {
 
         //Metaclass extension
-        ArrayList.metaClass.collectMap = { Closure callback ->
+        ArrayList.metaClass.collectMap = { Closure<List<Object>> callback ->
             def map = [:]
             delegate.each {
-                def r = callback.call(it)
+                List<Object> r = callback.call(it)
                 map[r[0]] = r[1]
             }
             return map

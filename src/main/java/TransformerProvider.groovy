@@ -67,7 +67,7 @@ public abstract class TransformerProvider {
     }
 
     static Closure<String> withTable(Closure<String> c) {
-        return withHtml { html ->
+        return withHtml { MarkupBuilder html ->
             WikiTableBuilder table = new WikiTableBuilder(html);
             c(table)
             table.process()
