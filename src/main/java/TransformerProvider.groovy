@@ -1,9 +1,9 @@
-import groovy.json.JsonBuilder
-import groovy.json.JsonSlurper
 import groovy.xml.MarkupBuilder
 
 public abstract class TransformerProvider {
-    private static final String JIRA_MACRO_PARAMS_PREFIX = 'renderMode=static|columns=type,key,summary,status|url=https://jira.cordys.com/jira/sr/jira.issueviews:searchrequest-xml/temp/SearchRequest.xml?jqlQuery'
+    private static final String COLUMNS = 'columns=type,key,summary,status'
+    private static final String RENDER_MODE = 'renderMode=static'
+    private static final String URL = 'url=https://jira.cordys.com/jira/sr/jira.issueviews:searchrequest-xml/temp/SearchRequest.xml?jqlQuery'
 
     public static Map<String, Closure<String>> loadTransformers(String transformerProviderClass, Properties props) {
         GroovyClassLoader gcl = new GroovyClassLoader();
@@ -32,24 +32,25 @@ public abstract class TransformerProvider {
         return writer.toString()
     }
 
-    /* WORK IN PROGRESS
+
     static String getJiraIssues(String jiraQuery) {
         Writer writer = new StringWriter()
         MarkupBuilder htmlBuilder = newMarkupBuilder(writer)
-        String macro = '{jiraissues:'+JIRA_MACRO_PARAMS_PREFIX +'='+ jiraQuery.replace('=','%3D').replace(',','%2C') +'}'
+        String macro = '{jiraissues:' + RENDER_MODE + '|' + COLUMNS + '|' + TransformerProvider.URL + '=' + jiraQuery.replace('=', '%3D').replace(',', '%2C') + '}'
 
         htmlBuilder.p {
             img(
-                    'src': '/plugins/servlet/confluence/placeholder/macro?definition=' + macro.bytes.encodeBase64() +'&locale=en_GB&version=2',
                     'class': 'editor-inline-macro',
+                    'src': '/plugins/servlet/confluence/placeholder/macro?definition=' + macro.bytes.encodeBase64() + '&locale=en_GB&version=2',
                     'data-macro-name': 'jiraissues',
-                    'data-macro-parameters': JIRA_MACRO_PARAMS_PREFIX +'\\\\='+ jiraQuery.replace('=','%3D').replace(',','%2C')
+                    'data-macro-parameters': COLUMNS + '|' + RENDER_MODE + '|' + TransformerProvider.URL + '\\=' + jiraQuery.replace('=', '%3D').replace(',', '%2C')
             )
         }
 
         return writer.toString()
+                .replace('"', '&quot;')
+                .replace('\'', '"')
     }
-    */
 
     static MarkupBuilder newMarkupBuilder(Writer writer) {
         return new MarkupBuilder(new IndentPrinter(writer, '', false))
@@ -83,7 +84,7 @@ public abstract class TransformerProvider {
 
     public static void main(String[] args) {
         String jiraQuery = 'sprint = "PCT BOP 4.3 Sprint 6" AND resolution = Fixed AND issuetype not in ("Bug during story", Todo)';
-        String v = ('{jiraissues:' + JIRA_MACRO_PARAMS_PREFIX + jiraQuery + '}')
+        String v = ('{jiraissues:' + COLUMNS + '|' + RENDER_MODE + '|' + TransformerProvider.URL + jiraQuery + '}')
         println v.bytes.encodeBase64()
     }
 }
