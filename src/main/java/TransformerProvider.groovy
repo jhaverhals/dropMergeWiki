@@ -39,9 +39,9 @@ public abstract class TransformerProvider {
 
         Writer writer = new StringWriter()
         MarkupBuilder htmlBuilder = newMarkupBuilder(writer)
-        htmlBuilder.doubleQuotes = true
 
         htmlBuilder.p {
+            doubleQuotes = true
             img(
                     'class': 'editor-inline-macro',
                     'src': '/plugins/servlet/confluence/placeholder/macro?definition=' + macro.bytes.encodeBase64() + '&locale=en_GB&version=2',
