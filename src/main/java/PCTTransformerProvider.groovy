@@ -32,9 +32,9 @@ public class PCTTransformerProvider extends TransformerProvider {
                 ArchitectName: { ' ' + getUserLink('wjgerrit', 'Willem Jan Gerritsen') },
                 ScrumMasterName: { ' ' + getUserLink('gjansen', 'Gerwin Jansen') },
 
-//                FunctionalDescription: {
-//                  getJiraIssues('sprint = \'PCT BOP 4.3 Sprint 6\' AND resolution = Fixed AND issuetype not in (\'Bug during story\', Todo)')
-//                },
+                FunctionalDescription: {
+                    getJiraIssues('sprint = \'' + props.sprintName + '\' AND resolution = Fixed AND issuetype not in (\'Bug during story\', Todo)')
+                },
 
                 NewManualTestCases: { 'No' },
                 NewManualTestCasesComment: withHtml { html -> html.p('No new manual tests added. We prefer automatic tests.') },
@@ -42,8 +42,8 @@ public class PCTTransformerProvider extends TransformerProvider {
                 ForwardPortingCompleted: { item -> CordysWiki.selectOption(item, 'Not applicable') },
                 ForwardPortingCompletedComment: withHtml { html -> html.p('We always first fix in our own WIP.') },
 
-                SuccesfulTestsBefore: { TRUNK_BVT_L.getTestFigure(Pass, Skip) },
-                SuccesfulTestsAfter: { BVT_L.getTestFigure(Pass, Skip) },
+                SuccesfulTestsBefore: { TRUNK_BVT_L.getTestFigure(Pass) },
+                SuccesfulTestsAfter: { BVT_L.getTestFigure(Pass) },
                 FailedTestsBefore: { TRUNK_BVT_L.getTestFigure(Fail) },
                 FailedTestsAfter: { BVT_L.getTestFigure(Fail) },
 
@@ -68,7 +68,7 @@ public class PCTTransformerProvider extends TransformerProvider {
                     }
 
                     ['Linux': FRT_L, 'Windows': FRT_W].each { String os, JenkinsJob job ->
-                        table.addRow(['FRT', os, job.getTestFigure(Pass), job.getTestFigure(Fail), job.getTestFigure(Skip)])
+                        table.addRow(['FRT', os, '' + job.getTestFigure(Total, Fail, Skip), job.getTestFigure(Fail), job.getTestFigure(Skip)])
                     }
                     return
                 },
