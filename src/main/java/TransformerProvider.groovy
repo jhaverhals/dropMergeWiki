@@ -34,22 +34,23 @@ public abstract class TransformerProvider {
 
 
     static String getJiraIssues(String jiraQuery) {
+        final String encodedJQ = jiraQuery.replace('=', '%3D').replace(',', '%2C')
+        final String macro = '{jiraissues:' + RENDER_MODE + '|' + COLUMNS + '|' + TransformerProvider.URL + '=' + encodedJQ + '}'
+
         Writer writer = new StringWriter()
         MarkupBuilder htmlBuilder = newMarkupBuilder(writer)
-        String macro = '{jiraissues:' + RENDER_MODE + '|' + COLUMNS + '|' + TransformerProvider.URL + '=' + jiraQuery.replace('=', '%3D').replace(',', '%2C') + '}'
+        htmlBuilder.doubleQuotes = true
 
         htmlBuilder.p {
             img(
                     'class': 'editor-inline-macro',
                     'src': '/plugins/servlet/confluence/placeholder/macro?definition=' + macro.bytes.encodeBase64() + '&locale=en_GB&version=2',
                     'data-macro-name': 'jiraissues',
-                    'data-macro-parameters': COLUMNS + '|' + RENDER_MODE + '|' + TransformerProvider.URL + '\\=' + jiraQuery.replace('=', '%3D').replace(',', '%2C')
+                    'data-macro-parameters': COLUMNS + '|' + RENDER_MODE + '|' + TransformerProvider.URL + '\\=' + encodedJQ
             )
         }
 
         return writer.toString()
-                .replace('"', '&quot;')
-                .replace('\'', '"')
     }
 
     static MarkupBuilder newMarkupBuilder(Writer writer) {
