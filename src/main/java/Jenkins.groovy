@@ -61,13 +61,4 @@ public class Jenkins {
 
         return diffsPerSuite
     }
-
-
-    public interface JenkinsJsonField {
-        String name()
-
-        String allValues()
-
-        String getJsonField()
-    }
 }

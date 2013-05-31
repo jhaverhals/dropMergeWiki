@@ -1,4 +1,4 @@
-public enum TestCount implements Jenkins.JenkinsJsonField {
+public enum TestCount implements JenkinsJsonField {
     Pass, Fail, Total, Skip
 
     @Override

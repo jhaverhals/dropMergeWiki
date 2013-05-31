@@ -1,4 +1,4 @@
-public enum WarningLevel implements Jenkins.JenkinsJsonField {
+public enum WarningLevel implements JenkinsJsonField {
     High, Normal
 
     @Override

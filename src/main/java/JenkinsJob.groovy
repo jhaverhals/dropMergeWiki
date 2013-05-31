@@ -1,3 +1,4 @@
+import Jenkins
 import groovy.json.JsonSlurper
 
 class JenkinsJob {
@@ -31,7 +32,7 @@ class JenkinsJob {
         jsonForJob(report, prop)[prop].toString()
     }
 
-    private String getPropertyOfJobWithinReports(String report, Jenkins.JenkinsJsonField prop) {
+    private String getPropertyOfJobWithinReports(String report, JenkinsJsonField prop) {
         jsonForJob(report, prop)[prop.jsonField].toString()
     }
 
@@ -71,7 +72,7 @@ class JenkinsJob {
         jsonForJob(LAST_SUCCESSFUL_BUILD, subPage, jsonPath)
     }
 
-    private def jsonForJob(String subPage, Jenkins.JenkinsJsonField jsonPath) {
+    private def jsonForJob(String subPage, JenkinsJsonField jsonPath) {
         jsonForJob(subPage, jsonPath.allValues())
     }
 
