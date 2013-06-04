@@ -4,12 +4,28 @@ public abstract class TransformerProvider {
     private static final String COLUMNS = 'columns=type,key,summary,status'
     private static final String RENDER_MODE = 'renderMode=static'
     private static final String URL = 'url=https://jira.cordys.com/jira/sr/jira.issueviews:searchrequest-xml/temp/SearchRequest.xml?jqlQuery'
+    private static final String AFTER = 'After'
+    private static final String BEFORE = 'Before'
+
 
     public static Map<String, Closure<String>> loadTransformers(String transformerProviderClass, Properties props) {
         GroovyClassLoader gcl = new GroovyClassLoader();
         Class clazz = gcl.parseClass(new File(transformerProviderClass))
         TransformerProvider ifc = (TransformerProvider) clazz.newInstance()
         return ifc.getTransformer(props)
+    }
+
+    public static Map<String, Closure<?>> transferFromPreviousPage(Properties props, String previousWikiDropMergePageId, List<String> fieldsFromPreviousPage, transformers) {
+        // Read fields ending with 'After' and beginning with one of the elements of 'fieldFromPreviousPage'
+        // and transfer them to the corresponding 'Before'-field of this page
+        CordysWiki wiki = new CordysWiki();
+        wiki.authenticate(props.wikiUserName, props.wikiPassword)
+
+        wiki.eachDropMergeField(previousWikiDropMergePageId) { CordysWiki.FormField formField ->
+            if (formField.name.length() > AFTER.length() && fieldsFromPreviousPage.contains(formField.name[0..-(AFTER.length() + 1)])) {
+                transformers.put(formField.name[0..-(AFTER.length() + 1)] + BEFORE) { formField.content }
+            }
+        }
     }
 
     public abstract Map<String, Closure<String>> getTransformer(Properties p);

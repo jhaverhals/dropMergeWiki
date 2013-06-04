@@ -10,8 +10,6 @@ public class CWSTransformerProvider extends TransformerProvider {
     private static final JenkinsJob GMF_F = BUILDMASTER_NL.withJob('cws-wip-gmf-ff')
     private static final JenkinsJob GMF_S = BUILDMASTER_NL.withJob('cws-wip-gmf-safari')
 
-    final String AFTER = 'After'
-    final String BEFORE = 'Before'
     final fieldFromPreviousPage = ['SuccesfulTests', 'FailedTests', 'MBViolationsHigh', 'MBViolationsMedium', 'CompilerWarnings', 'PMDViolationsHigh', 'PMDViolationsMedium']
 
     @Override
@@ -35,16 +33,9 @@ public class CWSTransformerProvider extends TransformerProvider {
                 },
         ]
 
-        // Read fields ending with 'After' and beginning with one of the elements of 'fieldFromPreviousPage'
-        // and transfer them to the corresponding 'Before'-field of this page
-        CordysWiki wiki = new CordysWiki();
-        wiki.authenticate(props.wikiUserName, props.wikiPassword)
-        wiki.eachDropMergeField(props.previousWikiDropMergePageId) { CordysWiki.FormField formField ->
-            if (formField.name.length() > AFTER.length() && fieldFromPreviousPage.contains(formField.name[0..-(AFTER.length() + 1)])) {
-                transformers.put(formField.name[0..-(AFTER.length() + 1)] + BEFORE) { formField.content }
-            }
-        }
+        transferFromPreviousPage(props, props.previousWikiDropMergePageId, fieldFromPreviousPage, transformers)
 
         return transformers
     }
+
 }
