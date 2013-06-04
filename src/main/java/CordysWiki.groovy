@@ -1,11 +1,9 @@
 import groovy.json.JsonBuilder
 import groovy.json.JsonSlurper
-
-import groovyx.net.http.*
+import groovyx.net.http.HTTPBuilder
 import org.apache.http.impl.cookie.BasicClientCookie
 
-import static groovyx.net.http.ContentType.*
-
+import static groovyx.net.http.ContentType.URLENC
 
 class CordysWiki {
     private HTTPBuilder wikiHttp = new HTTPBuilder('https://wiki.cordys.com')
@@ -20,10 +18,11 @@ class CordysWiki {
             assert tokenKey != null
         }
 
-        def a = tokenKey.split('; ')[0].split('=')
-        def authCookie = new BasicClientCookie(a[0], a[1])
+        String[] kvp = tokenKey.split('; ')[0].split('=')
+        def authCookie = new BasicClientCookie(kvp[0], kvp[1])
         authCookie.domain = '.cordys.com'
         authCookie.path = '/'
+        authCookie.secure = true
 
         wikiHttp.client.cookieStore.addCookie(authCookie)
     }
@@ -167,7 +166,6 @@ class CordysWiki {
         } else
             return "Don't know $type"
     }
-
 
     static String transform(Closure<String> transformer, def item, String contentValue) {
         if (transformer) {
