@@ -48,6 +48,12 @@ public abstract class TransformerProvider {
         return writer.toString()
     }
 
+    static String getLink(String url, String text) {
+        Writer writer = new StringWriter()
+        newMarkupBuilder(writer).a('href': url, text)
+
+        return writer.toString()
+    }
 
     static String getJiraIssues(String jiraQuery) {
         final String encodedJQ = jiraQuery.replace('=', '%3D').replace(',', '%2C')
