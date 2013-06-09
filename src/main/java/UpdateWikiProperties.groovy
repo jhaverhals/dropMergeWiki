@@ -13,14 +13,14 @@ public class UpdateWikiProperties {
     }
 
     @Override
-    public String getProperty(String key){
+    public String getProperty(String key) {
         validate()
         getAt(key)
     }
 
     public void validate() {
         requiredProperties.each {
-            assert this[it]  : "$it is a required property, but is undefined"
+            assert this[it]: "$it is a required property, but is undefined"
         }
     }
 }
