@@ -17,5 +17,9 @@ public static Properties loadProperties(String... files) {
 CordysWiki wiki = new CordysWiki();
 Properties props = loadProperties('team.properties', 'user.properties', 'session.properties')
 
+assert props.wikiUserName
+assert props.wikiPassword
+assert props.transformerProvider
+
 wiki.authenticate(props.wikiUserName, props.wikiPassword)
 wiki.updateDropMergePage(props.wikiDropMergePageId, TransformerProvider.loadTransformers(props.transformerProvider, props), false)
