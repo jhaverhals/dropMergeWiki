@@ -1,9 +1,10 @@
 @Grab(group = 'org.codehaus.groovy.modules.http-builder', module = 'http-builder', version = '0.6')
 import CordysWiki
 import TransformerProvider
+import UpdateWikiProperties
 
 // static methods
-public Properties loadProperties(String... files) {
+public UpdateWikiProperties loadProperties(String... files) {
     def p = new Properties()
     files.each {
         File f1 = new File(it)
@@ -16,16 +17,12 @@ public Properties loadProperties(String... files) {
         }
     }
 
-    return p
+    return new UpdateWikiProperties(p)
 }
 
 // script
+UpdateWikiProperties props = loadProperties('team.properties', 'user.properties', 'session.properties')
+
 CordysWiki wiki = new CordysWiki();
-Properties props = loadProperties('team.properties', 'user.properties', 'session.properties')
-
-assert props.wikiUserName
-assert props.wikiPassword
-assert props.transformerProvider
-
 wiki.authenticate(props.wikiUserName, props.wikiPassword)
 wiki.updateDropMergePage(props.wikiDropMergePageId, TransformerProvider.loadTransformers(props.transformerProvider, props), props.updateRealServer)
