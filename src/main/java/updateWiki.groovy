@@ -3,13 +3,19 @@ import CordysWiki
 import TransformerProvider
 
 // static methods
-public static void loadProperties(Properties props, File f) {
-    if (f.exists()) props.load(f.newInputStream())
-}
-
-public static Properties loadProperties(String... files) {
+public Properties loadProperties(String... files) {
     def p = new Properties()
-    files.each { loadProperties(p, new File(it)) }
+    files.each {
+        File f1 = new File(it)
+        if (f1.exists()) p.load(f1.newInputStream())
+    }
+    final String propPrefix = this.class.name
+    System.getenv().each { prop ->
+        ['.', '_'].each { sep ->
+            if (prop.key.startsWith(propPrefix + sep)) p[prop.key[propPrefix.length() + 1..-1]] = prop.value
+        }
+    }
+
     return p
 }
 
@@ -18,4 +24,4 @@ CordysWiki wiki = new CordysWiki();
 Properties props = loadProperties('team.properties', 'user.properties', 'session.properties')
 
 wiki.authenticate(props.wikiUserName, props.wikiPassword)
-wiki.updateDropMergePage(props.wikiDropMergePageId, TransformerProvider.loadTransformers(props.transformerProvider, props), false)
+wiki.updateDropMergePage(props.wikiDropMergePageId, TransformerProvider.loadTransformers(props.transformerProvider, props), props.updateRealServer)
