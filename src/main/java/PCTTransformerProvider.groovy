@@ -25,6 +25,10 @@ public class PCTTransformerProvider extends TransformerProvider {
 
     @Override
     Map<String, Closure<String>> getTransformer(Properties props) {
+
+        final String crucibleAuthToken = Crucible.getCrucibleAuthToken(props.crucibleUserName, props.cruciblePassword)
+        final int openReviewCount = Crucible.getOpenReviewCount(props.crucibleProject, crucibleAuthToken)
+
         def transformers = [
                 Team: { item -> CordysWiki.selectOption(item, 'Platform core') },
 
@@ -74,12 +78,10 @@ public class PCTTransformerProvider extends TransformerProvider {
                 },
 
                 ReviewsDone: { item ->
-                    int openReviewCount = Crucible.getOpenReviewCount(props.crucibleProject, Crucible.getCrucibleAuthToken(props.crucibleUserName, props.cruciblePassword))
                     return CordysWiki.selectOption(item, (openReviewCount == 0 ? 'Yes' : 'No'))
                 },
-                ReviewsDoneComment: withHtml { html ->
-                    int openReviewCount = Crucible.getOpenReviewCount(props.crucibleProject, Crucible.getCrucibleAuthToken(props.crucibleUserName, props.cruciblePassword))
-                    html.a(href: Crucible.getBrowseReviewsURL(props.crucibleProject),
+                ReviewsDoneComment: {
+                    getLink(Crucible.getBrowseReviewsURL(props.crucibleProject),
                             (openReviewCount > 0 ? "$openReviewCount open review(s)" : 'All reviews closed')
                     )
                 },
