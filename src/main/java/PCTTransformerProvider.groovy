@@ -24,7 +24,7 @@ public class PCTTransformerProvider extends TransformerProvider {
     private static final JenkinsJob UPGRADE_W = BUILDMASTER_NL.withJob('pct-upgrade-trigger-w')
 
     @Override
-    Map<String, Closure<String>> getTransformer(Properties props) {
+    Map<String, Closure<String>> getTransformer(UpdateWikiProperties props) {
 
         final String crucibleAuthToken = Crucible.getCrucibleAuthToken(props.crucibleUserName, props.cruciblePassword)
         final int openReviewCount = Crucible.getOpenReviewCount(props.crucibleProject, crucibleAuthToken)

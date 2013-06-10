@@ -8,7 +8,7 @@ public abstract class TransformerProvider {
     private static final String BEFORE = 'Before'
 
 
-    public static Map<String, Closure<String>> loadTransformers(String transformerProviderClass, Properties props) {
+    public static Map<String, Closure<String>> loadTransformers(String transformerProviderClass, UpdateWikiProperties props) {
         GroovyClassLoader gcl = new GroovyClassLoader();
         Class clazz = gcl.parseClass(new File(transformerProviderClass))
         TransformerProvider ifc = (TransformerProvider) clazz.newInstance()
@@ -28,7 +28,7 @@ public abstract class TransformerProvider {
         }
     }
 
-    public abstract Map<String, Closure<String>> getTransformer(Properties p);
+    public abstract Map<String, Closure<String>> getTransformer(UpdateWikiProperties p);
 
     static String getUserLink(String shortName, String fullName) {
         Writer writer = new StringWriter()

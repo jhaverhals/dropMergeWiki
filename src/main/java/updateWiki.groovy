@@ -25,4 +25,4 @@ UpdateWikiProperties props = loadProperties('team.properties', 'user.properties'
 
 CordysWiki wiki = new CordysWiki();
 wiki.authenticate(props.wikiUserName, props.wikiPassword)
-wiki.updateDropMergePage(props.wikiDropMergePageId, TransformerProvider.loadTransformers(props.transformerProvider, props), props.updateRealServer)
+wiki.updateDropMergePage(props.wikiDropMergePageId, TransformerProvider.loadTransformers(props.transformerProvider, props), props.updateRealServer as boolean)

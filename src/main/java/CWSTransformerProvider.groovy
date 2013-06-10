@@ -13,7 +13,7 @@ public class CWSTransformerProvider extends TransformerProvider {
     final fieldFromPreviousPage = ['SuccesfulTests', 'FailedTests', 'MBViolationsHigh', 'MBViolationsMedium', 'CompilerWarnings', 'PMDViolationsHigh', 'PMDViolationsMedium']
 
     @Override
-    Map<String, Closure<String>> getTransformer(Properties props) {
+    Map<String, Closure<String>> getTransformer(UpdateWikiProperties props) {
         def transformers = [
                 Team: { item -> CordysWiki.selectOption(item, 'CWS') },
 
