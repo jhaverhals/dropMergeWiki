@@ -67,13 +67,22 @@ public class PCTTransformerProvider extends TransformerProvider {
                 SuccessfulRegressionTestsComment: withTable { WikiTableBuilder table ->
                     table.setHeaders(['Type', 'OS', 'Successful', 'Failed', 'Skipped'])
 
+                    int passCount = 0, failCount = 0, skipCount = 0
                     ['Linux': BVT_L, 'Windows': BVT_W, 'AIX': BVT_A, 'Solaris': BVT_S].each { String os, JenkinsJob job ->
-                        table.addRow(['BVT', getLink(job.jobUrl, os), job.getTestFigure(Pass), job.getTestFigure(Fail), job.getTestFigure(Skip)])
+                        passCount += job.getTestFigure(Pass) as int
+                        failCount += job.getTestFigure(Fail) as int
+                        skipCount += job.getTestFigure(Skip) as int
+                        table.addRow(['BVT', os, job.getTestFigure(Pass), job.getTestFigure(Fail), job.getTestFigure(Skip)])
                     }
 
                     ['Linux': FRT_L, 'Windows': FRT_W].each { String os, JenkinsJob job ->
-                        table.addRow(['FRT', getLink(job.jobUrl, os), '' + job.getTestFigure(Total, Fail, Skip), job.getTestFigure(Fail), job.getTestFigure(Skip)])
+                        passCount += job.getTestFigure(Total, Fail, Skip)
+                        failCount += job.getTestFigure(Fail) as int
+                        skipCount += job.getTestFigure(Skip) as int
+                        table.addRow(['FRT', os, '' + job.getTestFigure(Total, Fail, Skip), job.getTestFigure(Fail), job.getTestFigure(Skip)])
                     }
+
+                    table.addRow(['All', 'All', "$passCount", "$failCount", "$skipCount"])
                     return
                 },
 
