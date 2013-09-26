@@ -5,14 +5,6 @@ class JenkinsJob {
     private static int invocationCount = 0
     private static final Map<String, Object> jsonCache = new HashMap<>()
 
-    static {
-        addShutdownHook {
-            println 'Called for information:    ' + invocationCount + ' times'
-            println 'Final cache size:          ' + jsonCache.size()
-            jsonCache.keySet().each { println it }
-        }
-    }
-
     public static final String LAST_COMPLETED_BUILD = 'lastCompletedBuild'
     public static final String LAST_SUCCESSFUL_BUILD = 'lastSuccessfulBuild'
 
@@ -40,9 +32,24 @@ class JenkinsJob {
         getPropertyOfJobWithinReports('testReport', testCount)
     }
 
+    public String getTestFigureMultiConfig(TestCount testCount) {
+        int total = 0
+        jsonForJob(null, null, "activeConfigurations[name]")["activeConfigurations"].each {
+            if(!it.name.contains("component=cap"))
+                total += onInstance.withJob("$name/${it.name}").getPropertyOfJobWithinReports('testReport', testCount) as int
+        }
+        return "$total"
+    }
+
     public int getTestFigure(TestCount testCount, TestCount... minus) {
         int total = getTestFigure(testCount) as int
         minus.each { total -= getTestFigure(it) as int }
+        return total
+    }
+
+    public int getTestFigureMultiConfig(TestCount testCount, TestCount... minus) {
+        int total = getTestFigureMultiConfig(testCount) as int
+        minus.each { total -= getTestFigureMultiConfig(it) as int }
         return total
     }
 
@@ -81,6 +88,9 @@ class JenkinsJob {
     }
 
     public String getBuildUrl(String build) {
-        jobUrl + '/' + build
+        if(!build)
+            jobUrl
+        else
+            jobUrl + '/' + build
     }
 }
