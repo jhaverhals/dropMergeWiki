@@ -1,0 +1,50 @@
+apply plugin: 'base'
+apply plugin: 'groovy'
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+
+defaultTasks 'publishReport'
+
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
+
+tasks.withType(Compile) {
+    options.encoding = "ISO-8859-1"
+}
+
+sourceSets {
+    main {
+        groovy { srcDirs = ['src/main/java'] }
+    }
+    test {
+        groovy { srcDirs = ['src/test/java'] }
+    }
+}
+
+String buildRepos = 'http://buildrepos.vanenburg.com/'
+repositories {
+    ivy {
+        url buildRepos + 'external'
+        layout 'maven'
+    }
+    ivy {
+        url buildRepos + 'bop'
+        layout 'maven'
+    }
+    mavenCentral()
+}
+
+dependencies {
+    compile 'org.codehaus.groovy:groovy-all:2.0.5'
+    compile 'org.codehaus.groovy.modules.http-builder:http-builder:0.6'
+    testCompile 'junit:junit:4.11'
+}
+
+task publishReport(dependsOn: build, type: JavaExec)
+publishReport {
+    main = 'updateWiki'
+    classpath = sourceSets.main.runtimeClasspath
+    defaultCharacterEncoding 'UTF-8'
+}
+

@@ -6,3 +6,8 @@
 *~
 out
 target
+.gradle
+build
+/.classpath
+/.project
+/bin
