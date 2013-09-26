@@ -85,8 +85,6 @@ class CordysWiki {
             updateQuery['jsonContent'] = json.toString()
         }
 
-        println updateQuery
-
         def destinationHttp = wikiHttp
         if (!postToRealServer) {
             destinationHttp = new HTTPBuilder('http://localhost')
