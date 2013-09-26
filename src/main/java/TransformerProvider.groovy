@@ -15,7 +15,7 @@ public abstract class TransformerProvider {
         return ifc.getTransformer(props)
     }
 
-    public static Map<String, Closure<?>> transferFromPreviousPage(Properties props, String previousWikiDropMergePageId, List<String> fieldsFromPreviousPage, transformers) {
+    public static Map<String, Closure<?>> transferFromPreviousPage(UpdateWikiProperties props, String previousWikiDropMergePageId, List<String> fieldsFromPreviousPage, transformers) {
         // Read fields ending with 'After' and beginning with one of the elements of 'fieldFromPreviousPage'
         // and transfer them to the corresponding 'Before'-field of this page
         CordysWiki wiki = new CordysWiki();
@@ -101,7 +101,7 @@ public abstract class TransformerProvider {
         return withHtml { MarkupBuilder html ->
             WikiTableBuilder table = new WikiTableBuilder(html)
             c(table)
-            return table.process()
+            table.process()
         }
     }
 
