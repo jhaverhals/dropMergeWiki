@@ -2,7 +2,7 @@
 *.ipr
 *.iws
 *.patch
-*.properties
+/*.properties
 *~
 out
 target
