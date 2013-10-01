@@ -1,3 +1,5 @@
+import java.text.SimpleDateFormat
+
 import static TestCount.*
 import static WarningLevel.High
 import static WarningLevel.Normal
@@ -31,13 +33,27 @@ public class PCTTransformerProvider extends TransformerProvider {
 
         def transformers = [
                 Team: { item -> CordysWiki.selectOption(item, 'Platform core') },
+                /*DropMergeDate: { item ->
+                    Calendar today = Calendar.getInstance();
+                    int dayOfWeek = today.get(Calendar.DAY_OF_WEEK);
+                    int daysUntilNextFriday = Calendar.FRIDAY - dayOfWeek;
+                    if (daysUntilNextFriday < 0) {
+                        daysUntilNextFriday = daysUntilNextFriday + 7;
+                    }
+                    Calendar nextFriday = (Calendar) today.clone();
+                    nextFriday.add(Calendar.DAY_OF_WEEK, daysUntilNextFriday);
+                    if (nextFriday.get(Calendar.WEEK_OF_YEAR) % 2 == 0) {
+                        nextFriday.add(Calendar.DAY_OF_WEEK, 7);
+                    }
+                    return new SimpleDateFormat("yyyy-MM-dd 13:00:00").format(nextFriday.getTime());
+                },*/
 
                 ProductManagerName: { getUserLink('jpluimer', 'Johan Pluimers') },
                 ArchitectName: { ' ' + getUserLink('wjgerrit', 'Willem Jan Gerritsen') },
                 ScrumMasterName: { ' ' + getUserLink('gjansen', 'Gerwin Jansen') },
 
                 FunctionalDescription: {
-                    getJiraIssues('sprint = \'' + props.sprintName + '\' AND resolution = Fixed AND issuetype not in (\'Bug during story\', Todo)')
+                    getJiraIssues('(sprint = \'' + props.sprintName + '\' OR sprint = \'PCT BOP 4.4 Sprint 3\') AND resolution = Fixed AND issuetype not in (\'Bug during story\', Todo)')
                 },
 
                 NewManualTestCases: { 'No' },
@@ -46,10 +62,8 @@ public class PCTTransformerProvider extends TransformerProvider {
                 ForwardPortingCompleted: { item -> CordysWiki.selectOption(item, 'Not applicable') },
                 ForwardPortingCompletedComment: withHtml { html -> html.p('We always first fix in our own WIP.') },
 
-                SuccesfulTestsBefore: { TRUNK_BVT_L.getTestFigure(Pass) },
-                SuccesfulTestsAfter: { BVT_L.getTestFigure(Pass) },
-                FailedTestsBefore: { TRUNK_BVT_L.getTestFigure(Fail) },
-                FailedTestsAfter: { BVT_L.getTestFigure(Fail) },
+                SuccesfulTestsAfter: { (BVT_L.getTestFigure(Pass) as int) + (FRT_L.getTestFigureMultiConfig(Pass) as int) },
+                FailedTestsAfter: { (BVT_L.getTestFigure(Fail) as int) + (FRT_L.getTestFigureMultiConfig(Fail) as int) },
 
                 MBViolationsHighBefore: { TRUNK_MBV.getMBFigure(High) },
                 MBViolationsHighAfter: { MBV.getMBFigure(High) },
@@ -58,6 +72,11 @@ public class PCTTransformerProvider extends TransformerProvider {
 
                 CompilerWarningsBefore: { TRUNK_CW_L.compilerWarningFigure },
                 CompilerWarningsAfter: { CW_L.compilerWarningFigure },
+                /*CompilerWarningsComment: {
+                    "We resolved " +
+                            (((TRUNK_CW_L.compilerWarningFigure as int) + 10) - (CW_L.compilerWarningFigure as int)) +
+                            ", and \"introduced\" 10 by deprecating a legacy API."
+                }, */
 
                 PMDViolationsHighBefore: { TRUNK_PMD.getPMDFigure(High) },
                 PMDViolationsHighAfter: { PMD.getPMDFigure(High) },
@@ -76,14 +95,29 @@ public class PCTTransformerProvider extends TransformerProvider {
                     }
 
                     ['Linux': FRT_L, 'Windows': FRT_W].each { String os, JenkinsJob job ->
-                        passCount += job.getTestFigure(Total, Fail, Skip)
-                        failCount += job.getTestFigure(Fail) as int
-                        skipCount += job.getTestFigure(Skip) as int
-                        table.addRow(['FRT', os, '' + job.getTestFigure(Total, Fail, Skip), job.getTestFigure(Fail), job.getTestFigure(Skip)])
+                        passCount += job.getTestFigureMultiConfig(Pass) as int
+                        failCount += job.getTestFigureMultiConfig(Fail) as int
+                        skipCount += job.getTestFigureMultiConfig(Skip) as int
+                        table.addRow(['FRT', os, job.getTestFigureMultiConfig(Pass), job.getTestFigureMultiConfig(Fail), job.getTestFigureMultiConfig(Skip)])
                     }
 
                     table.addRow(['All', 'All', "$passCount", "$failCount", "$skipCount"])
                     return
+                },
+                FailedRegressionTestsComment: withHtml { html ->
+                    html.p '⇧ The figures in the table above are not identical for all OSes ' +
+                            'because of platform specific components and tests.'
+                    html.hr()
+                    html.p '⇦ The figures in the answer column regarding regression tests ' +
+                            'are only the sum of Linux BVTs and FRTs. This leads to stable numbers, ' +
+                            'and allows fair comparison of drop merge pages over time.'
+                    html.p {
+                        mkp.yield 'Identified INU in BVT: '
+                        a(href: 'https://jira.cordys.com/jira/browse/BOP-42322#comment-138576', 'BOP-42322')
+                    }
+                    html.hr()
+                    html.p '⇩ The table below only shows differences in BVTs, ' +
+                            'as FRTs are not comparable in our infrastructure.'
                 },
 
                 ReviewsDone: { item ->
@@ -95,7 +129,7 @@ public class PCTTransformerProvider extends TransformerProvider {
                     )
                 },
 
-                NewAutomatedTestCases: withTable { table ->
+                TotalRegressionTestsComment: withTable { table ->
                     def diffs = Jenkins.getTestDiffsPerSuite(TRUNK_BVT_L, BVT_L)
 
                     diffs.each { k, v ->
@@ -104,16 +138,32 @@ public class PCTTransformerProvider extends TransformerProvider {
                     return
                 },
 
-                UpgradeTested: { item -> selectOptionByStatus(item, UPGRADE_W, [SUCCESS: 'Yes', FAILURE: 'No']) },
+                UpgradeTested: { item ->
+                    def upgradeJob = UPGRADE_W
+                    if (UPGRADE_W.lastBuildResult == 'SUCCESS' && UPGRADE_L.lastBuildResult == 'FAILURE')
+                        upgradeJob = UPGRADE_L
+                    selectOptionByStatus(item, upgradeJob, [SUCCESS: 'Yes', FAILURE: 'No'])
+                },
                 UpgradeTestedComment: withHtml { html ->
                     html.p {
                         a(href: UPGRADE_W.getBuildUrl(JenkinsJob.LAST_COMPLETED_BUILD), 'Upgrade job')
                         mkp.yield ' from BOP 4.1 CU7.1 to latest wip.'
+                        br()
+                        a(href: UPGRADE_L.getBuildUrl(JenkinsJob.LAST_COMPLETED_BUILD), 'Upgrade job')
+                        mkp.yield ' from latest GA (BOP 4.3) to latest wip.'
                     }
                 },
 
                 IntegrationTestsPass: { item -> selectOptionByStatus(item, EW, [SUCCESS: 'Yes', FAILURE: 'No']) },
+                IntegrationTestsPassComment: withHtml { html ->
+                    html.p {
+                        a(href: UPGRADE_W.getBuildUrl(JenkinsJob.LAST_COMPLETED_BUILD), 'Eastwind successful')
+                    }
+                }
         ]
+
+        transferFromPreviousPage(props, props.previousWikiDropMergePageId, ['SuccesfulTests', 'FailedTests'], transformers)
+
         return transformers
     }
 }
