@@ -1,8 +1,5 @@
-import java.text.SimpleDateFormat
+import org.junit.internal.runners.statements.Fail
 
-import static TestCount.*
-import static WarningLevel.High
-import static WarningLevel.Normal
 
 public class PCTTransformerProvider extends TransformerProvider {
     private static final BUILDMASTER_NL = new Jenkins('http://buildmaster-nl.vanenburg.com/jenkins')
@@ -158,6 +155,9 @@ public class PCTTransformerProvider extends TransformerProvider {
                 IntegrationTestsPassComment: withHtml { html ->
                     html.p {
                         a(href: UPGRADE_W.getBuildUrl(JenkinsJob.LAST_COMPLETED_BUILD), 'Eastwind successful')
+												mkp.yield ' when disabling WSDL validation: '
+												a(href: 'https://jira.cordys.com/jira/browse/BOP-43266', 'BSD reported')
+												mkp.yield '.'
                     }
                 }
         ]
