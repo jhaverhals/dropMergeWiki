@@ -6,9 +6,11 @@ public UpdateWikiProperties loadProperties(String... files) {
 		if (f1.exists()) p.load(f1.newInputStream())
 	}
 	final String propPrefix = this.class.name
-	System.getenv().each { prop ->
-		['.', '_'].each { sep ->
-			if (prop.key.startsWith(propPrefix + sep)) p[prop.key[propPrefix.length() + 1..-1]] = prop.value
+	[System.getenv(), System.getProperties()].each { props ->
+		props.each { prop ->
+			['.', '_'].each { sep ->
+				if (prop.key.startsWith(propPrefix + sep)) p[prop.key[propPrefix.length() + 1..-1]] = prop.value
+			}
 		}
 	}
 
