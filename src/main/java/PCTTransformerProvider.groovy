@@ -1,4 +1,8 @@
-import org.junit.internal.runners.statements.Fail
+import java.text.SimpleDateFormat
+
+import static TestCount.*
+import static WarningLevel.High
+import static WarningLevel.Normal
 
 
 public class PCTTransformerProvider extends TransformerProvider {
