@@ -34,7 +34,7 @@ public class PCTTransformerProvider extends TransformerProvider {
 
         def transformers = [
                 Team: { item -> CordysWiki.selectOption(item, 'Platform core') },
-                /*DropMergeDate: { item ->
+                DropMergeDate: { item ->
                     Calendar today = Calendar.getInstance();
                     int dayOfWeek = today.get(Calendar.DAY_OF_WEEK);
                     int daysUntilNextFriday = Calendar.FRIDAY - dayOfWeek;
@@ -47,14 +47,14 @@ public class PCTTransformerProvider extends TransformerProvider {
                         nextFriday.add(Calendar.DAY_OF_WEEK, 7);
                     }
                     return new SimpleDateFormat("yyyy-MM-dd 13:00:00").format(nextFriday.getTime());
-                },*/
+                },
 
                 ProductManagerName: { getUserLink('jpluimer', 'Johan Pluimers') },
                 ArchitectName: { ' ' + getUserLink('wjgerrit', 'Willem Jan Gerritsen') },
                 ScrumMasterName: { ' ' + getUserLink('gjansen', 'Gerwin Jansen') },
 
                 FunctionalDescription: {
-                    getJiraIssues('(sprint = \'' + props.sprintName + '\' OR sprint = \'PCT BOP 4.4 Sprint 3\') AND resolution = Fixed AND issuetype not in (\'Bug during story\', Todo)')
+                    getJiraIssues('(sprint = \'' + props.sprintName + '\' OR sprint = \'PCT BOP 4.4 Sprint 5\') AND resolution = Fixed AND issuetype not in (\'Bug during story\', Todo)')
                 },
 
                 NewManualTestCases: { 'No' },
@@ -112,10 +112,6 @@ public class PCTTransformerProvider extends TransformerProvider {
                     html.p '⇦ The figures in the answer column regarding regression tests ' +
                             'are only the sum of Linux BVTs and FRTs. This leads to stable numbers, ' +
                             'and allows fair comparison of drop merge pages over time.'
-                    html.p {
-                        mkp.yield 'Identified INU in BVT: '
-                        a(href: 'https://jira.cordys.com/jira/browse/BOP-42322#comment-138576', 'BOP-42322')
-                    }
                     html.hr()
                     html.p '⇩ The table below only shows differences in BVTs, ' +
                             'as FRTs are not comparable in our infrastructure.'
@@ -159,9 +155,6 @@ public class PCTTransformerProvider extends TransformerProvider {
                 IntegrationTestsPassComment: withHtml { html ->
                     html.p {
                         a(href: UPGRADE_W.getBuildUrl(JenkinsJob.LAST_COMPLETED_BUILD), 'Eastwind successful')
-												mkp.yield ' when disabling WSDL validation: '
-												a(href: 'https://jira.cordys.com/jira/browse/BOP-43266', 'BSD reported')
-												mkp.yield '.'
                     }
                 }
         ]
