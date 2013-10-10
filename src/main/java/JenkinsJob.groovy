@@ -35,8 +35,7 @@ class JenkinsJob {
     public String getTestFigureMultiConfig(TestCount testCount) {
         int total = 0
         jsonForJob(null, null, "activeConfigurations[name]")["activeConfigurations"].each {
-            if(!it.name.contains("component=cap"))
-                total += onInstance.withJob("$name/${it.name}").getPropertyOfJobWithinReports('testReport', testCount) as int
+            total += onInstance.withJob("$name/${it.name}").getPropertyOfJobWithinReports('testReport', testCount) as int
         }
         return "$total"
     }
