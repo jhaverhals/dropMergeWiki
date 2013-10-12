@@ -1,10 +1,5 @@
 import java.text.SimpleDateFormat
 
-import static TestCount.*
-import static WarningLevel.High
-import static WarningLevel.Normal
-
-
 public class PCTTransformerProvider extends TransformerProvider {
     private static final BUILDMASTER_NL = new Jenkins('http://buildmaster-nl.vanenburg.com/jenkins')
 
@@ -63,13 +58,13 @@ public class PCTTransformerProvider extends TransformerProvider {
                 ForwardPortingCompleted: { item -> CordysWiki.selectOption(item, 'Not applicable') },
                 ForwardPortingCompletedComment: withHtml { html -> html.p('We always first fix in our own WIP.') },
 
-                SuccesfulTestsAfter: { (BVT_L.getTestFigure(Pass) as int) + (FRT_L.getTestFigureMultiConfig(Pass) as int) },
-                FailedTestsAfter: { (BVT_L.getTestFigure(Fail) as int) + (FRT_L.getTestFigureMultiConfig(Fail) as int) },
+                SuccesfulTestsAfter: { (BVT_L.getTestFigure(TestCount.Pass) as int) + (FRT_L.getTestFigureMultiConfig(TestCount.Pass) as int) },
+                FailedTestsAfter: { (BVT_L.getTestFigure(TestCount.Fail) as int) + (FRT_L.getTestFigureMultiConfig(TestCount.Fail) as int) },
 
-                MBViolationsHighBefore: { TRUNK_MBV.getMBFigure(High) },
-                MBViolationsHighAfter: { MBV.getMBFigure(High) },
-                MBViolationsMediumBefore: { TRUNK_MBV.getMBFigure(Normal) },
-                MBViolationsMediumAfter: { MBV.getMBFigure(Normal) },
+                MBViolationsHighBefore: { TRUNK_MBV.getMBFigure(WarningLevel.High) },
+                MBViolationsHighAfter: { MBV.getMBFigure(WarningLevel.High) },
+                MBViolationsMediumBefore: { TRUNK_MBV.getMBFigure(WarningLevel.Normal) },
+                MBViolationsMediumAfter: { MBV.getMBFigure(WarningLevel.Normal) },
 
                 CompilerWarningsBefore: { TRUNK_CW_L.compilerWarningFigure },
                 CompilerWarningsAfter: { CW_L.compilerWarningFigure },
@@ -79,27 +74,27 @@ public class PCTTransformerProvider extends TransformerProvider {
                             ", and \"introduced\" 10 by deprecating a legacy API."
                 }, */
 
-                PMDViolationsHighBefore: { TRUNK_PMD.getPMDFigure(High) },
-                PMDViolationsHighAfter: { PMD.getPMDFigure(High) },
-                PMDViolationsMediumBefore: { TRUNK_PMD.getPMDFigure(Normal) },
-                PMDViolationsMediumAfter: { PMD.getPMDFigure(Normal) },
+                PMDViolationsHighBefore: { TRUNK_PMD.getPMDFigure(WarningLevel.High) },
+                PMDViolationsHighAfter: { PMD.getPMDFigure(WarningLevel.High) },
+                PMDViolationsMediumBefore: { TRUNK_PMD.getPMDFigure(WarningLevel.Normal) },
+                PMDViolationsMediumAfter: { PMD.getPMDFigure(WarningLevel.Normal) },
 
                 SuccessfulRegressionTestsComment: withTable { WikiTableBuilder table ->
                     table.setHeaders(['Type', 'OS', 'Successful', 'Failed', 'Skipped'])
 
                     int passCount = 0, failCount = 0, skipCount = 0
                     ['Linux': BVT_L, 'Windows': BVT_W, 'AIX': BVT_A, 'Solaris': BVT_S].each { String os, JenkinsJob job ->
-                        passCount += job.getTestFigure(Pass) as int
-                        failCount += job.getTestFigure(Fail) as int
-                        skipCount += job.getTestFigure(Skip) as int
-                        table.addRow(['BVT', os, job.getTestFigure(Pass), job.getTestFigure(Fail), job.getTestFigure(Skip)])
+                        passCount += job.getTestFigure(TestCount.Pass) as int
+                        failCount += job.getTestFigure(TestCount.Fail) as int
+                        skipCount += job.getTestFigure(TestCount.Skip) as int
+                        table.addRow(['BVT', os, job.getTestFigure(TestCount.Pass), job.getTestFigure(TestCount.Fail), job.getTestFigure(TestCount.Skip)])
                     }
 
                     ['Linux': FRT_L, 'Windows': FRT_W].each { String os, JenkinsJob job ->
-                        passCount += job.getTestFigureMultiConfig(Pass) as int
-                        failCount += job.getTestFigureMultiConfig(Fail) as int
-                        skipCount += job.getTestFigureMultiConfig(Skip) as int
-                        table.addRow(['FRT', os, job.getTestFigureMultiConfig(Pass), job.getTestFigureMultiConfig(Fail), job.getTestFigureMultiConfig(Skip)])
+                        passCount += job.getTestFigureMultiConfig(TestCount.Pass) as int
+                        failCount += job.getTestFigureMultiConfig(TestCount.Fail) as int
+                        skipCount += job.getTestFigureMultiConfig(TestCount.Skip) as int
+                        table.addRow(['FRT', os, job.getTestFigureMultiConfig(TestCount.Pass), job.getTestFigureMultiConfig(TestCount.Fail), job.getTestFigureMultiConfig(TestCount.Skip)])
                     }
 
                     table.addRow(['All', 'All', "$passCount", "$failCount", "$skipCount"])
@@ -154,7 +149,7 @@ public class PCTTransformerProvider extends TransformerProvider {
                 IntegrationTestsPass: { item -> selectOptionByStatus(item, EW, [SUCCESS: 'Yes', FAILURE: 'No']) },
                 IntegrationTestsPassComment: withHtml { html ->
                     html.p {
-                        a(href: UPGRADE_W.getBuildUrl(JenkinsJob.LAST_COMPLETED_BUILD), 'Eastwind successful')
+                        a(href: EW.getBuildUrl(JenkinsJob.LAST_COMPLETED_BUILD), 'Eastwind successful')
                     }
                 }
         ]
