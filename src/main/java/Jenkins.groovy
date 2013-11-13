@@ -41,7 +41,17 @@ public class Jenkins {
             return map
         }
 
-        def casesPerSuite = { return it.suites.collectMap { [it.name, it.cases.size() as int] } }
+        def casesPerSuite = {
+					if (it.suites) {
+						return it.suites.collectMap { [it.name, it.cases.size() as int] }
+					}
+					
+					def map = [:]
+					it.childReports.each {
+						 map << it.result.suites.collectMap { [it.name, it.cases.size() as int] }
+					}
+					return map
+				}
 
         def suitesBefore = casesPerSuite(beforeJob.testReport)
         def suitesAfter = casesPerSuite(afterJob.testReport)
