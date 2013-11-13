@@ -2,11 +2,15 @@ import java.text.SimpleDateFormat
 
 public class PCTTransformerProvider extends TransformerProvider {
     private static final BUILDMASTER_NL = new Jenkins('http://buildmaster-nl.vanenburg.com/jenkins')
+    private static final SVT9L = new Jenkins('http://srv-ind-svt9l.vanenburg.com:8080')
+    private static final CMT_JENKINS = new Jenkins('http://cmt-jenkins.vanenburg.com/jenkins')
 
-    private static final JenkinsJob TRUNK_BVT_L = BUILDMASTER_NL.withJob('pct-trunk-build-installer-l-x64')
-    private static final JenkinsJob TRUNK_CW_L = TRUNK_BVT_L
+    private static final JenkinsJob TRUNK_BVT_L = CMT_JENKINS.withJob('Trunk-Lin64-Java7')
+    private static final JenkinsJob TRUNK_CW_L = BUILDMASTER_NL.withJob('pct-trunk-build-installer-l-x64')
     private static final JenkinsJob TRUNK_MBV = BUILDMASTER_NL.withJob('pct-trunk-mb')
-    private static final JenkinsJob TRUNK_PMD = TRUNK_BVT_L
+    private static final JenkinsJob TRUNK_PMD = BUILDMASTER_NL.withJob('pct-trunk-build-installer-l-x64')
+    private static final JenkinsJob TRUNK_FRT_L = SVT9L.withJob('PlatformCore-L')
+    private static final JenkinsJob TRUNK_FRT_W = SVT9L.withJob('PlatformCore-W')
 
     private static final JenkinsJob BVT_L = BUILDMASTER_NL.withJob('pct-trunk-wip-build-installer-l-x64')
     private static final JenkinsJob BVT_W = BUILDMASTER_NL.withJob('pct-trunk-wip-build-installer-w-x64')
@@ -49,7 +53,7 @@ public class PCTTransformerProvider extends TransformerProvider {
                 ScrumMasterName: { ' ' + getUserLink('gjansen', 'Gerwin Jansen') },
 
                 FunctionalDescription: {
-                    getJiraIssues('(sprint = \'' + props.sprintName + '\' OR sprint = \'PCT BOP 4.4 Sprint 5\') AND resolution = Fixed AND issuetype not in (\'Bug during story\', Todo)')
+                    getJiraIssues('(sprint = \'' + props.sprintName + '\' OR sprint = \'PCT BOP 4.4 Sprint 8a\') AND resolution = Fixed AND issuetype not in (\'Bug during story\', Todo)')
                 },
 
                 NewManualTestCases: { 'No' },
@@ -58,6 +62,9 @@ public class PCTTransformerProvider extends TransformerProvider {
                 ForwardPortingCompleted: { item -> CordysWiki.selectOption(item, 'Not applicable') },
                 ForwardPortingCompletedComment: withHtml { html -> html.p('We always first fix in our own WIP.') },
 
+                SuccesfulTestsBefore: { (TRUNK_BVT_L.getTestFigure(TestCount.Pass) as int) + (TRUNK_FRT_L.getTestFigureMultiConfig(TestCount.Pass) as int) },
+                FailedTestsBefore: { (TRUNK_BVT_L.getTestFigure(TestCount.Fail) as int) + (TRUNK_FRT_L.getTestFigureMultiConfig(TestCount.Fail) as int) },
+                
                 SuccesfulTestsAfter: { (BVT_L.getTestFigure(TestCount.Pass) as int) + (FRT_L.getTestFigureMultiConfig(TestCount.Pass) as int) },
                 FailedTestsAfter: { (BVT_L.getTestFigure(TestCount.Fail) as int) + (FRT_L.getTestFigureMultiConfig(TestCount.Fail) as int) },
 
@@ -107,9 +114,6 @@ public class PCTTransformerProvider extends TransformerProvider {
                     html.p '⇦ The figures in the answer column regarding regression tests ' +
                             'are only the sum of Linux BVTs and FRTs. This leads to stable numbers, ' +
                             'and allows fair comparison of drop merge pages over time.'
-                    html.hr()
-                    html.p '⇩ The table below only shows differences in BVTs, ' +
-                            'as FRTs are not comparable in our infrastructure.'
                 },
 
                 ReviewsDone: { item ->
@@ -122,10 +126,11 @@ public class PCTTransformerProvider extends TransformerProvider {
                 },
 
                 TotalRegressionTestsComment: withTable { table ->
-                    def diffs = Jenkins.getTestDiffsPerSuite(TRUNK_BVT_L, BVT_L)
-
-                    diffs.each { k, v ->
-                        table.addRow('Suite / Test': k, 'Difference': String.format('%+d', v))
+                    Jenkins.getTestDiffsPerSuite(TRUNK_BVT_L, BVT_L).each { k, v ->
+                        table.addRow('Suite / Test': k, 'Difference': String.format('%+d', v), 'Type': 'BVT')
+                    }
+                    Jenkins.getTestDiffsPerSuite(TRUNK_FRT_L, FRT_L).each { k, v ->
+												table.addRow('Suite / Test': k, 'Difference': String.format('%+d', v), 'Type': 'FRT')
                     }
                     return
                 },
@@ -149,7 +154,7 @@ public class PCTTransformerProvider extends TransformerProvider {
                 IntegrationTestsPass: { item -> selectOptionByStatus(item, EW, [SUCCESS: 'Yes', FAILURE: 'No']) },
                 IntegrationTestsPassComment: withHtml { html ->
                     html.p {
-                        a(href: EW.getBuildUrl(JenkinsJob.LAST_COMPLETED_BUILD), 'Eastwind successful')
+                        a(href: EW.getBuildUrl(JenkinsJob.LAST_COMPLETED_BUILD), 'Eastwinds job')
                     }
                 }
         ]
