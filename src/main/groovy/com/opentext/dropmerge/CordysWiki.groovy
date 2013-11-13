@@ -1,3 +1,5 @@
+package com.opentext.dropmerge
+
 import groovy.json.JsonBuilder
 import groovy.json.JsonSlurper
 import groovyx.net.http.HTTPBuilder

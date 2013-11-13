@@ -1,3 +1,5 @@
+import com.opentext.dropmerge.*
+
 // static methods
 public UpdateWikiProperties loadProperties(String... files) {
 	def p = new Properties()

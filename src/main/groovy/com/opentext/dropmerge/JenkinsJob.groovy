@@ -1,3 +1,5 @@
+package com.opentext.dropmerge
+
 import groovy.json.JsonSlurper
 
 class JenkinsJob {

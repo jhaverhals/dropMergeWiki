@@ -1,3 +1,5 @@
+package com.opentext.dropmerge
+
 public enum WarningLevel implements JenkinsJsonField {
     High, Normal
 

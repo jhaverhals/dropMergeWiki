@@ -1,3 +1,5 @@
+package com.opentext.dropmerge
+
 import groovyx.net.http.*
 
 import static groovyx.net.http.Method.*

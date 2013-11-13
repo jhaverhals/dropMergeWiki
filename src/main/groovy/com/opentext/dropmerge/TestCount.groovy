@@ -1,3 +1,5 @@
+package com.opentext.dropmerge
+
 public enum TestCount implements JenkinsJsonField {
     Pass, Fail, Total, Skip
 

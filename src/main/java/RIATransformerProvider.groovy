@@ -1,3 +1,4 @@
+import com.opentext.dropmerge.*
 import static WarningLevel.High
 import static WarningLevel.Normal
 

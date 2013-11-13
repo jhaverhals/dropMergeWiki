@@ -1,3 +1,5 @@
+package com.opentext.dropmerge
+
 public class UpdateWikiProperties {
 
     private Properties inner;

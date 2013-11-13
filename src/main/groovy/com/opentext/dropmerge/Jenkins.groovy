@@ -1,3 +1,5 @@
+package com.opentext.dropmerge
+
 public class Jenkins {
 
     private final String rootUrl;

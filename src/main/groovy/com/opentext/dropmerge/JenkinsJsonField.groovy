@@ -1,3 +1,5 @@
+package com.opentext.dropmerge
+
 public interface JenkinsJsonField {
     String name()
 

@@ -1,3 +1,5 @@
+import com.opentext.dropmerge.*
+
 import static TestCount.Fail
 import static TestCount.Pass
 
