@@ -74,7 +74,7 @@ class DropMergeInput {
             return CordysWiki.selectOption(item, (openReviewCount == 0 ? 'Yes' : 'No'))
         }
         inputs['ReviewsDoneComment'] = {
-            getLink(Crucible.getBrowseReviewsURL(crucibleSpec.projectKey),
+            TransformerProvider.getLink(Crucible.getBrowseReviewsURL(crucibleSpec.projectKey),
                     (openReviewCount > 0 ? "$openReviewCount open review(s)" : 'All reviews closed')
             )
         }
@@ -122,7 +122,7 @@ class DropMergeInput {
 
         List<JobSpec> jobs = jobsSpec.jobs
         inputs['UpgradeTested'] = { item ->
-            CordysWiki.selectOption(item, CordysWiki.selectOption(item, (jobs.every { JobSpec j -> j.jenkinsJob.lastBuildResult == 'SUCCESS' } == 0 ? 'Yes' : 'No')))
+            CordysWiki.selectOption(item, (jobs.every { JobSpec j -> j.jenkinsJob.lastBuildResult == 'SUCCESS' } ? 'Yes' : 'No'))
         }
         inputs['UpgradeTestedComment'] = TransformerProvider.withHtml { html ->
             html.p {
