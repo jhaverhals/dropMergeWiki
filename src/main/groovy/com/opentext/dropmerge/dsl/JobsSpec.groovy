@@ -1,7 +1,7 @@
 package com.opentext.dropmerge.dsl;
 
 class JobsSpec {
-    List<JobSpec> jobs = [];
+    protected List<JobSpec> jobs = []
 
     def withJob(@DelegatesTo(JobSpec) trunkJob) {
         JobSpec jobSpec = new JobSpec()

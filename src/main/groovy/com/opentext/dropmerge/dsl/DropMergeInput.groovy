@@ -1,10 +1,13 @@
 package com.opentext.dropmerge.dsl
 
-import com.opentext.dropmerge.*
+import com.opentext.dropmerge.CordysWiki
+import com.opentext.dropmerge.Crucible
+import com.opentext.dropmerge.TransformerProvider
+import com.opentext.dropmerge.UpdateWikiProperties
 
 import java.text.SimpleDateFormat
 
-class DropMergeInput {
+public class DropMergeInput {
     public Map<String, Closure<String>> inputs = new HashMap<String, Closure<String>>()
     public static final UpdateWikiProperties myProperties = loadProperties('team.properties', 'user.properties', 'session.properties')
 
@@ -50,6 +53,9 @@ class DropMergeInput {
     def dropMergeOn(DateDsl date) {
         inputs['DropMergeDate'] = { new SimpleDateFormat("yyyy-MM-dd 13:00:00").format(date.getDate()); }
     }
+    def goToCCB(DateDsl date) {
+        inputs['CCBDate'] = { new SimpleDateFormat("yyyy-MM-dd 13:00:00").format(date.getDate()); }
+    }
 
     def scrumMaster(String fullName, String userName) {
         inputs['ScrumMaster'] = { ' ' + TransformerProvider.getUserLink(userName, fullName) }
@@ -80,60 +86,15 @@ class DropMergeInput {
         }
     }
 
-    static final Jenkins jenkinsOfSVT = new Jenkins('http://srv-ind-svt9l.vanenburg.com:8080')
-
-    static final Jenkins jenkinsOfCMT = new Jenkins('http://cmt-jenkins.vanenburg.com/jenkins')
-
-    static final Jenkins buildMasterHYD = new Jenkins('http://buildmaster-HYD.vanenburg.com/jenkins')
-
-    static final Jenkins buildMasterNL = new Jenkins('http://buildmaster-nl.vanenburg.com/jenkins')
-
-    def pmd(@DelegatesTo(ComparableJobsSpec) jobs) {
-        ComparableJobsSpec jobSpec = new ComparableJobsSpec()
-        jobSpec.with jobs
-
-        inputs['PMDViolationsHighBefore'] = { jobSpec.trunk.getPMDFigure(WarningLevel.High) }
-        inputs['PMDViolationsMediumBefore'] = { jobSpec.trunk.getPMDFigure(WarningLevel.Normal) }
-        inputs['PMDViolationsHighAfter'] = { jobSpec.wip.getPMDFigure(WarningLevel.High) }
-        inputs['PMDViolationsMediumAfter'] = { jobSpec.wip.getPMDFigure(WarningLevel.Normal) }
+    def jenkins(@DelegatesTo(JenkinsSpec) Closure jenkins) {
+        JenkinsSpec jenkinsSpec = new JenkinsSpec(inputs)
+        jenkinsSpec.with jenkins
     }
 
-    def compilerWarnings(@DelegatesTo(ComparableJobsSpec) jobs) {
-        ComparableJobsSpec jobSpec = new ComparableJobsSpec()
-        jobSpec.with jobs
-
-        inputs['CompilerWarningsBefore'] = { jobSpec.trunk.compilerWarningFigure }
-        inputs['CompilerWarningsAfter'] = { jobSpec.wip.compilerWarningFigure }
+    def qualityAndProcessQuestions(@DelegatesTo(QualityAndProcessQuestionsSpec) Closure jenkins) {
+        QualityAndProcessQuestionsSpec questionsSpec = new QualityAndProcessQuestionsSpec(inputs)
+        questionsSpec.with jenkins
     }
 
-    def mbv(@DelegatesTo(ComparableJobsSpec) jobs) {
-        ComparableJobsSpec jobSpec = new ComparableJobsSpec()
-        jobSpec.with jobs
 
-        inputs['MBViolationsHighBefore'] = { jobSpec.trunk.getMBFigure(WarningLevel.High) }
-        inputs['MBViolationsMediumBefore'] = { jobSpec.trunk.getMBFigure(WarningLevel.Normal) }
-        inputs['MBViolationsHighAfter'] = { jobSpec.wip.getMBFigure(WarningLevel.High) }
-        inputs['MBViolationsMediumAfter'] = { jobSpec.wip.getMBFigure(WarningLevel.Normal) }
-    }
-
-    def upgrade(@DelegatesTo(JobsSpec) jobsClosure) {
-        JobsSpec jobsSpec = new JobsSpec()
-        jobsSpec.with jobsClosure;
-
-        List<JobSpec> jobs = jobsSpec.jobs
-        inputs['UpgradeTested'] = { item ->
-            CordysWiki.selectOption(item, (jobs.every { JobSpec j -> j.jenkinsJob.lastBuildResult == 'SUCCESS' } ? 'Yes' : 'No'))
-        }
-        inputs['UpgradeTestedComment'] = TransformerProvider.withHtml { html ->
-            html.p {
-                jobs.each { JobSpec j ->
-                    html.a(href: j.jenkinsJob.getBuildUrl(JenkinsJob.LAST_COMPLETED_BUILD), 'Upgrade job')
-                    if (j.description) {
-                        html.mkp.yield ' ' + j.description
-                    }
-                    html.br()
-                }
-            }
-        }
-    }
 }

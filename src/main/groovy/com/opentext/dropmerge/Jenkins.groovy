@@ -38,22 +38,31 @@ public class Jenkins {
             def map = [:]
             delegate.each {
                 List<Object> r = callback.call(it)
-                map[r[0]] = r[1]
+                if (r && r.size() > 0)
+                    map[r[0]] = r[1]
             }
             return map
         }
 
         def casesPerSuite = {
-					if (it.suites) {
-						return it.suites.collectMap { [it.name, it.cases.size() as int] }
-					}
-					
-					def map = [:]
-					it.childReports.each {
-						 map << it.result.suites.collectMap { [it.name, it.cases.size() as int] }
-					}
-					return map
-				}
+            if (it.suites) {
+                return it.suites.collectMap {
+                    int conSkippedCasesCount = it.cases.findAll { c -> c.status != 'SKIPPED' }.size() as int
+                    if (conSkippedCasesCount > 0)
+                        return [it.name, conSkippedCasesCount]
+                }
+            }
+
+            def map = [:]
+            it.childReports.each {
+                map << it.result.suites.collectMap {
+                    int conSkippedCasesCount = it.cases.findAll { c -> c.status != 'SKIPPED' }.size() as int
+                    if (conSkippedCasesCount > 0)
+                        return [it.name, conSkippedCasesCount]
+                }
+            }
+            return map
+        }
 
         def suitesBefore = casesPerSuite(beforeJob.testReport)
         def suitesAfter = casesPerSuite(afterJob.testReport)

@@ -1,6 +1,5 @@
 package com.opentext.dropmerge.dsl
 
-import groovy.transform.TypeChecked
 import org.junit.Test
 
 //@TypeChecked
@@ -31,22 +30,24 @@ public class DslTest {
                 projectKey myProperties['crucibleProject']
             }
 
-            pmd {
-                trunk { job 'pct-trunk-build-installer-l-x64' on buildMasterNL }
-                wip { job 'pct-trunk-wip-build-installer-l-x64' on buildMasterNL }
-            }
-            compilerWarnings {
-                trunk { job 'pct-trunk-build-installer-l-x64' on buildMasterNL }
-                wip { job 'pct-trunk-wip-build-installer-l-x64' on buildMasterNL }
-            }
-            mbv {
-                trunk { job 'pct-trunk-mb' on buildMasterNL }
-                wip { job 'pct-trunk-wip-mb' on buildMasterNL }
-            }
+            jenkins {
+                pmd {
+                    trunk { job 'pct-trunk-build-installer-l-x64' on buildMasterNL }
+                    wip { job 'pct-trunk-wip-build-installer-l-x64' on buildMasterNL }
+                }
+                compilerWarnings {
+                    trunk { job 'pct-trunk-build-installer-l-x64' on buildMasterNL }
+                    wip { job 'pct-trunk-wip-build-installer-l-x64' on buildMasterNL }
+                }
+                mbv {
+                    trunk { job 'pct-trunk-mb' on buildMasterNL }
+                    wip { job 'pct-trunk-wip-mb' on buildMasterNL }
+                }
 
-            upgrade {
-                withJob { job 'pct-upgrade-trigger-l' on buildMasterNL; description 'from latest GA (BOP 4.3) to latest wip.' }
-                withJob { job 'pct-upgrade-trigger-w' on buildMasterNL; description 'from BOP 4.1 CU7.1 to latest wip.' }
+                upgrade {
+                    withJob { job 'pct-upgrade-trigger-l' on buildMasterNL; description 'from latest GA (BOP 4.3) to latest wip.' }
+                    withJob { job 'pct-upgrade-trigger-w' on buildMasterNL; description 'from BOP 4.1 CU7.1 to latest wip.' }
+                }
             }
         }.inputs
 

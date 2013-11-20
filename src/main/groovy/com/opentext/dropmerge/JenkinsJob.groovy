@@ -30,7 +30,10 @@ class JenkinsJob {
     }
 
     public String getTestFigure(TestCount testCount) {
-        getPropertyOfJobWithinReports('testReport', testCount)
+        if (matrixSubJobs.isEmpty())
+            return getPropertyOfJobWithinReports('testReport', testCount)
+        else
+            return getTestFigureMultiConfig(testCount)
     }
 
     public String getTestFigureMultiConfig(TestCount testCount) {
@@ -57,6 +60,10 @@ class JenkinsJob {
         jsonForJob(LAST_SUCCESSFUL_BUILD, 'testReport', null)
     }
 
+    public def getPMDReport() {
+        jsonForJob(LAST_SUCCESSFUL_BUILD, 'pmdResult', null, 1)
+    }
+
     public String getPMDFigure(WarningLevel level) {
         getPropertyOfJobWithinReports('pmdResult', level)
     }
@@ -69,9 +76,9 @@ class JenkinsJob {
         getPropertyOfJobWithinReports('muvipluginResult', level)
     }
 
-    private def jsonForJob(String build, String subPage, String jsonPath) {
+    private def jsonForJob(String build, String subPage, String jsonPath, Integer depth = null) {
         invocationCount++
-        final url = getBuildUrl(build) + '/' + (subPage ? subPage + '/' : '') + 'api/json' + (jsonPath ? '?tree=' + jsonPath : '')
+        final url = getBuildUrl(build) + '/' + (subPage ? subPage + '/' : '') + 'api/json' + (jsonPath ? '?tree=' + jsonPath + (depth ? '&' : '') : (depth ? '?' : '')) + (depth ? "depth=$depth" : '')
         jsonCache[url] ?: (jsonCache[url] = new JsonSlurper().parseText(new URL(url).text))
     }
 
@@ -88,17 +95,17 @@ class JenkinsJob {
     }
 
     public String getBuildUrl(String build) {
-        if(!build)
+        if (!build)
             jobUrl
         else
             jobUrl + '/' + build
     }
-		
-		public def getMatrixSubJobs() {
-			def subJobs = []
-			jsonForJob(null, null, "activeConfigurations[name]")["activeConfigurations"].each {
-				subJobs.add onInstance.withJob("$name/${it.name}")
-			}
-			return subJobs
-		}
+
+    public def getMatrixSubJobs() {
+        def subJobs = []
+        jsonForJob(null, null, "activeConfigurations[name]")["activeConfigurations"].each {
+            subJobs.add onInstance.withJob("$name/${it.name}")
+        }
+        return subJobs
+    }
 }

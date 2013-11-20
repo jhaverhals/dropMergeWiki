@@ -1,113 +1,14 @@
-import com.opentext.dropmerge.*
-
-import java.text.SimpleDateFormat
+import com.opentext.dropmerge.TransformerProvider
+import com.opentext.dropmerge.UpdateWikiProperties
+import com.opentext.dropmerge.dsl.DropMergeInput
 
 public class PCTTransformerProvider extends TransformerProvider {
-    private static final BUILDMASTER_NL = new Jenkins('http://buildmaster-nl.vanenburg.com/jenkins')
-    private static final SVT9L = new Jenkins('http://srv-ind-svt9l.vanenburg.com:8080')
-    private static final CMT_JENKINS = new Jenkins('http://cmt-jenkins.vanenburg.com/jenkins')
-
-    private static final JenkinsJob TRUNK_BVT_L = CMT_JENKINS.withJob('Trunk-Lin64-Java7')
-    private static final JenkinsJob TRUNK_CW_L = BUILDMASTER_NL.withJob('pct-trunk-build-installer-l-x64')
-    private static final JenkinsJob TRUNK_MBV = BUILDMASTER_NL.withJob('pct-trunk-mb')
-    private static final JenkinsJob TRUNK_PMD = BUILDMASTER_NL.withJob('pct-trunk-build-installer-l-x64')
-    private static final JenkinsJob TRUNK_FRT_L = SVT9L.withJob('PlatformCore-L')
-    private static final JenkinsJob TRUNK_FRT_W = SVT9L.withJob('PlatformCore-W')
-
-    private static final JenkinsJob BVT_L = BUILDMASTER_NL.withJob('pct-trunk-wip-build-installer-l-x64')
-    private static final JenkinsJob BVT_W = BUILDMASTER_NL.withJob('pct-trunk-wip-build-installer-w-x64')
-    private static final JenkinsJob BVT_S = BUILDMASTER_NL.withJob('pct-trunk-wip-build-installer-s-x64')
-    private static final JenkinsJob BVT_A = BUILDMASTER_NL.withJob('pct-trunk-wip-build-installer-a-x64')
-    private static final JenkinsJob CW_L = BVT_L
-    private static final JenkinsJob EW = BUILDMASTER_NL.withJob('security-eastwind')
-    private static final JenkinsJob FRT_L = BUILDMASTER_NL.withJob('pct-trunk-wip-frt-l-x64')
-    private static final JenkinsJob FRT_W = BUILDMASTER_NL.withJob('pct-trunk-wip-frt-w-x64')
-    private static final JenkinsJob MBV = BUILDMASTER_NL.withJob('pct-trunk-wip-mb')
-    private static final JenkinsJob PMD = BVT_L
-    private static final JenkinsJob UPGRADE_L = BUILDMASTER_NL.withJob('pct-upgrade-trigger-l')
-    private static final JenkinsJob UPGRADE_W = BUILDMASTER_NL.withJob('pct-upgrade-trigger-w')
 
     @Override
     Map<String, Closure<String>> getTransformer(UpdateWikiProperties props) {
-
-        final String crucibleAuthToken = Crucible.getCrucibleAuthToken(props.crucibleUserName, props.cruciblePassword)
-        final int openReviewCount = Crucible.getOpenReviewCount(props.crucibleProject, crucibleAuthToken)
-
         def transformers = [
-                Team: { item -> CordysWiki.selectOption(item, 'Platform core') },
-                DropMergeDate: { item ->
-                    Calendar today = Calendar.getInstance();
-                    int dayOfWeek = today.get(Calendar.DAY_OF_WEEK);
-                    int daysUntilNextFriday = Calendar.FRIDAY - dayOfWeek;
-                    if (daysUntilNextFriday < 0) {
-                        daysUntilNextFriday = daysUntilNextFriday + 7;
-                    }
-                    Calendar nextFriday = (Calendar) today.clone();
-                    nextFriday.add(Calendar.DAY_OF_WEEK, daysUntilNextFriday);
-                    if (nextFriday.get(Calendar.WEEK_OF_YEAR) % 2 == 0) {
-                        nextFriday.add(Calendar.DAY_OF_WEEK, 7);
-                    }
-                    return new SimpleDateFormat("yyyy-MM-dd 13:00:00").format(nextFriday.getTime());
-                },
-
-                ProductManagerName: { getUserLink('jpluimer', 'Johan Pluimers') },
-                ArchitectName: { ' ' + getUserLink('wjgerrit', 'Willem Jan Gerritsen') },
-                ScrumMasterName: { ' ' + getUserLink('gjansen', 'Gerwin Jansen') },
-
                 FunctionalDescription: {
-                    getJiraIssues('(sprint = \'' + props.sprintName + '\' OR sprint = \'PCT BOP 4.4 Sprint 8a\') AND resolution = Fixed AND issuetype not in (\'Bug during story\', Todo)')
-                },
-
-                NewManualTestCases: { 'No' },
-                NewManualTestCasesComment: withHtml { html -> html.p('No new manual tests added. We prefer automatic tests.') },
-
-                ForwardPortingCompleted: { item -> CordysWiki.selectOption(item, 'Not applicable') },
-                ForwardPortingCompletedComment: withHtml { html -> html.p('We always first fix in our own WIP.') },
-
-                SuccesfulTestsBefore: { (TRUNK_BVT_L.getTestFigure(TestCount.Pass) as int) + (TRUNK_FRT_L.getTestFigureMultiConfig(TestCount.Pass) as int) },
-                FailedTestsBefore: { (TRUNK_BVT_L.getTestFigure(TestCount.Fail) as int) + (TRUNK_FRT_L.getTestFigureMultiConfig(TestCount.Fail) as int) },
-                
-                SuccesfulTestsAfter: { (BVT_L.getTestFigure(TestCount.Pass) as int) + (FRT_L.getTestFigureMultiConfig(TestCount.Pass) as int) },
-                FailedTestsAfter: { (BVT_L.getTestFigure(TestCount.Fail) as int) + (FRT_L.getTestFigureMultiConfig(TestCount.Fail) as int) },
-
-                MBViolationsHighBefore: { TRUNK_MBV.getMBFigure(WarningLevel.High) },
-                MBViolationsHighAfter: { MBV.getMBFigure(WarningLevel.High) },
-                MBViolationsMediumBefore: { TRUNK_MBV.getMBFigure(WarningLevel.Normal) },
-                MBViolationsMediumAfter: { MBV.getMBFigure(WarningLevel.Normal) },
-
-                CompilerWarningsBefore: { TRUNK_CW_L.compilerWarningFigure },
-                CompilerWarningsAfter: { CW_L.compilerWarningFigure },
-                /*CompilerWarningsComment: {
-                    "We resolved " +
-                            (((TRUNK_CW_L.compilerWarningFigure as int) + 10) - (CW_L.compilerWarningFigure as int)) +
-                            ", and \"introduced\" 10 by deprecating a legacy API."
-                }, */
-
-                PMDViolationsHighBefore: { TRUNK_PMD.getPMDFigure(WarningLevel.High) },
-                PMDViolationsHighAfter: { PMD.getPMDFigure(WarningLevel.High) },
-                PMDViolationsMediumBefore: { TRUNK_PMD.getPMDFigure(WarningLevel.Normal) },
-                PMDViolationsMediumAfter: { PMD.getPMDFigure(WarningLevel.Normal) },
-
-                SuccessfulRegressionTestsComment: withTable { WikiTableBuilder table ->
-                    table.setHeaders(['Type', 'OS', 'Successful', 'Failed', 'Skipped'])
-
-                    int passCount = 0, failCount = 0, skipCount = 0
-                    ['Linux': BVT_L, 'Windows': BVT_W, 'AIX': BVT_A, 'Solaris': BVT_S].each { String os, JenkinsJob job ->
-                        passCount += job.getTestFigure(TestCount.Pass) as int
-                        failCount += job.getTestFigure(TestCount.Fail) as int
-                        skipCount += job.getTestFigure(TestCount.Skip) as int
-                        table.addRow(['BVT', os, job.getTestFigure(TestCount.Pass), job.getTestFigure(TestCount.Fail), job.getTestFigure(TestCount.Skip)])
-                    }
-
-                    ['Linux': FRT_L, 'Windows': FRT_W].each { String os, JenkinsJob job ->
-                        passCount += job.getTestFigureMultiConfig(TestCount.Pass) as int
-                        failCount += job.getTestFigureMultiConfig(TestCount.Fail) as int
-                        skipCount += job.getTestFigureMultiConfig(TestCount.Skip) as int
-                        table.addRow(['FRT', os, job.getTestFigureMultiConfig(TestCount.Pass), job.getTestFigureMultiConfig(TestCount.Fail), job.getTestFigureMultiConfig(TestCount.Skip)])
-                    }
-
-                    table.addRow(['All', 'All', "$passCount", "$failCount", "$skipCount"])
-                    return
+                    getJiraIssues('(sprint = \'' + props.sprintName + '\') AND resolution = Fixed AND issuetype not in (\'Bug during story\', Todo)')
                 },
                 FailedRegressionTestsComment: withHtml { html ->
                     html.p '⇧ The figures in the table above are not identical for all OSes ' +
@@ -117,51 +18,84 @@ public class PCTTransformerProvider extends TransformerProvider {
                             'are only the sum of Linux BVTs and FRTs. This leads to stable numbers, ' +
                             'and allows fair comparison of drop merge pages over time.'
                 },
-
-                ReviewsDone: { item ->
-                    return CordysWiki.selectOption(item, (openReviewCount == 0 ? 'Yes' : 'No'))
-                },
-                ReviewsDoneComment: {
-                    getLink(Crucible.getBrowseReviewsURL(props.crucibleProject),
-                            (openReviewCount > 0 ? "$openReviewCount open review(s)" : 'All reviews closed')
-                    )
-                },
-
-                TotalRegressionTestsComment: withTable { table ->
-                    Jenkins.getTestDiffsPerSuite(TRUNK_BVT_L, BVT_L).each { k, v ->
-                        table.addRow('Suite / Test': k, 'Difference': String.format('%+d', v), 'Type': 'BVT')
-                    }
-                    Jenkins.getTestDiffsPerSuite(TRUNK_FRT_L, FRT_L).each { k, v ->
-												table.addRow('Suite / Test': k, 'Difference': String.format('%+d', v), 'Type': 'FRT')
-                    }
-                    return
-                },
-
-                UpgradeTested: { item ->
-                    def upgradeJob = UPGRADE_W
-                    if (UPGRADE_W.lastBuildResult == 'SUCCESS' && UPGRADE_L.lastBuildResult == 'FAILURE')
-                        upgradeJob = UPGRADE_L
-                    selectOptionByStatus(item, upgradeJob, [SUCCESS: 'Yes', FAILURE: 'No'])
-                },
-                UpgradeTestedComment: withHtml { html ->
-                    html.p {
-                        a(href: UPGRADE_W.getBuildUrl(JenkinsJob.LAST_COMPLETED_BUILD), 'Upgrade job')
-                        mkp.yield ' from BOP 4.1 CU7.1 to latest wip.'
-                        br()
-                        a(href: UPGRADE_L.getBuildUrl(JenkinsJob.LAST_COMPLETED_BUILD), 'Upgrade job')
-                        mkp.yield ' from latest GA (BOP 4.3) to latest wip.'
-                    }
-                },
-
-                IntegrationTestsPass: { item -> selectOptionByStatus(item, EW, [SUCCESS: 'Yes', FAILURE: 'No']) },
-                IntegrationTestsPassComment: withHtml { html ->
-                    html.p {
-                        a(href: EW.getBuildUrl(JenkinsJob.LAST_COMPLETED_BUILD), 'Eastwinds job')
-                    }
-                }
         ]
 
-        transferFromPreviousPage(props, props.previousWikiDropMergePageId, ['SuccesfulTests', 'FailedTests'], transformers)
+        transformers << DropMergeInput.provide {
+            team 'Platform core'
+            scrumMaster 'Gerwin Jansen', 'gjansen'
+            architect 'Willem Jan Gerritsen', 'wjgerrit'
+            productManager 'Johan Pluimers', 'jpluimer'
+
+            dropMergeOn today.orNextOdd.friday
+            goToCCB today
+
+            crucible {
+                userName myProperties['crucibleUserName']
+                password myProperties['cruciblePassword']
+                projectKey 'SEC'
+            }
+
+            jenkins {
+                regressionTests {
+                    ofType('BVT') {
+                        withJob { job 'pct-trunk-wip-build-installer-l-x64' on buildMasterNL; description 'Linux' }
+                        comparedToJob { job 'Trunk-Lin64-Java7' on jenkinsOfCMT; description 'Linux' }
+
+                        withJob { job 'pct-trunk-wip-build-installer-w-x64' on buildMasterNL; description 'Windows' }
+                        withJob { job 'pct-trunk-wip-build-installer-a-x64' on buildMasterNL; description 'AIX' }
+                        withJob { job 'pct-trunk-wip-build-installer-s-x64' on buildMasterNL; description 'Solaris' }
+                    }
+                    ofType('FRT') {
+                        withJob { job 'pct-trunk-wip-frt-l-x64' on buildMasterNL; description 'Linux' }
+                        comparedToJob { job 'PlatformCore-L' on jenkinsOfSVT; description 'Linux' }
+                        differences {
+                            matching ~/com\.cordys\.cap\.PlatformCoreSuite/ areJustifiedBecause 'SVT doesn\'t run this suite yet.'
+                            matching ~/com\.eibus\.web\.soap\.(XGateway|RedirectingSOAPTransaction)Test/ areJustifiedBecause 'SVT runs this test which isn\'t ours.'
+                            matching ~/com\.eibus\.applicationconnector\.event\.Eventservice_Prerequisites/ areJustifiedBecause 'We don\'t run with test: It seems worthless.'
+                            matching ~/^.*SubroleDeletingUpgradeStepTest$/ areJustifiedBecause 'Test is not in bcptests.zip yet. Will be fixed with this drop merge.'
+                            matching ~/^com\.eibus\.sso\.authentication\.audit\..*/ areJustifiedBecause 'Test is not in bcptests.zip yet. Will be fixed with this drop merge.'
+                        }
+
+                        withJob { job 'pct-trunk-wip-frt-w-x64' on buildMasterNL; description 'Windows' }
+                    }
+                }
+                pmd {
+                    trunk { job 'pct-trunk-build-installer-l-x64' on buildMasterNL }
+                    wip { job 'pct-trunk-wip-build-installer-l-x64' on buildMasterNL }
+                }
+                compilerWarnings {
+                    trunk { job 'pct-trunk-build-installer-l-x64' on buildMasterNL }
+                    wip { job 'pct-trunk-wip-build-installer-l-x64' on buildMasterNL }
+                }
+                mbv {
+                    trunk { job 'pct-trunk-mb' on buildMasterNL }
+                    wip { job 'pct-trunk-wip-mb' on buildMasterNL }
+                }
+
+                upgrade {
+                    withJob {
+                        job 'pct-upgrade-trigger-w' on buildMasterNL;
+                        description 'from BOP 4.1 CU7.1 to latest wip.'
+                    }
+                    withJob {
+                        job 'pct-upgrade-trigger-l' on buildMasterNL;
+                        description 'from latest GA (BOP 4.3.1) to latest wip.'
+                    }
+                }
+                integrationTests {
+                    withJob {
+                        job 'security-eastwind' on buildMasterNL;
+                        description 'running Eastwind against latest wip. EW is still failing due to \'time differences issues\': BOP-44171, BOP-10425 and SD13280.'
+                    }
+                }
+            }
+
+            qualityAndProcessQuestions {
+                newManualTestCassesAdded 'No', 'No new manual tests added. We prefer automated tests.'
+                completedForwardPorting notApplicable, 'We always first fix in our own WIP.'
+                introducedSecurityIssues no, 'Guarded by automated ACL tests and in code reviews.'
+            }
+        }.inputs
 
         return transformers
     }
