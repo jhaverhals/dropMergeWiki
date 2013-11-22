@@ -3,7 +3,7 @@ package com.opentext.dropmerge
 public class UpdateWikiProperties {
 
     private Properties inner;
-    private static final List<String> requiredProperties = ['wikiUserName', 'wikiPassword', 'wikiDropMergePageId', 'transformerProvider', 'updateRealServer']
+    private static final List<String> requiredProperties = ['wikiUserName', 'wikiPassword', 'wikiDropMergePageId', 'transformerProvider']
 
     UpdateWikiProperties(Properties inner) {
         this.inner = inner

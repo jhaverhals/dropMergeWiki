@@ -11,13 +11,29 @@ public class DropMergeInput {
     public Map<String, Closure<String>> inputs = new HashMap<String, Closure<String>>()
     public static final UpdateWikiProperties myProperties = loadProperties('team.properties', 'user.properties', 'session.properties')
     private WikiSpec wikiSpecification
+    private boolean persist = true
 
 
     static DropMergeInput provide(@DelegatesTo(DropMergeInput) Closure closure) {
         DropMergeInput inputDsl = new DropMergeInput()
         inputDsl.with closure
 
+        inputDsl.persist()
+
         return inputDsl
+    }
+
+    private void persist() {
+        if (persist) {
+            new CordysWiki().with {
+                authenticate(wikiSpecification.userName, wikiSpecification.password)
+                updateDropMergePage(wikiSpecification.pageId, inputs, true)
+            }
+        }
+    }
+
+    def getSkipPersist() {
+        persist = false
     }
 
     static UpdateWikiProperties loadProperties(String... files) {
@@ -68,7 +84,7 @@ public class DropMergeInput {
     }
 
     def scrumMaster(String fullName, String userName) {
-        inputs['ScrumMaster'] = { ' ' + TransformerProvider.getUserLink(userName, fullName) }
+        inputs['ScrumMasterName'] = { ' ' + TransformerProvider.getUserLink(userName, fullName) }
     }
 
     def architect(String fullName, String userName) {

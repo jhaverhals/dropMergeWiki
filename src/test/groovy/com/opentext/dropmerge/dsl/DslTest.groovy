@@ -9,6 +9,7 @@ public class DslTest {
     public void testTeam() {
         Map<String, Closure<String>> inputs = DropMergeInput.provide {
             team 'Platform Core'
+            skipPersist
         }.inputs
 
         assert inputs.containsKey('Team')
@@ -27,7 +28,7 @@ public class DslTest {
             crucible {
                 userName myProperties['crucibleUserName']
                 password myProperties['cruciblePassword']
-                projectKey myProperties['crucibleProject']
+                projectKey 'SEC'
             }
 
             jenkins {
@@ -49,11 +50,13 @@ public class DslTest {
                     withJob { job 'pct-upgrade-trigger-w' on buildMasterNL; description 'from BOP 4.1 CU7.1 to latest wip.' }
                 }
             }
+
+            skipPersist
         }.inputs
 
         assert date.containsKey('Team')
         assert date.containsKey('DropMergeDate')
         assert date['DropMergeDate'].call() == '2013-11-22 13:00:00'
-        assert ((String) date['ScrumMaster'].call()).contains('gjansen')
+        assert ((String) date['ScrumMasterName'].call()).contains('gjansen')
     }
 }
