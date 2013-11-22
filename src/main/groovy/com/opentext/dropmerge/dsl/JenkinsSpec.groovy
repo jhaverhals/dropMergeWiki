@@ -57,7 +57,7 @@ class JenkinsSpec {
 
         inputs['SuccessfulRegressionTestsComment'] = {
             (TransformerProvider.withTable { WikiTableBuilder table ->
-                table.setHeaders(['Type', 'OS', 'Successful', 'Failed', 'Skipped', 'Url'])
+                table.setHeaders(['Type', 'OS', 'Successful', 'Failed', 'Skipped', 'Link'])
 
                 int passCount = 0, failCount = 0, skipCount = 0
                 jobSpec.jobsByType.each { String type, List<JobSpec> jobs ->
@@ -71,7 +71,7 @@ class JenkinsSpec {
                                 job.jenkinsJob.getTestFigure(TestCount.Pass),
                                 job.jenkinsJob.getTestFigure(TestCount.Fail),
                                 job.jenkinsJob.getTestFigure(TestCount.Skip),
-                                job.jenkinsJob.jobUrl
+                                { a(href: job.jenkinsJob.jobUrl, job.jenkinsJob) }
                         ])
                     }
                 }
@@ -83,7 +83,7 @@ class JenkinsSpec {
                     comparableJobs.each { JobSpec wip, JobSpec trunk ->
                         table.addRow('Type': type,
                                 'OS': wip.description,
-                                'WIP was compared to trunk job': trunk.jenkinsJob.jobUrl
+                                'WIP was compared to trunk job': { a(href: trunk.jenkinsJob.jobUrl, trunk.jenkinsJob) }
                         )
                     }
                 }
