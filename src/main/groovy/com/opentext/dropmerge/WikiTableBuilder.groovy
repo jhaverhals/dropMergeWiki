@@ -5,7 +5,7 @@ import groovy.xml.MarkupBuilder
 class WikiTableBuilder {
     private final MarkupBuilder markupBuilder
     private List<String> headers = []
-    private List<Map<String, String>> rows = []
+    private List<Map<String, Object>> rows = []
 
     WikiTableBuilder() {
         this(new MarkupBuilder())
@@ -27,7 +27,7 @@ class WikiTableBuilder {
         this.headers = headers
     }
 
-    void addRow(Map<String, String> values) {
+    void addRow(Map<String, Object> values) {
         values.keySet().each {
             if (!headers.contains(it))
                 headers.add(it)
@@ -35,9 +35,9 @@ class WikiTableBuilder {
         rows.add(values)
     }
 
-    void addRow(List<String> values) {
+    void addRow(List<Object> values) {
         Map<String, String> m = new HashMap<>()
-        values.eachWithIndex { String entry, int i ->
+        values.eachWithIndex { Object entry, int i ->
             m[headers[i]] = entry
         }
         rows.add(m)
@@ -56,7 +56,12 @@ class WikiTableBuilder {
                     rows.each { map ->
                         tr {
                             headers.each { header ->
-                                td(class: 'confluenceTd', map[header])
+                                td(class: 'confluenceTd'){
+                                    if (map[header] instanceof Closure)
+                                        delegate.with map[header]
+                                    else if (map[header])
+                                        mkp.yield map[header]
+                                }
                             }
                         }
                     }
