@@ -10,6 +10,7 @@ import java.text.SimpleDateFormat
 public class DropMergeInput {
     public Map<String, Closure<String>> inputs = new HashMap<String, Closure<String>>()
     public static final UpdateWikiProperties myProperties = loadProperties('team.properties', 'user.properties', 'session.properties')
+    private WikiSpec wikiSpecification
 
 
     static DropMergeInput provide(@DelegatesTo(DropMergeInput) Closure closure) {
@@ -95,6 +96,13 @@ public class DropMergeInput {
         }
     }
 
+    def wiki(@DelegatesTo(WikiSpec) Closure wiki) {
+        WikiSpec wikiSpec = new WikiSpec()
+        wikiSpec.with wiki
+
+        this.wikiSpecification = wikiSpec;
+    }
+
     def jenkins(@DelegatesTo(JenkinsSpec) Closure jenkins) {
         JenkinsSpec jenkinsSpec = new JenkinsSpec(inputs)
         jenkinsSpec.with jenkins
@@ -105,5 +113,11 @@ public class DropMergeInput {
         questionsSpec.with jenkins
     }
 
+    def functionalDescription(@DelegatesTo(FreeTextSpec) Closure desc) {
+        FreeTextSpec freeTextSpec = new FreeTextSpec()
+        freeTextSpec.with desc
+
+        inputs['FunctionalDescription'] = { freeTextSpec.sb.toString() }
+    }
 
 }
