@@ -6,28 +6,26 @@ public class PCTTransformerProvider extends TransformerProvider {
 
     @Override
     Map<String, Closure<String>> getTransformer(UpdateWikiProperties props) {
-        def transformers = [
-                FunctionalDescription: {
-                    getJiraIssues('(sprint = \'' + props.sprintName + '\') AND resolution = Fixed AND issuetype not in (\'Bug during story\', Todo)')
-                },
-                FailedRegressionTestsComment: withHtml { html ->
-                    html.p '⇧ The figures in the table above are not identical for all OSes ' +
-                            'because of platform specific components and tests.'
-                    html.hr()
-                    html.p '⇦ The figures in the answer column regarding regression tests ' +
-                            'are only the sum of Linux BVTs and FRTs. This leads to stable numbers, ' +
-                            'and allows fair comparison of drop merge pages over time.'
-                },
-        ]
-
-        transformers << DropMergeInput.provide {
+        def transformers = DropMergeInput.provide {
             team 'Platform core'
             scrumMaster 'Gerwin Jansen', 'gjansen'
             architect 'Willem Jan Gerritsen', 'wjgerrit'
             productManager 'Johan Pluimers', 'jpluimer'
 
-            dropMergeOn today.orNextOdd.friday
-            goToCCB today
+            dropMergeOn nextOdd.friday
+            goToCCB today.orNextOdd.thursday
+
+            functionalDescription {
+                withText 'We have done stuff:'
+                withJiraIssuesTable "sprint = '${myProperties['sprintName']}' AND resolution = Fixed AND issuetype not in ('Bug during story', Todo)"
+                withHtml { html -> html.i 'That\'s what we\'ve done!' }
+            }
+
+            wiki {
+                userName myProperties['wikiUserName']
+                password myProperties['wikiPassword']
+                pageId myProperties['wikiDropMergePageId']
+            }
 
             crucible {
                 userName myProperties['crucibleUserName']
@@ -49,6 +47,7 @@ public class PCTTransformerProvider extends TransformerProvider {
                         withJob { job 'pct-trunk-wip-frt-l-x64' on buildMasterNL; description 'Linux' }
                         comparedToJob { job 'PlatformCore-L' on jenkinsOfSVT; description 'Linux' }
                         differences {
+                            allAreJustifiedBecause 'Difference due to (job) configuration:'
                             matching ~/com\.cordys\.cap\.PlatformCoreSuite/ areJustifiedBecause 'SVT doesn\'t run this suite yet.'
                             matching ~/com\.eibus\.web\.soap\.(XGateway|RedirectingSOAPTransaction)Test/ areJustifiedBecause 'SVT runs this test which isn\'t ours.'
                             matching ~/com\.eibus\.applicationconnector\.event\.Eventservice_Prerequisites/ areJustifiedBecause 'We don\'t run with test: It seems worthless.'
@@ -85,7 +84,7 @@ public class PCTTransformerProvider extends TransformerProvider {
                 integrationTests {
                     withJob {
                         job 'security-eastwind' on buildMasterNL;
-                        description 'running Eastwind against latest wip. EW is still failing due to \'time differences issues\': BOP-44171, BOP-10425 and SD13280.'
+                        description 'running Eastwind against latest wip.'
                     }
                 }
             }
