@@ -40,6 +40,11 @@ class ComparingJobsSpec extends JobsSpec {
             tempPattern = null
         }
 
+        def allAreJustifiedBecause(String message) {
+            assert tempPattern == null
+            matching(~/^.*$/).areJustifiedBecause(message)
+        }
+
         String getJustificationsForClassName(String className) {
             StringBuilder sb = new StringBuilder()
             orderedPatterns.each { Pattern p ->
