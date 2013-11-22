@@ -28,19 +28,19 @@ class ComparingJobsSpec extends JobsSpec {
         List<Pattern> orderedPatterns = []
         Pattern tempPattern
 
-        def matching(Pattern pattern) {
+        DifferencesSpec matching(Pattern pattern) {
             this.tempPattern = pattern
             return this
         }
 
-        def areJustifiedBecause(String message) {
+        void areJustifiedBecause(String message) {
             assert tempPattern != null
             orderedPatterns.add(tempPattern)
             patternStringMap[tempPattern] = message
             tempPattern = null
         }
 
-        def allAreJustifiedBecause(String message) {
+        void allAreJustifiedBecause(String message) {
             assert tempPattern == null
             matching(~/^.*$/).areJustifiedBecause(message)
         }
