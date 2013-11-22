@@ -51,10 +51,19 @@ public class DropMergeInput {
     DateDsl getNextOdd() { new DateDsl().orNextOdd; }
 
     def dropMergeOn(DateDsl date) {
-        inputs['DropMergeDate'] = { new SimpleDateFormat("yyyy-MM-dd 13:00:00").format(date.getDate()); }
+        dropMergeOn(date.getDate())
     }
+
+    def dropMergeOn(Date date) {
+        inputs['DropMergeDate'] = { new SimpleDateFormat("yyyy-MM-dd 13:00:00").format(date) }
+    }
+
     def goToCCB(DateDsl date) {
-        inputs['CCBDate'] = { new SimpleDateFormat("yyyy-MM-dd 13:00:00").format(date.getDate()); }
+        goToCCB(date.getDate())
+    }
+
+    def goToCCB(Date date) {
+        inputs['CCBDate'] = { new SimpleDateFormat("yyyy-MM-dd 13:00:00").format(date) }
     }
 
     def scrumMaster(String fullName, String userName) {
