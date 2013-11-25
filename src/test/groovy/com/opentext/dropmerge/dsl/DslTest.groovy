@@ -20,7 +20,7 @@ public class DslTest {
     public void testMuchMore() {
         Map<String, Closure<String>> date = DropMergeInput.provide {
             team 'Platform Core'
-            dropMergeOn today.orNextOdd.friday
+            dropMergeOn every.odd.friday.includingToday
             scrumMaster 'Gerwin Jansen', 'gjansen'
             architect 'Willem Jan Gerritsen', 'wjgerrit'
             productManager 'Johan Pluimers', 'jpluimer'
@@ -56,7 +56,7 @@ public class DslTest {
 
         assert date.containsKey('Team')
         assert date.containsKey('DropMergeDate')
-        assert date['DropMergeDate'].call() == '2013-11-22 13:00:00'
+        assert date['DropMergeDate'].call() == '2013-12-06 13:00:00'
         assert ((String) date['ScrumMasterName'].call()).contains('gjansen')
     }
 }

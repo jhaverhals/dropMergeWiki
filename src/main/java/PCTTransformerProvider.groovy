@@ -6,12 +6,12 @@ DropMergeInput.provide {
     architect 'Willem Jan Gerritsen', 'wjgerrit'
     productManager 'Johan Pluimers', 'jpluimer'
 
-    dropMergeOn today.orNextOdd.friday
+    dropMergeOn every.odd.friday.includingToday
 
     functionalDescription {
-        withText 'We have done stuff:'
+        // withText 'We have done stuff:'
         withJiraIssuesTable "sprint = '${myProperties['sprintName']}' AND resolution = Fixed AND issuetype not in ('Bug during story', Todo)"
-        withHtml { html -> html.i 'That\'s what we\'ve done!' }
+        // withHtml { html -> html.i 'That\'s what we\'ve done!' }
     }
 
     wiki {

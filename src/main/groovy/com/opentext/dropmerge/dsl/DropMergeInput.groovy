@@ -38,7 +38,7 @@ public class DropMergeInput {
 
     static UpdateWikiProperties loadProperties(String... files) {
         def p = new Properties()
-        files.each {
+        files.each { String it ->
             File f1 = new File(it)
             if (f1.exists()) p.load(f1.newInputStream())
         }
@@ -59,13 +59,9 @@ public class DropMergeInput {
         inputs['Team'] = { item -> CordysWiki.selectOption(item, name) }
     }
 
-    DateDsl getToday() { new DateDsl(); }
+    DateDsl getEvery() { new DateDsl() }
 
-    DateDsl getNext() { new DateDsl().setIncludeToday(false); }
-
-    DateDsl getNextEven() { new DateDsl().orNextEven; }
-
-    DateDsl getNextOdd() { new DateDsl().orNextOdd; }
+    DateDsl getNext() { new DateDsl().setIncludeToday(false) }
 
     def dropMergeOn(DateDsl date) {
         dropMergeOn(date.getDate())
