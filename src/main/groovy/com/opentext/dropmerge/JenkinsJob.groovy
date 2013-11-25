@@ -108,4 +108,9 @@ class JenkinsJob {
         }
         return subJobs
     }
+
+    @Override
+    public java.lang.String toString() {
+        return '\'' + name + '\' on ' + new URL(onInstance.rootUrl).host.replaceFirst('.vanenburg.com$', '');
+    }
 }

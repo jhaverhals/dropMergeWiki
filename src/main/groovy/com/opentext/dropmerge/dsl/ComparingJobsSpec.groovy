@@ -25,24 +25,31 @@ class ComparingJobsSpec extends JobsSpec {
 
     class DifferencesSpec {
         Map<Pattern, String> patternStringMap = new HashMap<>()
+        List<Pattern> orderedPatterns = []
         Pattern tempPattern
 
-        def matching(Pattern pattern) {
+        DifferencesSpec matching(Pattern pattern) {
             this.tempPattern = pattern
             return this
         }
 
-        def areJustifiedBecause(String message) {
+        void areJustifiedBecause(String message) {
             assert tempPattern != null
+            orderedPatterns.add(tempPattern)
             patternStringMap[tempPattern] = message
             tempPattern = null
         }
 
+        void allAreJustifiedBecause(String message) {
+            assert tempPattern == null
+            matching(~/^.*$/).areJustifiedBecause(message)
+        }
+
         String getJustificationsForClassName(String className) {
             StringBuilder sb = new StringBuilder()
-            patternStringMap.each {Pattern p, String msg ->
+            orderedPatterns.each { Pattern p ->
                 if(p.matcher(className).matches())
-                    sb.append(msg).append(' ')
+                    sb.append(patternStringMap[p]).append(' ')
             }
             return sb.toString()
         }

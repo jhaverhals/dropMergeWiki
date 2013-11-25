@@ -55,28 +55,41 @@ class JenkinsSpec {
             return "$total"
         }
 
-        inputs['SuccessfulRegressionTestsComment'] = TransformerProvider.withTable { WikiTableBuilder table ->
-            table.setHeaders(['Type', 'OS', 'Successful', 'Failed', 'Skipped', 'Url'])
+        inputs['SuccessfulRegressionTestsComment'] = {
+            (TransformerProvider.withTable { WikiTableBuilder table ->
+                table.setHeaders(['Type', 'OS', 'Successful', 'Failed', 'Skipped', 'Link'])
 
-            int passCount = 0, failCount = 0, skipCount = 0
-            jobSpec.jobsByType.each { String type, List<JobSpec> jobs ->
-                jobs.each { JobSpec job ->
-                    passCount += job.jenkinsJob.getTestFigure(TestCount.Pass) as int
-                    failCount += job.jenkinsJob.getTestFigure(TestCount.Fail) as int
-                    skipCount += job.jenkinsJob.getTestFigure(TestCount.Skip) as int
-                    table.addRow([
-                            type,
-                            job.description,
-                            job.jenkinsJob.getTestFigure(TestCount.Pass),
-                            job.jenkinsJob.getTestFigure(TestCount.Fail),
-                            job.jenkinsJob.getTestFigure(TestCount.Skip),
-                            job.jenkinsJob.jobUrl
-                    ])
+                int passCount = 0, failCount = 0, skipCount = 0
+                jobSpec.jobsByType.each { String type, List<JobSpec> jobs ->
+                    jobs.each { JobSpec job ->
+                        passCount += job.jenkinsJob.getTestFigure(TestCount.Pass) as int
+                        failCount += job.jenkinsJob.getTestFigure(TestCount.Fail) as int
+                        skipCount += job.jenkinsJob.getTestFigure(TestCount.Skip) as int
+                        table.addRow([
+                                type,
+                                job.description,
+                                job.jenkinsJob.getTestFigure(TestCount.Pass),
+                                job.jenkinsJob.getTestFigure(TestCount.Fail),
+                                job.jenkinsJob.getTestFigure(TestCount.Skip),
+                                { a(href: job.jenkinsJob.jobUrl, job.jenkinsJob) }
+                        ])
+                    }
                 }
-            }
 
-            table.addRow(['All', 'All', "$passCount", "$failCount", "$skipCount", ''])
-            return
+                table.addRow(['All', 'All', "$passCount", "$failCount", "$skipCount", ''])
+                return
+            }).call() + (TransformerProvider.withTable { WikiTableBuilder table ->
+                jobSpec.comparableJobsByType.each { String type, Map<JobSpec, JobSpec> comparableJobs ->
+                    comparableJobs.each { JobSpec wip, JobSpec trunk ->
+                        table.addRow('Type': type,
+                                'OS': wip.description,
+                                'WIP was compared to trunk job': { a(href: trunk.jenkinsJob.jobUrl, trunk.jenkinsJob) }
+                        )
+                    }
+                }
+
+                return
+            }).call()
         }
 
         inputs['TotalRegressionTestsComment'] = TransformerProvider.withTable { table ->

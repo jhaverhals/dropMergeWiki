@@ -11,12 +11,22 @@ class DateDsl {
         return this
     }
 
-    public DateDsl getOrNextOdd() {
+    public DateDsl getIncludingToday() {
+        includeToday = true
+        return this
+    }
+
+    public DateDsl getExcludingToday() {
+        includeToday = true
+        return this
+    }
+
+    public DateDsl getOdd() {
         nextOdd = true
         return this
     }
 
-    public DateDsl getOrNextEven() {
+    public DateDsl getEven() {
         nextOdd = false
         return this
     }

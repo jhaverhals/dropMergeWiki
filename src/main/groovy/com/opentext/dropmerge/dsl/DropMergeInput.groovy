@@ -10,18 +10,35 @@ import java.text.SimpleDateFormat
 public class DropMergeInput {
     public Map<String, Closure<String>> inputs = new HashMap<String, Closure<String>>()
     public static final UpdateWikiProperties myProperties = loadProperties('team.properties', 'user.properties', 'session.properties')
+    private WikiSpec wikiSpecification
+    private boolean persist = true
 
 
     static DropMergeInput provide(@DelegatesTo(DropMergeInput) Closure closure) {
         DropMergeInput inputDsl = new DropMergeInput()
         inputDsl.with closure
 
+        inputDsl.persist()
+
         return inputDsl
+    }
+
+    private void persist() {
+        if (persist) {
+            new CordysWiki().with {
+                authenticate(wikiSpecification.userName, wikiSpecification.password)
+                updateDropMergePage(wikiSpecification.pageId, inputs, true)
+            }
+        }
+    }
+
+    def getSkipPersist() {
+        persist = false
     }
 
     static UpdateWikiProperties loadProperties(String... files) {
         def p = new Properties()
-        files.each {
+        files.each { String it ->
             File f1 = new File(it)
             if (f1.exists()) p.load(f1.newInputStream())
         }
@@ -42,23 +59,28 @@ public class DropMergeInput {
         inputs['Team'] = { item -> CordysWiki.selectOption(item, name) }
     }
 
-    DateDsl getToday() { new DateDsl(); }
+    DateDsl getEvery() { new DateDsl() }
 
-    DateDsl getNext() { new DateDsl().setIncludeToday(false); }
-
-    DateDsl getNextEven() { new DateDsl().orNextEven; }
-
-    DateDsl getNextOdd() { new DateDsl().orNextOdd; }
+    DateDsl getNext() { new DateDsl().setIncludeToday(false) }
 
     def dropMergeOn(DateDsl date) {
-        inputs['DropMergeDate'] = { new SimpleDateFormat("yyyy-MM-dd 13:00:00").format(date.getDate()); }
+        dropMergeOn(date.getDate())
     }
+
+    def dropMergeOn(Date date) {
+        inputs['DropMergeDate'] = { new SimpleDateFormat("yyyy-MM-dd 13:00:00").format(date) }
+    }
+
     def goToCCB(DateDsl date) {
-        inputs['CCBDate'] = { new SimpleDateFormat("yyyy-MM-dd 13:00:00").format(date.getDate()); }
+        goToCCB(date.getDate())
+    }
+
+    def goToCCB(Date date) {
+        inputs['CCBDate'] = { new SimpleDateFormat("yyyy-MM-dd 13:00:00").format(date) }
     }
 
     def scrumMaster(String fullName, String userName) {
-        inputs['ScrumMaster'] = { ' ' + TransformerProvider.getUserLink(userName, fullName) }
+        inputs['ScrumMasterName'] = { ' ' + TransformerProvider.getUserLink(userName, fullName) }
     }
 
     def architect(String fullName, String userName) {
@@ -86,6 +108,13 @@ public class DropMergeInput {
         }
     }
 
+    def wiki(@DelegatesTo(WikiSpec) Closure wiki) {
+        WikiSpec wikiSpec = new WikiSpec()
+        wikiSpec.with wiki
+
+        this.wikiSpecification = wikiSpec;
+    }
+
     def jenkins(@DelegatesTo(JenkinsSpec) Closure jenkins) {
         JenkinsSpec jenkinsSpec = new JenkinsSpec(inputs)
         jenkinsSpec.with jenkins
@@ -96,5 +125,11 @@ public class DropMergeInput {
         questionsSpec.with jenkins
     }
 
+    def functionalDescription(@DelegatesTo(FreeTextSpec) Closure desc) {
+        FreeTextSpec freeTextSpec = new FreeTextSpec()
+        freeTextSpec.with desc
+
+        inputs['FunctionalDescription'] = { freeTextSpec.sb.toString() }
+    }
 
 }

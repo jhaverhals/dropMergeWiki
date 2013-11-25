@@ -199,4 +199,31 @@ class WikiTableBuilderTest {
                         "</tr>") +
                 "</tbody></table>", w.toString());
     }
+
+    @Test
+    public void testClosureData() {
+        Writer w = new StringWriter();
+        final builder = new WikiTableBuilder(new IndentPrinter(w, '', false))
+        builder.addRow(['A': '1', 'B': '2', 'C': { b('3') }])
+        builder.addRow(['4', { i('5') }, '6'])
+        builder.process()
+
+        Assert.assertEquals("<table class='confluenceTable'><tbody>" +
+                ("<tr>" +
+                        "<th class='confluenceTh'>A</th>" +
+                        "<th class='confluenceTh'>B</th>" +
+                        "<th class='confluenceTh'>C</th>" +
+                        "</tr>") +
+                ("<tr>" +
+                        "<td class='confluenceTd'>1</td>" +
+                        "<td class='confluenceTd'>2</td>" +
+                        "<td class='confluenceTd'><b>3</b></td>" +
+                        "</tr>") +
+                ("<tr>" +
+                        "<td class='confluenceTd'>4</td>" +
+                        "<td class='confluenceTd'><i>5</i></td>" +
+                        "<td class='confluenceTd'>6</td>" +
+                        "</tr>") +
+                "</tbody></table>", w.toString());
+    }
 }

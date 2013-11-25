@@ -141,8 +141,13 @@ class CordysWiki {
     }
 
     public static String selectOption(def item, String option) {
+        def options = getJsonForOptions(item)
+        List<String> optionsNames = options.collect { it.name }
+        if(!optionsNames.contains(option))
+            throw new IllegalArgumentException("Option should be one of $optionsNames")
+
         def jsonResult = new JsonBuilder()
-        jsonResult(getJsonForOptions(item).find { it.name == option }.value)
+        jsonResult(options.find { it.name == option }.value)
         return jsonResult.toString()
     }
 

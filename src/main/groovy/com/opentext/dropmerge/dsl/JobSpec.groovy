@@ -7,11 +7,11 @@ class JobSpec {
     String jobName
     String description
 
-    def on(Jenkins instance) { this.jenkinsInstance = instance; return this }
+    JobSpec on(Jenkins instance) { this.jenkinsInstance = instance; return this }
 
     JobSpec job(String jobName) { this.jobName = jobName; return this }
 
-    def description(String description) { this.description = description; return this }
+    JobSpec description(String description) { this.description = description; return this }
 
     public JenkinsJob getJenkinsJob() {
         if (jenkinsInstance == null)
