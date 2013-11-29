@@ -83,9 +83,7 @@ public class Jenkins {
         return diffsPerSuite
     }
 
-    public static Map<String, Integer> getPMDDiffsPerSuite(JenkinsJob beforeJob, JenkinsJob afterJob) {
-
-        //Metaclass extension
+    static Map<String, Integer> casesPerSuite(Object jsonRoot, List<String> priorities = ['NORMAL', 'HIGH']) {
         ArrayList.metaClass.collectMap = { Closure<List<Object>> callback ->
             def map = [:]
             delegate.each {
@@ -100,38 +98,38 @@ public class Jenkins {
             return map
         }
 
-        final List<String> prios = ['NORMAL', 'HIGH']
+        final List<String> prios = priorities
         def casesPerSuite = {
             return it.warnings.collectMap {
                 if (prios.contains(it.priority))
                     return [it.fileName, 1]
             }
         }
+        return casesPerSuite(jsonRoot)
+    }
 
-        Map<String, Integer> suitesBefore = casesPerSuite(beforeJob.PMDReport)
-        Map<String, Integer> suitesAfter = casesPerSuite(afterJob.PMDReport)
-
-       /* new File('pmdAfter.txt').with { f ->
-            write('')
-            suitesAfter.each { f.append(it.key + '     ' + it.value + System.lineSeparator()) }
-
-        }  */
-
-        Map<String, String> beforeToAfter = new TreeMap<String, String>()
-        Map<String, String> afterToBefore = new TreeMap<String, String>()
-        suitesBefore.keySet().each { String before ->
+    static Map<String, String> correlateKeys(Set<String> a, Set<String> b) {
+        Map<String, String> a2b = new TreeMap<String, String>()
+        a.each { String before ->
             int matchCount = -1
-            beforeToAfter[before] = null
-            suitesAfter.keySet().each { String it ->
+            a2b[before] = null
+            b.each { String it ->
                 int m = match(before, it)
                 if (m > matchCount) {
                     matchCount = m
-                    beforeToAfter[before] = it
-                    afterToBefore[it] = before
-
+                    a2b[before] = it
                 }
             }
         }
+        return a2b
+    }
+
+    public static Map<String, Integer> getPMDDiffsPerSuite(JenkinsJob beforeJob, JenkinsJob afterJob, List<String> priorities = ['NORMAL', 'HIGH']) {
+        Map<String, Integer> suitesBefore = casesPerSuite(beforeJob.PMDReport, priorities)
+        Map<String, Integer> suitesAfter = casesPerSuite(afterJob.PMDReport, priorities)
+
+        Map<String, String> beforeToAfter = correlateKeys(suitesBefore.keySet(), suitesAfter.keySet());
+        Map<String, String> afterToBefore = correlateKeys(suitesAfter.keySet(), suitesBefore.keySet());
 
         Map<String, Integer> diffsPerSuite = new TreeMap<String, Integer>()
 
@@ -169,10 +167,11 @@ public class Jenkins {
     static String fileName(String path) {
         path.substring(path.lastIndexOf('/'))
     }
+
     static String fileNamePlus(String path) {
         int i = 2;
         return path.reverse().takeWhile {
             it == '/' && --i == 0
-        } .reverse()
+        }.reverse()
     }
 }
