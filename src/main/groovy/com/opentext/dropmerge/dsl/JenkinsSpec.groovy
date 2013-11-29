@@ -55,8 +55,8 @@ class JenkinsSpec {
             return "$total"
         }
 
-        inputs['SuccessfulRegressionTestsComment'] = {
-            (TransformerProvider.withTable { WikiTableBuilder table ->
+        use(StringClosureCategories) {
+            inputs['SuccessfulRegressionTestsComment'] = TransformerProvider.withTable { WikiTableBuilder table ->
                 table.setHeaders(['Type', 'OS', 'Successful', 'Failed', 'Skipped', 'Link'])
 
                 int passCount = 0, failCount = 0, skipCount = 0
@@ -78,7 +78,8 @@ class JenkinsSpec {
 
                 table.addRow(['All', 'All', "$passCount", "$failCount", "$skipCount", ''])
                 return
-            }).call() + (TransformerProvider.withTable { WikiTableBuilder table ->
+            }
+            inputs['SuccessfulRegressionTestsComment'] += TransformerProvider.withTable { WikiTableBuilder table ->
                 jobSpec.comparableJobsByType.each { String type, Map<JobSpec, JobSpec> comparableJobs ->
                     comparableJobs.each { JobSpec wip, JobSpec trunk ->
                         table.addRow('Type': type,
@@ -89,22 +90,23 @@ class JenkinsSpec {
                 }
 
                 return
-            }).call()
+            }
         }
 
-        inputs['TotalRegressionTestsComment'] = TransformerProvider.withTable { table ->
-            jobSpec.comparableJobsByType.each { String type, Map<JobSpec, JobSpec> comparableJobs ->
-                comparableJobs.each { JobSpec wip, JobSpec trunk ->
-                    Jenkins.getTestDiffsPerSuite(trunk.jenkinsJob, wip.jenkinsJob).each { k, v ->
-                        table.addRow(
-                                'Suite / Test': k,
-                                'Difference': String.format('%+d', v),
-                                'Type': type,
-                                'Justification': jobSpec.justifications[type][wip]?.getJustificationsForClassName(k)
-                        )
+        inputs['TotalRegressionTestsComment'] = TransformerProvider.withTable {
+            table ->
+                jobSpec.comparableJobsByType.each { String type, Map<JobSpec, JobSpec> comparableJobs ->
+                    comparableJobs.each { JobSpec wip, JobSpec trunk ->
+                        Jenkins.getTestDiffsPerSuite(trunk.jenkinsJob, wip.jenkinsJob).each { k, v ->
+                            table.addRow(
+                                    'Suite / Test': k,
+                                    'Difference': String.format('%+d', v),
+                                    'Type': type,
+                                    'Justification': jobSpec.justifications[type][wip]?.getJustificationsForClassName(k)
+                            )
+                        }
                     }
                 }
-            }
         }
     }
 
@@ -117,8 +119,21 @@ class JenkinsSpec {
         inputs['PMDViolationsHighAfter'] = { jobSpec.wip.getPMDFigure(WarningLevel.High) }
         inputs['PMDViolationsMediumAfter'] = { jobSpec.wip.getPMDFigure(WarningLevel.Normal) }
 
-        inputs['PMDViolationsHighComment'] = createQualityMetricComment(jobSpec, 'pmdResult/HIGH', 'PMD results')
-        inputs['PMDViolationsMediumComment'] = createQualityMetricComment(jobSpec, 'pmdResult/NORMAL', 'PMD results')
+        use(StringClosureCategories) {
+            inputs['PMDViolationsHighComment'] = createQualityMetricComment(jobSpec, 'pmdResult/HIGH', 'PMD results')
+            inputs['PMDViolationsHighComment'] += TransformerProvider.withTable { table ->
+                Jenkins.getPMDDiffsPerSuite(jobSpec.trunk, jobSpec.wip, ['HIGH']).each { k, v ->
+                    table.addRow('File': k, 'Difference': String.format('%+d', v))
+                }
+            }
+
+            inputs['PMDViolationsMediumComment'] = createQualityMetricComment(jobSpec, 'pmdResult/NORMAL', 'PMD results')
+            inputs['PMDViolationsMediumComment'] += TransformerProvider.withTable { table ->
+                Jenkins.getPMDDiffsPerSuite(jobSpec.trunk, jobSpec.wip, ['NORMAL']).each { k, v ->
+                    table.addRow('File': k, 'Difference': String.format('%+d', v))
+                }
+            }
+        }
     }
 
     def compilerWarnings(@DelegatesTo(ComparableJobsSpec) jobs) {
@@ -148,12 +163,12 @@ class JenkinsSpec {
         return TransformerProvider.withHtml { html ->
             html.p {
                 html.b 'Trunk:'
-                html.mkp.yield ' '
+                html.mkp.yieldUnescaped '&nbsp;'
                 html.a(href: jobPairSpec.trunk.getBuildUrl(JenkinsJob.LAST_SUCCESSFUL_BUILD) + '/' + reportUrl + '/', reportTitle)
                 html.mkp.yield ' from our own trunk build.'
                 html.br()
                 html.b 'WIP:'
-                html.mkp.yield ' '
+                html.mkp.yieldUnescaped '&nbsp;'
                 html.a(href: jobPairSpec.wip.getBuildUrl(JenkinsJob.LAST_SUCCESSFUL_BUILD) + '/' + reportUrl + '/', reportTitle)
                 html.mkp.yield ' from our WIP build.'
             }
