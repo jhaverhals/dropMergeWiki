@@ -40,15 +40,16 @@ DropMergeInput.provide {
                 withJob { job 'pct-trunk-wip-frt-l-x64' on buildMasterNL; description 'Linux' }
                 comparedToJob { job 'PlatformCore-L' on jenkinsOfSVT; description 'Linux' }
                 differences {
-                    allAreJustifiedBecause 'Difference due to (job) configuration:'
                     matching ~/com\.cordys\.cap\.PlatformCoreSuite/ areJustifiedBecause 'SVT doesn\'t run this suite yet.'
                     matching ~/com\.eibus\.web\.soap\.(XGateway|RedirectingSOAPTransaction)Test/ areJustifiedBecause 'SVT runs this test which isn\'t ours.'
                     matching ~/com\.eibus\.applicationconnector\.event\.Eventservice_Prerequisites/ areJustifiedBecause 'We don\'t run with test: It seems worthless.'
-                    matching ~/^.*SubroleDeletingUpgradeStepTest$/ areJustifiedBecause 'Test is not in bcptests.zip yet. Will be fixed with this drop merge.'
+                    matching ~/^.*SubroleDeletingUpgradeStepTest$/ areJustifiedBecause 'SVT doesn\'t run this test yet.'
                     matching ~/^com\.eibus\.sso\.authentication\.audit\..*/ areJustifiedBecause 'Test is not in bcptests.zip yet. Will be fixed with this drop merge.'
+                    matching ~/com\.eibus\.util\.system\.win32\.WindowsRegistryTest/ areJustifiedBecause 'We fixed this test (failing in trunk), and now only run it on Windows.'
                 }
 
                 withJob { job 'pct-trunk-wip-frt-w-x64' on buildMasterNL; description 'Windows' }
+//                comparedToJob { job 'PlatformCore-W' on jenkinsOfSVT; description 'Windows' }
             }
         }
         pmd {
