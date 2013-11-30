@@ -109,6 +109,10 @@ class JenkinsJob {
         return subJobs
     }
 
+    public String getColor(){
+        return jsonForJob(null, null, 'color')['color'].toString()
+    }
+
     @Override
     public java.lang.String toString() {
         return '\'' + name + '\' on ' + new URL(onInstance.rootUrl).host.replaceFirst('.vanenburg.com$', '');

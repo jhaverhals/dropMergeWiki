@@ -1,6 +1,8 @@
 package com.opentext.dropmerge.dsl
 
 import com.opentext.dropmerge.*
+import groovy.xml.MarkupBuilder
+import org.jenkinsci.images.IconCSS
 
 class JenkinsSpec {
 
@@ -71,7 +73,7 @@ class JenkinsSpec {
                                 job.jenkinsJob.getTestFigure(TestCount.Pass),
                                 job.jenkinsJob.getTestFigure(TestCount.Fail),
                                 job.jenkinsJob.getTestFigure(TestCount.Skip),
-                                { a(href: job.jenkinsJob.jobUrl, job.jenkinsJob) }
+                                getJenkinsUrlWithStatus(job.jenkinsJob)
                         ])
                     }
                 }
@@ -84,12 +86,15 @@ class JenkinsSpec {
                     comparableJobs.each { JobSpec wip, JobSpec trunk ->
                         table.addRow('Type': type,
                                 'OS': wip.description,
-                                'WIP was compared to trunk job': { a(href: trunk.jenkinsJob.jobUrl, trunk.jenkinsJob) }
+                                'WIP was compared to trunk job': getJenkinsUrlWithStatus(trunk.jenkinsJob)
                         )
                     }
                 }
 
                 return
+            }
+            inputs['SuccessfulRegressionTestsComment'] += TransformerProvider.withHtml { MarkupBuilder html ->
+                html.style IconCSS.style
             }
         }
 
@@ -215,6 +220,14 @@ class JenkinsSpec {
                 }
             }
         }
+    }
+
+    Closure getJenkinsUrl(JenkinsJob job, String linkText = null) {
+        return { a(href: job.jobUrl, linkText ?: job.toString()) }
+    }
+
+    Closure getJenkinsUrlWithStatus(JenkinsJob job, String linkText = null) {
+        return { span(class: "jenkinsJobStatus jenkinsJobStatus_${job.color}", getJenkinsUrl(job, linkText)) }
     }
 
 }
