@@ -191,7 +191,10 @@ class JenkinsSpec {
         inputs['UpgradeTestedComment'] = TransformerProvider.withHtml { html ->
             html.p {
                 jobs.each { JobSpec j ->
-                    html.a(href: j.jenkinsJob.getBuildUrl(JenkinsJob.LAST_COMPLETED_BUILD), 'Upgrade job')
+                    getJenkinsUrlWithStatus(j.jenkinsJob, JenkinsJob.LAST_COMPLETED_BUILD, 'Upgrade job').with {
+                        it.delegate = html
+                        it.call()
+                    }
                     if (j.description) {
                         html.mkp.yield ' ' + j.description
                     }
@@ -212,7 +215,10 @@ class JenkinsSpec {
         inputs['IntegrationTestsPassComment'] = TransformerProvider.withHtml { html ->
             html.p {
                 jobs.each { JobSpec j ->
-                    html.a(href: j.jenkinsJob.getBuildUrl(JenkinsJob.LAST_COMPLETED_BUILD), 'Integration test job')
+                    getJenkinsUrlWithStatus(j.jenkinsJob, JenkinsJob.LAST_COMPLETED_BUILD, 'Integration test job').with {
+                        it.delegate = html
+                        it.call()
+                    }
                     if (j.description) {
                         html.mkp.yield ' ' + j.description
                     }
@@ -222,12 +228,12 @@ class JenkinsSpec {
         }
     }
 
-    Closure getJenkinsUrl(JenkinsJob job, String linkText = null) {
-        return { a(href: job.jobUrl, linkText ?: job.toString()) }
+    Closure getJenkinsUrl(JenkinsJob job, String build = null, String linkText = null) {
+        return { a(href: job.getBuildUrl(build), linkText ?: job.toString()) }
     }
 
-    Closure getJenkinsUrlWithStatus(JenkinsJob job, String linkText = null) {
-        return { span(class: "jenkinsJobStatus jenkinsJobStatus_${job.color}", getJenkinsUrl(job, linkText)) }
+    Closure getJenkinsUrlWithStatus(JenkinsJob job, String build = null, String linkText = null) {
+        return { span(class: "jenkinsJobStatus jenkinsJobStatus_${job.color}", getJenkinsUrl(job, build, linkText)) }
     }
 
 }
