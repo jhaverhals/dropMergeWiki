@@ -2,7 +2,6 @@ import javax.annotation.Resources;
 
 apply plugin: 'base'
 apply plugin: 'groovy'
-apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'idea'
 
@@ -40,7 +39,7 @@ repositories {
 }
 
 dependencies {
-    compile 'org.codehaus.groovy:groovy-all:2.2.0'
+    compile 'org.codehaus.groovy:groovy-all:2.2.+'
     compile 'org.codehaus.groovy.modules.http-builder:http-builder:0.6'
     testCompile 'junit:junit:4.11'
     testCompile 'org.spockframework:spock-core:0.7-groovy-2.0'
