@@ -7,10 +7,12 @@ class CWSTransformerProvider {
 
 	public static void main(String[] args) {
 		DropMergeInput.provide {
-			team 'CWS'
-			productManager 'Harmen Kastenberg', 'hkastenb'
-			architect 'Rene Prins', 'rprins'
-			scrumMaster 'Rene Prins', 'rprins'
+            team {
+                name 'CWS'
+                productManager 'Harmen Kastenberg', 'hkastenb'
+                architect 'Rene Prins', 'rprins'
+                scrumMaster 'Rene Prins', 'rprins'
+            }
 
 			jenkins {
 				regressionTests {

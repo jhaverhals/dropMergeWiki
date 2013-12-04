@@ -1,10 +1,13 @@
 import com.opentext.dropmerge.dsl.DropMergeInput
 
 DropMergeInput.provide {
-    team 'Platform core'
-    scrumMaster 'Gerwin Jansen', 'gjansen'
-    architect 'Willem Jan Gerritsen', 'wjgerrit'
-    productManager 'Johan Pluimers', 'jpluimer'
+    team {
+        name 'Platform core'
+        scrumMaster 'Gerwin Jansen', 'gjansen'
+        architect 'Willem Jan Gerritsen', 'wjgerrit'
+        productManager 'Johan Pluimers', 'jpluimer'
+        otherMembers 'astellingwerf', 'dkwakkel', 'msaffarian', 'wvplagge'
+    }
 
     dropMergeOn every.odd.friday.includingToday
 

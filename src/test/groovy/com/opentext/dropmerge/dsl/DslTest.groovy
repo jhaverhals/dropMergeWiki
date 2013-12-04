@@ -8,7 +8,7 @@ public class DslTest {
     @Test
     public void testTeam() {
         Map<String, Closure<String>> inputs = DropMergeInput.provide {
-            team 'Platform Core'
+            team { name 'Platform Core' }
             skipPersist
         }.inputs
 
@@ -19,12 +19,14 @@ public class DslTest {
     @Test
     public void testMuchMore() {
         Map<String, Closure<String>> date = DropMergeInput.provide {
-            team 'Platform Core'
-            dropMergeOn every.odd.friday.includingToday
-            scrumMaster 'Gerwin Jansen', 'gjansen'
-            architect 'Willem Jan Gerritsen', 'wjgerrit'
-            productManager 'Johan Pluimers', 'jpluimer'
+            team {
+                name 'Platform Core'
+                scrumMaster 'Gerwin Jansen', 'gjansen'
+                architect 'Willem Jan Gerritsen', 'wjgerrit'
+                productManager 'Johan Pluimers', 'jpluimer'
+            }
 
+            dropMergeOn every.odd.friday.includingToday
             crucible {
                 userName myProperties['crucibleUserName']
                 password myProperties['cruciblePassword']

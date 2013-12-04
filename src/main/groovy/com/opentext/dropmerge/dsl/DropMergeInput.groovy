@@ -55,8 +55,9 @@ public class DropMergeInput {
         return new UpdateWikiProperties(p)
     }
 
-    def team(String name) {
-        inputs['Team'] = { item -> CordysWiki.selectOption(item, name) }
+    def team(@DelegatesTo(TeamSpec) Closure team) {
+        TeamSpec teamSpec = new TeamSpec(inputs)
+        teamSpec.with team
     }
 
     DateDsl getEvery() { new DateDsl() }
@@ -77,18 +78,6 @@ public class DropMergeInput {
 
     def goToCCB(Date date) {
         inputs['CCBDate'] = { new SimpleDateFormat("yyyy-MM-dd 13:00:00").format(date) }
-    }
-
-    def scrumMaster(String fullName, String userName) {
-        inputs['ScrumMasterName'] = { ' ' + TransformerProvider.getUserLink(userName, fullName) }
-    }
-
-    def architect(String fullName, String userName) {
-        inputs['ArchitectName'] = { ' ' + TransformerProvider.getUserLink(userName, fullName) }
-    }
-
-    def productManager(String fullName, String userName) {
-        inputs['ProductManagerName'] = { TransformerProvider.getUserLink(userName, fullName) }
     }
 
     def crucible(@DelegatesTo(CrucibleSpec) Closure crucible) {
