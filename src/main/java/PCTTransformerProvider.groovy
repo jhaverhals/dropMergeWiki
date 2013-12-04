@@ -1,4 +1,5 @@
 import com.opentext.dropmerge.dsl.DropMergeInput
+import groovy.xml.MarkupBuilder
 
 DropMergeInput.provide {
     team {
@@ -44,7 +45,6 @@ DropMergeInput.provide {
                 comparedToJob { job 'PlatformCore-L' on jenkinsOfSVT; description 'Linux' }
                 differences {
                     matching ~/com\.cordys\.cap\.PlatformCoreSuite/ areJustifiedBecause 'SVT doesn\'t run this suite yet.'
-                    matching ~/com\.eibus\.web\.soap\.(XGateway|RedirectingSOAPTransaction)Test/ areJustifiedBecause 'SVT runs this test which isn\'t ours.'
                     matching ~/com\.eibus\.applicationconnector\.event\.Eventservice_Prerequisites/ areJustifiedBecause 'We don\'t run with test: It seems worthless.'
                     matching ~/^.*SubroleDeletingUpgradeStepTest$/ areJustifiedBecause 'SVT doesn\'t run this test yet.'
                     matching ~/^com\.eibus\.sso\.authentication\.audit\..*/ areJustifiedBecause 'Test is not in bcptests.zip yet. Will be fixed with this drop merge.'
@@ -53,6 +53,19 @@ DropMergeInput.provide {
 
                 withJob { job 'pct-trunk-wip-frt-w-x64' on buildMasterNL; description 'Windows' }
 //                comparedToJob { job 'PlatformCore-W' on jenkinsOfSVT; description 'Windows' }
+            }
+            extraComment {
+                withHtml { MarkupBuilder html ->
+                    html.p {
+                        html.mkp.yield 'Over the past week alone, we had to contact SVT on 4 occasions because the run on the global regression test infrastructure'
+                        html.ol {
+                            html.li 'got stuck during test execution'
+                            html.li 'got stuck due to a bug in Jenkins'
+                            html.li 'got aborted due to connection interruption'
+                            html.li 'did not run because the slave was down'
+                        }
+                    }
+                }
             }
         }
         pmd {

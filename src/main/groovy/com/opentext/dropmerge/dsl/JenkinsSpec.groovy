@@ -98,6 +98,8 @@ class JenkinsSpec {
             }
         }
 
+        inputs['FailedRegressionTestsComment'] = { jobSpec.extraComment.sb.toString()}
+
         inputs['TotalRegressionTestsComment'] = TransformerProvider.withTable {
             table ->
                 jobSpec.comparableJobsByType.each { String type, Map<JobSpec, JobSpec> comparableJobs ->
