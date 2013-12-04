@@ -2,7 +2,7 @@ package com.opentext.dropmerge.dsl
 
 
 class TestTypesSpec {
-    private Map<String, List<JobSpec>> jobsByType = new TreeMap<>()
+    private Map<String, List<JobSpec>> jobsByType = new LinkedHashMap<>()
     private Map<String, Map<JobSpec, JobSpec>> comparableJobsByType = new TreeMap<>()
     private Map<String, Map<JobSpec, ComparingJobsSpec.DifferencesSpec>> justifications = new TreeMap<>()
     FreeTextSpec extraComment = new FreeTextSpec()
