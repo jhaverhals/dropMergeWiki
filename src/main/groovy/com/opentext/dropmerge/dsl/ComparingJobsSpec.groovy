@@ -24,8 +24,7 @@ class ComparingJobsSpec extends JobsSpec {
     }
 
     class DifferencesSpec {
-        Map<Pattern, String> patternStringMap = new HashMap<>()
-        List<Pattern> orderedPatterns = []
+        Map<Pattern, String> patternStringMap = new LinkedHashMap<>()
         Pattern tempPattern
 
         DifferencesSpec matching(Pattern pattern) {
@@ -35,7 +34,6 @@ class ComparingJobsSpec extends JobsSpec {
 
         void areJustifiedBecause(String message) {
             assert tempPattern != null
-            orderedPatterns.add(tempPattern)
             patternStringMap[tempPattern] = message
             tempPattern = null
         }
@@ -47,9 +45,9 @@ class ComparingJobsSpec extends JobsSpec {
 
         String getJustificationsForClassName(String className) {
             StringBuilder sb = new StringBuilder()
-            orderedPatterns.each { Pattern p ->
+            patternStringMap.each { Pattern p, String s ->
                 if(p.matcher(className).matches())
-                    sb.append(patternStringMap[p]).append(' ')
+                    sb.append(s).append(' ')
             }
             return sb.toString()
         }
