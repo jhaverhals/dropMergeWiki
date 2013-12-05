@@ -44,7 +44,6 @@ DropMergeInput.provide {
                 withJob { job 'pct-trunk-wip-frt-l-x64' on buildMasterNL; description 'Linux' }
                 comparedToJob { job 'PlatformCore-L' on jenkinsOfSVT; description 'Linux' }
                 differences {
-                    matching ~/com\.cordys\.cap\.PlatformCoreSuite/ areJustifiedBecause 'SVT doesn\'t run this suite yet.'
                     matching ~/com\.eibus\.applicationconnector\.event\.Eventservice_Prerequisites/ areJustifiedBecause 'We don\'t run with test: It seems worthless.'
                     matching ~/^.*SubroleDeletingUpgradeStepTest$/ areJustifiedBecause 'SVT doesn\'t run this test yet.'
                     matching ~/^com\.eibus\.sso\.authentication\.audit\..*/ areJustifiedBecause 'Test is not in bcptests.zip yet. Will be fixed with this drop merge.'
@@ -59,11 +58,13 @@ DropMergeInput.provide {
                     html.p {
                         html.mkp.yield 'Over the past week alone, we had to contact SVT on 4 occasions because the run on the global regression test infrastructure'
                         html.ol {
-                            html.li 'got stuck during test execution'
-                            html.li 'got stuck due to a bug in Jenkins'
-                            html.li 'got aborted due to connection interruption'
-                            html.li 'did not run because the slave was down'
+                            html.li 'got stuck due to a bug in Jenkins (November 29)'
+                            html.li 'got aborted due to connection interruption (December 2)'
+                            html.li 'did not run because the slave was down (December 2)'
+                            html.li 'got stuck during test execution (December 3)'
                         }
+                        html.mkp.yield 'Additionally, it took 6 mails already to SVT to align tests between trunk and WIP, ' +
+                                'and still stuff\'s not as it should be.'
                     }
                 }
             }
