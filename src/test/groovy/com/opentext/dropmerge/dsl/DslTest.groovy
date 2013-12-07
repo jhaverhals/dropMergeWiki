@@ -2,6 +2,8 @@ package com.opentext.dropmerge.dsl
 
 import org.junit.Test
 
+import java.text.SimpleDateFormat
+
 //@TypeChecked
 public class DslTest {
 
@@ -53,7 +55,15 @@ public class DslTest {
 
         assert date.containsKey('Team')
         assert date.containsKey('DropMergeDate')
-        assert date['DropMergeDate'].call() == '2013-12-06 13:00:00'
+
+        Calendar c = Calendar.getInstance()
+        while (c.get(Calendar.DAY_OF_WEEK) != Calendar.FRIDAY)
+            c.add(Calendar.DAY_OF_WEEK, 1)
+        if (c.get(Calendar.WEEK_OF_YEAR) % 2 == 0)
+            c.add(Calendar.WEEK_OF_YEAR, 1)
+
+
+        assert date['DropMergeDate'].call() == new SimpleDateFormat("yyyy-MM-dd 13:00:00").format(c.time)
         assert ((String) date['ScrumMasterName'].call()).contains('gjansen')
     }
 }
