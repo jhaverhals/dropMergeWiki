@@ -27,11 +27,6 @@ public class DslTest {
             }
 
             dropMergeOn every.odd.friday.includingToday
-            crucible {
-                userName myProperties['crucibleUserName']
-                password myProperties['cruciblePassword']
-                projectKey 'SEC'
-            }
 
             jenkins {
                 pmd {
