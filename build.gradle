@@ -47,6 +47,10 @@ dependencies {
     testCompile 'org.objenesis:objenesis:2.1'
 }
 
+task wrapper(type: Wrapper) {
+    gradleVersion = '1.8'
+}
+
 task publishReport(dependsOn: build, type: JavaExec)
 publishReport {
     main = 'updateWiki'
