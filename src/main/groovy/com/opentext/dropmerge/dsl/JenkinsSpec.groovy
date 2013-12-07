@@ -98,7 +98,7 @@ class JenkinsSpec {
             }
         }
 
-        inputs['FailedRegressionTestsComment'] = { jobSpec.extraComment.sb.toString()}
+        inputs['FailedRegressionTestsComment'] = { jobSpec.extraComment.sb.toString() }
 
         inputs['TotalRegressionTestsComment'] = TransformerProvider.withTable {
             table ->

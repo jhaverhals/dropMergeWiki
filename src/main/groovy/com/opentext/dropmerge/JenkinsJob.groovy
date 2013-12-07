@@ -109,7 +109,7 @@ class JenkinsJob {
         return subJobs
     }
 
-    public String getColor(){
+    public String getColor() {
         return jsonForJob(null, null, 'color')['color'].toString()
     }
 

@@ -16,6 +16,6 @@ class FreeTextSpec {
     }
 
     def withJiraIssuesTable(String query) {
-       sb.append TransformerProvider.getJiraIssues(query)
+        sb.append TransformerProvider.getJiraIssues(query)
     }
 }

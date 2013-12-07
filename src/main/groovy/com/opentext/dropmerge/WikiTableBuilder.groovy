@@ -56,7 +56,7 @@ class WikiTableBuilder {
                     rows.each { map ->
                         tr {
                             headers.each { header ->
-                                td(class: 'confluenceTd'){
+                                td(class: 'confluenceTd') {
                                     if (map[header] instanceof Closure)
                                         delegate.with map[header]
                                     else if (map[header])

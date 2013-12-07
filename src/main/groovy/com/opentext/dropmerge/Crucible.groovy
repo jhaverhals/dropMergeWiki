@@ -1,9 +1,6 @@
 package com.opentext.dropmerge
 
-import groovyx.net.http.*
-
-import static groovyx.net.http.Method.*
-import static groovyx.net.http.ContentType.*
+import groovyx.net.http.HTTPBuilder
 
 class Crucible {
     private static URL getOpenReviewsRSSURL(String project, String authToken) {

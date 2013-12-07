@@ -69,7 +69,7 @@ class ComparingJobsSpec extends JobsSpec {
         String getJustificationsForClassName(String className) {
             StringBuilder sb = new StringBuilder()
             patternStringMap.each { Pattern p, String s ->
-                if(p.matcher(className).matches())
+                if (p.matcher(className).matches())
                     sb.append(s).append(' ')
             }
             return sb.toString()
@@ -85,9 +85,9 @@ class ComparingJobsSpec extends JobsSpec {
         return justifications
     }
 
-     List<JobSpec> getJobSpecPlusLinkedJobSpecs(JobSpec a) {
-         if(!linkedJobSpecs.containsKey(a))
-             return [a]
+    List<JobSpec> getJobSpecPlusLinkedJobSpecs(JobSpec a) {
+        if (!linkedJobSpecs.containsKey(a))
+            return [a]
         return [a] + linkedJobSpecs[a]
     }
 }
