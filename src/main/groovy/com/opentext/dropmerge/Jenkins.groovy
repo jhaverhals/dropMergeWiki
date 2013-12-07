@@ -20,6 +20,10 @@ public class Jenkins {
         getTestDiffsPerPackage(getTestDiffsPerSuite(beforeJob, afterJob))
     }
 
+    public static def getTestDiffsPerPackage(List<JenkinsJob> beforeJob, List<JenkinsJob> afterJob) {
+        getTestDiffsPerPackage(getTestDiffsPerSuite(beforeJob, afterJob))
+    }
+
     public static def getTestDiffsPerPackage(Map<String, Integer> diffsPerSuite) {
         def diffsPerPackage = new TreeMap<String, Integer>()
         for (def kvp : diffsPerSuite) {
@@ -32,6 +36,10 @@ public class Jenkins {
     }
 
     public static Map<String, Integer> getTestDiffsPerSuite(JenkinsJob beforeJob, JenkinsJob afterJob) {
+        return getTestDiffsPerPackage([beforeJob], [afterJob])
+    }
+
+    public static Map<String, Integer> getTestDiffsPerSuite(List<JenkinsJob> beforeJobs, List<JenkinsJob> afterJobs) {
 
         //Metaclass extension
         ArrayList.metaClass.collectMap = { Closure<List<Object>> callback ->
@@ -64,8 +72,8 @@ public class Jenkins {
             return map
         }
 
-        def suitesBefore = casesPerSuite(beforeJob.testReport)
-        def suitesAfter = casesPerSuite(afterJob.testReport)
+        def suitesBefore = join(beforeJobs.collect { casesPerSuite(it.testReport) })
+        def suitesAfter = join(afterJobs.collect { casesPerSuite(it.testReport) })
 
         Map<String, Integer> diffsPerSuite = new TreeMap<String, Integer>()
 
@@ -81,6 +89,28 @@ public class Jenkins {
         }
 
         return diffsPerSuite
+    }
+
+    public static Map<String, Integer> join(List<Map<String, Integer>> list) {
+        if (list.size() == 1)
+            return list.first()
+
+        Map<String, Integer> result = list.first()
+        list.listIterator(1).each {
+            result = join(result, it)
+        }
+        return result
+    }
+
+    static Map<String, Integer> join(Map<String, Integer> a, Map<String, Integer> b) {
+        Map<String, Integer> result = ([:] << a)
+        b.each { kvp ->
+            if (result.containsKey(kvp.key))
+                result[kvp.key] += kvp.value
+            else
+                result[kvp.key] = kvp.value
+        }
+        return result
     }
 
     static Map<String, Integer> casesPerSuite(Object jsonRoot, List<String> priorities = ['NORMAL', 'HIGH']) {

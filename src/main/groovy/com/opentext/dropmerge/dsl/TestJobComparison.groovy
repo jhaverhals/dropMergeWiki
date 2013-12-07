@@ -34,7 +34,7 @@ class TestJobComparison {
         jobsSpec.with jobsClosure
 
         jobsSpec.comparableJobSpecs.each { JobSpec wip, JobSpec trunk ->
-            Jenkins.getTestDiffsPerSuite(trunk.jenkinsJob, wip.jenkinsJob).each { k, v ->
+            Jenkins.getTestDiffsPerSuite(jobsSpec.getJobSpecPlusLinkedJobSpecs(trunk).collect { it.jenkinsJob }, jobsSpec.getJobSpecPlusLinkedJobSpecs(wip).collect { it.jenkinsJob }).each { k, v ->
                 table.addRow(
                         'Suite / Test': k,
                         'Difference': String.format('%+d', v),

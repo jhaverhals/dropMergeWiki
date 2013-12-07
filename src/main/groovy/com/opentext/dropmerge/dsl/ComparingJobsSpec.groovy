@@ -7,6 +7,15 @@ class ComparingJobsSpec extends JobsSpec {
     private Map<JobSpec, JobSpec> comparableJobSpecs = new HashMap<>()
     private Map<JobSpec, DifferencesSpec> justifications = new HashMap<>()
 
+    private Map<JobSpec, List<JobSpec>> linkedJobSpecs = new HashMap<>()
+    private JobSpec lastComparingJob = null
+
+    @Override
+    def withJob(@DelegatesTo(JobSpec) trunkJob) {
+        lastComparingJob = null
+        return super.withJob(trunkJob)
+    }
+
     def comparedToJob(@DelegatesTo(JobSpec) job) {
         JobSpec jobSpec = new JobSpec()
         jobSpec.with job
@@ -14,6 +23,20 @@ class ComparingJobsSpec extends JobsSpec {
         if (comparableJobSpecs.containsKey(this.jobs.last()))
             throw new IllegalArgumentException('Can only compare jobs one-on-one.')
         comparableJobSpecs[this.jobs.last()] = jobSpec;
+        lastComparingJob = jobSpec
+    }
+
+    def andJob(@DelegatesTo(JobSpec) trunkJob) {
+        JobSpec jobSpec = new JobSpec()
+        jobSpec.with trunkJob
+
+        JobSpec additionalFor = this.lastComparingJob ?: this.jobs.last()
+
+        if (linkedJobSpecs.containsKey(additionalFor)) {
+            this.linkedJobSpecs[additionalFor] += [jobSpec]
+        } else {
+            this.linkedJobSpecs[additionalFor] = [jobSpec]
+        }
     }
 
     def differences(@DelegatesTo(DifferencesSpec) diff) {
@@ -60,5 +83,11 @@ class ComparingJobsSpec extends JobsSpec {
 
     Map<JobSpec, DifferencesSpec> getJustifications() {
         return justifications
+    }
+
+     List<JobSpec> getJobSpecPlusLinkedJobSpecs(JobSpec a) {
+         if(!linkedJobSpecs.containsKey(a))
+             return [a]
+        return [a] + linkedJobSpecs[a]
     }
 }
