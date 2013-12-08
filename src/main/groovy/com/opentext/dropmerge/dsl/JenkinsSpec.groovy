@@ -12,15 +12,7 @@ class JenkinsSpec {
         this.inputs = inputs
     }
 
-    static final Jenkins jenkinsOfSVT = new Jenkins('http://srv-ind-svt9l.vanenburg.com:8080')
-
-    static final Jenkins jenkinsOfCMT = new Jenkins('http://cmt-jenkins.vanenburg.com/jenkins')
-
-    static final Jenkins buildMasterHYD = new Jenkins('http://buildmaster-hyd.vanenburg.com/jenkins')
-
-    static final Jenkins buildMasterNL = new Jenkins('http://buildmaster-nl.vanenburg.com/jenkins')
-
-    def regressionTests(@DelegatesTo(TestTypesSpec) jobsByType) {
+    void regressionTests(@DelegatesTo(TestTypesSpec) Closure jobsByType) {
         TestTypesSpec jobSpec = new TestTypesSpec()
         jobSpec.with jobsByType
 
@@ -117,7 +109,7 @@ class JenkinsSpec {
         }
     }
 
-    def pmd(@DelegatesTo(ComparableJobsSpec) jobs) {
+    void pmd(@DelegatesTo(ComparableJobsSpec) Closure jobs) {
         ComparableJobsSpec jobSpec = new ComparableJobsSpec()
         jobSpec.with jobs
 
@@ -143,7 +135,7 @@ class JenkinsSpec {
         }
     }
 
-    def compilerWarnings(@DelegatesTo(ComparableJobsSpec) jobs) {
+    void compilerWarnings(@DelegatesTo(ComparableJobsSpec) Closure jobs) {
         ComparableJobsSpec jobSpec = new ComparableJobsSpec()
         jobSpec.with jobs
 
@@ -153,7 +145,7 @@ class JenkinsSpec {
         inputs['CompilerWarningsComment'] = createQualityMetricComment(jobSpec, 'warnings2Result', 'Compile Warning results')
     }
 
-    def mbv(@DelegatesTo(ComparableJobsSpec) jobs) {
+    void mbv(@DelegatesTo(ComparableJobsSpec) Closure jobs) {
         ComparableJobsSpec jobSpec = new ComparableJobsSpec()
         jobSpec.with jobs
 
@@ -166,7 +158,7 @@ class JenkinsSpec {
         inputs['MultibrowserViolationsMediumComment'] = createQualityMetricComment(jobSpec, 'muvipluginResult/NORMAL', 'MBV results')
     }
 
-    static Closure<String> createQualityMetricComment(ComparableJobsSpec jobPairSpec, String reportUrl, String reportTitle) {
+    private static Closure<String> createQualityMetricComment(ComparableJobsSpec jobPairSpec, String reportUrl, String reportTitle) {
         return TransformerProvider.withHtml { html ->
             html.p {
                 html.b 'Trunk:'
@@ -182,7 +174,7 @@ class JenkinsSpec {
         }
     }
 
-    def upgrade(@DelegatesTo(JobsSpec) jobsClosure) {
+    void upgrade(@DelegatesTo(JobsSpec) Closure jobsClosure) {
         JobsSpec jobsSpec = new JobsSpec()
         jobsSpec.with jobsClosure;
 
@@ -206,7 +198,7 @@ class JenkinsSpec {
         }
     }
 
-    def integrationTests(@DelegatesTo(JobsSpec) jobsClosure) {
+    void integrationTests(@DelegatesTo(JobsSpec) Closure jobsClosure) {
         JobsSpec jobsSpec = new JobsSpec()
         jobsSpec.with jobsClosure;
 
@@ -230,11 +222,11 @@ class JenkinsSpec {
         }
     }
 
-    Closure getJenkinsUrl(JenkinsJob job, String build = null, String linkText = null) {
+    private Closure getJenkinsUrl(JenkinsJob job, String build = null, String linkText = null) {
         return { a(href: job.getBuildUrl(build), linkText ?: job.toString()) }
     }
 
-    Closure getJenkinsUrlWithStatus(JenkinsJob job, String build = null, String linkText = null) {
+    private Closure getJenkinsUrlWithStatus(JenkinsJob job, String build = null, String linkText = null) {
         return { span(class: "jenkinsJobStatus jenkinsJobStatus_${job.color}", getJenkinsUrl(job, build, linkText)) }
     }
 

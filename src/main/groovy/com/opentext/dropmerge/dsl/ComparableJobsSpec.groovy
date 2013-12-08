@@ -1,21 +1,24 @@
 package com.opentext.dropmerge.dsl
 
-import com.opentext.dropmerge.JenkinsJob;
+import com.opentext.dropmerge.JenkinsJob
+import groovy.transform.TypeChecked
+
+@TypeChecked
 class ComparableJobsSpec {
     JenkinsJob trunk, wip
 
-    def trunk(@DelegatesTo(JobSpec) trunkJob) {
-        JobSpec jobSpec = new JobSpec()
-        jobSpec.with trunkJob
-
-        trunk = jobSpec.jenkinsJob
+    void trunk(@DelegatesTo(JobSpec) Closure trunkJob) {
+        trunk = invoke(trunkJob)
     }
 
-    def wip(@DelegatesTo(JobSpec) wipJob) {
-        JobSpec jobSpec = new JobSpec()
-        jobSpec.with wipJob
+    void wip(@DelegatesTo(JobSpec) Closure wipJob) {
+        wip = invoke(wipJob)
+    }
 
-        wip = jobSpec.jenkinsJob
+    private static JenkinsJob invoke(@DelegatesTo(JobSpec) Closure jobClosure) {
+        JobSpec jobSpec = new JobSpec()
+        jobSpec.with jobClosure
+        return jobSpec.jenkinsJob
     }
 
 }

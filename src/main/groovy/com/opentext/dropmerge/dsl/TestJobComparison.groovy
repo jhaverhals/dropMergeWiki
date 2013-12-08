@@ -21,14 +21,6 @@ class TestJobComparison {
         return inputDsl
     }
 
-    static final Jenkins jenkinsOfSVT = new Jenkins('http://srv-ind-svt9l.vanenburg.com:8080')
-
-    static final Jenkins jenkinsOfCMT = new Jenkins('http://cmt-jenkins.vanenburg.com/jenkins')
-
-    static final Jenkins buildMasterHYD = new Jenkins('http://buildmaster-hyd.vanenburg.com/jenkins')
-
-    static final Jenkins buildMasterNL = new Jenkins('http://buildmaster-nl.vanenburg.com/jenkins')
-
     def forTeam(String teamName, @DelegatesTo(ComparingJobsSpec) jobsClosure) {
         ComparingJobsSpec jobsSpec = new ComparingJobsSpec()
         jobsSpec.with jobsClosure
