@@ -36,7 +36,7 @@ public class Jenkins {
     }
 
     public static Map<String, Integer> getTestDiffsPerSuite(JenkinsJob beforeJob, JenkinsJob afterJob) {
-        return getTestDiffsPerPackage([beforeJob], [afterJob])
+        return getTestDiffsPerSuite([beforeJob], [afterJob])
     }
 
     public static Map<String, Integer> getTestDiffsPerSuite(List<JenkinsJob> beforeJobs, List<JenkinsJob> afterJobs) {
