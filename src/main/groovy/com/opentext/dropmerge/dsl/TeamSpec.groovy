@@ -19,18 +19,26 @@ class TeamSpec {
 
 
     def scrumMaster(String fullName, String userName) {
-        userNames.add(userName)
-        inputs['ScrumMasterName'] = { ' ' + TransformerProvider.getUserLink(userName, fullName) }
+        handleAddition('ScrumMasterName', userName, fullName)
     }
 
     def architect(String fullName, String userName) {
-        userNames.add(userName)
-        inputs['ArchitectName'] = { ' ' + TransformerProvider.getUserLink(userName, fullName) }
+        handleAddition('ArchitectName', userName, fullName)
     }
 
     def productManager(String fullName, String userName) {
-        userNames.add(userName)
-        inputs['ProductManagerName'] = { TransformerProvider.getUserLink(userName, fullName) }
+        handleAddition('ProductManagerName', userName, fullName)
+    }
+
+    private void handleAddition(String field, String userName, String fullName) {
+        use(StringClosureCategories) {
+            userNames.add userName
+            if (inputs.containsKey(field)) {
+                inputs[field] += { ', ' + TransformerProvider.getUserLink(userName, fullName) }
+            } else {
+                inputs[field] = { (field != 'ProductManagerName' ? ' ' : '') + TransformerProvider.getUserLink(userName, fullName) }
+            }
+        }
     }
 
     def otherMembers(String... otherUserNames) {
