@@ -1,7 +1,5 @@
 import com.opentext.dropmerge.dsl.DropMergeInput
-import groovy.transform.TypeChecked
 
-@TypeChecked
 class CWSTransformerProvider {
 
     public static void main(String[] args) {
