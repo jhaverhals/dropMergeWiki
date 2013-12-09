@@ -7,13 +7,16 @@ com.opentext.dropmerge.dsl.TestJobComparison.compare {
     }
 
     forTeam('CWS') {
-        withJob { job 'cws-wip-junit-l' on buildMasterNL; description 'Linux' }
-        comparedToJob { job 'CWS-L' on jenkinsOfSVT; description 'Linux' }
+        withJob { job 'cws-wip-junit-l' on buildMasterNL }
+        comparedToJob { job 'CWS-L' on jenkinsOfSVT }
     }
 
     forTeam('PCT') {
-        withJob { job 'pct-trunk-wip-frt-l-x64' on buildMasterNL }
-        comparedToJob { job 'PlatformCore-L' on jenkinsOfSVT }
+        withJob { job 'pct-trunk-wip-frt-l-x64' on buildMasterNL; description 'Linux' }
+        comparedToJob { job 'PlatformCore-L' on jenkinsOfSVT; description 'Linux' }
+
+        withJob { job 'pct-trunk-wip-frt-w-x64' on buildMasterNL; description 'Windows' }
+        comparedToJob { job 'PlatformCore-W' on jenkinsOfSVT; description 'Windows' }
     }
 
 }
