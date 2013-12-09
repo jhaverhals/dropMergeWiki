@@ -57,7 +57,7 @@ publishReport {
 }
 
 task compareSVTTestsToWIP(dependsOn: build, type: JavaExec)
-publishReport {
+compareSVTTestsToWIP {
     main = 'SVTTestJobComparison'
     classpath = sourceSets.main.runtimeClasspath
     defaultCharacterEncoding 'UTF-8'
