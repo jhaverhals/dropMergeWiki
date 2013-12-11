@@ -8,6 +8,7 @@ class CWSTransformerProvider {
                 name 'CWS'
                 productManager 'Harmen Kastenberg', 'hkastenb'
                 architect 'Rene Prins', 'rprins'
+                architect 'Arjen Wisse', 'awisse'
                 scrumMaster 'Rene Prins', 'rprins'
             }
 
@@ -27,7 +28,7 @@ class CWSTransformerProvider {
                 regressionTests {
                     ofType('JUnit') {
                         withJob { on buildMasterNL job 'cws-wip-junit-l'; description 'Linux' }
-                        comparedToJob { job 'CWS-L' on jenkinsOfSVT; description 'Windows' }
+                        comparedToJob { job 'CWS-L' on jenkinsOfSVT; description 'Linux' }
 
                         withJob { on buildMasterNL job 'cws-wip-junit-w'; description 'Windows' }
                         comparedToJob { job 'CWS-W' on jenkinsOfSVT; description 'Windows' }
