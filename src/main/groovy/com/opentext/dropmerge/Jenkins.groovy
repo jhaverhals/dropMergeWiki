@@ -155,8 +155,14 @@ public class Jenkins {
     }
 
     public static Map<String, Integer> getPMDDiffsPerSuite(JenkinsJob beforeJob, JenkinsJob afterJob, List<String> priorities = ['NORMAL', 'HIGH']) {
-        Map<String, Integer> suitesBefore = casesPerSuite(beforeJob.PMDReport, priorities)
-        Map<String, Integer> suitesAfter = casesPerSuite(afterJob.PMDReport, priorities)
+        return getDiffsPerSuite(beforeJob.PMDReport, afterJob.PMDReport, priorities)
+    }
+    public static Map<String, Integer> getMBVDiffsPerSuite(JenkinsJob beforeJob, JenkinsJob afterJob, List<String> priorities = ['NORMAL', 'HIGH']) {
+        return getDiffsPerSuite(beforeJob.MBVReport, afterJob.MBVReport, priorities)
+    }
+    private static Map<String, Integer> getDiffsPerSuite(def beforeJobReport, def afterJobReport, List<String> priorities = ['NORMAL', 'HIGH']) {
+        Map<String, Integer> suitesBefore = casesPerSuite(beforeJobReport, priorities)
+        Map<String, Integer> suitesAfter = casesPerSuite(afterJobReport, priorities)
 
         Map<String, String> beforeToAfter = correlateKeys(suitesBefore.keySet(), suitesAfter.keySet());
         Map<String, String> afterToBefore = correlateKeys(suitesAfter.keySet(), suitesBefore.keySet());

@@ -76,6 +76,10 @@ class JenkinsJob {
         getPropertyOfJobWithinReports('muvipluginResult', level)
     }
 
+    public def getMBVReport() {
+        jsonForJob(LAST_SUCCESSFUL_BUILD, 'muvipluginResult', null, 1)
+    }
+
     private def jsonForJob(String build, String subPage, String jsonPath, Integer depth = null) {
         invocationCount++
         final url = getBuildUrl(build) + '/' + (subPage ? subPage + '/' : '') + 'api/json' + (jsonPath ? '?tree=' + jsonPath + (depth ? '&' : '') : (depth ? '?' : '')) + (depth ? "depth=$depth" : '')
