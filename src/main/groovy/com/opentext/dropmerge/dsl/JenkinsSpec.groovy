@@ -158,8 +158,21 @@ class JenkinsSpec {
         inputs['MBViolationsHighAfter'] = { jobSpec.wip.getMBFigure(WarningLevel.High) }
         inputs['MBViolationsMediumAfter'] = { jobSpec.wip.getMBFigure(WarningLevel.Normal) }
 
-        inputs['MultibrowserViolationsHighComment'] = createQualityMetricComment(jobSpec, 'muvipluginResult/HIGH', 'MBV results')
-        inputs['MultibrowserViolationsMediumComment'] = createQualityMetricComment(jobSpec, 'muvipluginResult/NORMAL', 'MBV results')
+        use(StringClosureCategories) {
+            inputs['MultibrowserViolationsHighComment'] = createQualityMetricComment(jobSpec, 'muvipluginResult/HIGH', 'MBV results')
+            inputs['MultibrowserViolationsHighComment'] += TransformerProvider.withTable { table ->
+                Jenkins.getMBVDiffsPerSuite(jobSpec.trunk, jobSpec.wip, ['HIGH']).each { k, v ->
+                    table.addRow('File': k, 'Difference': String.format('%+d', v))
+                }
+            }
+
+            inputs['MultibrowserViolationsMediumComment'] = createQualityMetricComment(jobSpec, 'muvipluginResult/NORMAL', 'MBV results')
+            inputs['MultibrowserViolationsMediumComment'] += TransformerProvider.withTable { table ->
+                Jenkins.getMBVDiffsPerSuite(jobSpec.trunk, jobSpec.wip, ['NORMAL']).each { k, v ->
+                    table.addRow('File': k, 'Difference': String.format('%+d', v))
+                }
+            }
+        }
     }
 
     private static Closure<String> createQualityMetricComment(ComparableJobsSpec jobPairSpec, String reportUrl, String reportTitle) {
