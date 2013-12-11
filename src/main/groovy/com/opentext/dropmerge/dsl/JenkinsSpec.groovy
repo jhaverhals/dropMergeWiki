@@ -20,7 +20,8 @@ class JenkinsSpec {
             int total = 0
             jobSpec.comparableJobsByType.each { String type, Map<JobSpec, JobSpec> jobs ->
                 jobs.each { JobSpec ignore, JobSpec j ->
-                    total += j.jenkinsJob.getTestFigure(TestCount.Pass) as int }
+                    total += j.jenkinsJob.getTestFigure(TestCount.Pass) as int
+                }
             }
             return "$total"
         }
@@ -28,7 +29,8 @@ class JenkinsSpec {
             int total = 0
             jobSpec.comparableJobsByType.each { String type, Map<JobSpec, JobSpec> jobs ->
                 jobs.each { JobSpec ignore, JobSpec j ->
-                    total += j.jenkinsJob.getTestFigure(TestCount.Fail) as int }
+                    total += j.jenkinsJob.getTestFigure(TestCount.Fail) as int
+                }
             }
             return "$total"
         }
@@ -36,7 +38,8 @@ class JenkinsSpec {
             int total = 0
             jobSpec.comparableJobsByType.each { String type, Map<JobSpec, JobSpec> jobs ->
                 jobs.each { JobSpec j, JobSpec ignore ->
-                    total += j.jenkinsJob.getTestFigure(TestCount.Pass) as int }
+                    total += j.jenkinsJob.getTestFigure(TestCount.Pass) as int
+                }
             }
             return "$total"
         }
@@ -44,7 +47,8 @@ class JenkinsSpec {
             int total = 0
             jobSpec.comparableJobsByType.each { String type, Map<JobSpec, JobSpec> jobs ->
                 jobs.each { JobSpec j, JobSpec ignore ->
-                    total += j.jenkinsJob.getTestFigure(TestCount.Fail) as int }
+                    total += j.jenkinsJob.getTestFigure(TestCount.Fail) as int
+                }
             }
             return "$total"
         }
