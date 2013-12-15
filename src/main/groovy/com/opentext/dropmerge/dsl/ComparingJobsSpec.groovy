@@ -28,7 +28,7 @@ import java.util.regex.Pattern
  *
  */
 class ComparingJobsSpec extends JobsSpec {
-    private Map<JobSpec, JobSpec> comparableJobSpecs = new HashMap<>()
+    private Map<JobSpec, JobSpec> comparableJobSpecs = new LinkedHashMap<>()
     private Map<JobSpec, DifferencesSpec> justifications = new HashMap<>()
 
     private Map<JobSpec, List<JobSpec>> linkedJobSpecs = new HashMap<>()
