@@ -5,7 +5,7 @@ class IconCSS {
     public static String getStyle() {
         StringBuilder sb = new StringBuilder('.jenkinsJobStatus{background-repeat: no-repeat; padding-left: 19px; width: 16px; height: 16px;}').append System.lineSeparator()
 
-        def extraStyles = [grey: ['aborted'], grey_anime: ['aborted_anime']]
+        def extraStyles = [grey: ['aborted', 'disabled'], grey_anime: ['aborted_anime', 'disabled_anime']]
         Enumeration<URL> resources = IconCSS.class.getClassLoader().getResources(IconCSS.class.package.name.replace('.', '/'))
         while (resources.hasMoreElements()) {
             URL resource = resources.nextElement();
