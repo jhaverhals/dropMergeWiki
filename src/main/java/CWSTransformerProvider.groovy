@@ -27,14 +27,25 @@ class CWSTransformerProvider {
             jenkins {
                 regressionTests {
                     ofType('JUnit') {
-                        withJob { on buildMasterNL job 'cws-wip-junit-l'; description 'Linux' }
-                        comparedToJob { job 'CWS-L' on jenkinsOfSVT; description 'Linux' }
+                        withJob { job 'cws-wip-junit-l' on buildMasterNL; description 'Linux' }
+                        comparedToJob { job 'CWS-L' on jenkinsOfSVT; description 'Linux'  }
+                        andJob { job 'CWSOldBuild-L' on jenkinsOfSVT; description 'Linux'  }
+                        andJob { job 'CAP-CWS-L' on jenkinsOfSVT; description 'Linux'  }
 
-                        withJob { on buildMasterNL job 'cws-wip-junit-w'; description 'Windows' }
-                        comparedToJob { job 'CWS-W' on jenkinsOfSVT; description 'Windows' }
+                        withJob { job 'cws-wip-junit-w' on buildMasterNL; description 'Windows' }
+                        comparedToJob { job 'CWS-W' on jenkinsOfSVT; description 'Windows'  }
+                        andJob { job 'CWSOldBuild-W' on jenkinsOfSVT; description 'Windows'  }
+                        andJob { job 'CAP-CWS-W' on jenkinsOfSVT; description 'Windows'  }
                     }
                     ofType('CWS UIUnits') {
-                        withJob { on buildMasterNL job 'cws-wip-uiunit-l'; description 'Firefox' }
+                        withJob {
+													on buildMasterNL job 'cws-wip-uiunit/arch=64,browser=Chrome,jdk=oraclejdk-1.7.3';
+													description 'Chrome'
+												}
+                        withJob {
+                        	on buildMasterNL job 'cws-wip-uiunit/arch=64,browser=Firefox,jdk=oraclejdk-1.7.3';
+                        	description 'Firefox'
+                        }
                     }
                     ofType('GMF UIUnits Runtime Ref') {
                         withJob {
