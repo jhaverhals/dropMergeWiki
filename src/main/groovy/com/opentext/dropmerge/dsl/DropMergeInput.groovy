@@ -1,11 +1,11 @@
 package com.opentext.dropmerge.dsl
 
+import java.text.SimpleDateFormat
+
 import com.opentext.dropmerge.CordysWiki
 import com.opentext.dropmerge.Crucible
 import com.opentext.dropmerge.TransformerProvider
 import com.opentext.dropmerge.UpdateWikiProperties
-
-import java.text.SimpleDateFormat
 
 public class DropMergeInput {
     public Map<String, Closure<String>> inputs = new HashMap<String, Closure<String>>()
@@ -118,7 +118,7 @@ public class DropMergeInput {
         FreeTextSpec freeTextSpec = new FreeTextSpec()
         freeTextSpec.with desc
 
-        inputs['FunctionalDescription'] = { freeTextSpec.sb.toString() }
+        inputs['FunctionalDescription'] = { freeTextSpec.getText() }
     }
 
 }
