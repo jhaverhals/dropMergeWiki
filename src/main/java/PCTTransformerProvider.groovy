@@ -1,5 +1,4 @@
 import com.opentext.dropmerge.dsl.DropMergeInput
-import groovy.xml.MarkupBuilder
 
 DropMergeInput.provide {
     team {
@@ -7,7 +6,7 @@ DropMergeInput.provide {
         scrumMaster 'Gerwin Jansen', 'gjansen'
         architect 'Willem Jan Gerritsen', 'wjgerrit'
         productManager 'Johan Pluimers', 'jpluimer'
-        otherMembers 'astellingwerf', 'dkwakkel', 'msaffarian', 'wvplagge'
+        otherMembers 'astellingwerf', 'dkwakkel', 'wvplagge'
     }
 
     dropMergeOn every.odd.friday.includingToday
@@ -85,8 +84,9 @@ DropMergeInput.provide {
     }
 
     qualityAndProcessQuestions {
-        newManualTestCassesAdded 'No', 'No new manual tests added. We prefer automated tests.'
+        newManualTestCasesAdded no, 'No new manual tests added. We prefer automated tests.'
         completedForwardPorting notApplicable, 'We always first fix in our own WIP.'
         introducedSecurityIssues no, 'Guarded by automated ACL tests and in code reviews.'
+				
     }
 }

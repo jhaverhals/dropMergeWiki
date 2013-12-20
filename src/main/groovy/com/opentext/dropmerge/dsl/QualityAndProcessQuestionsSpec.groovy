@@ -67,7 +67,11 @@ class QualityAndProcessQuestionsSpec {
         addInput('BuildAndInstallerChangesAddressed', [yes, no, notApplicable], answer, comment)
     }
 
-    def newManualTestCassesAdded(String answer, String comment = null) {
+    def newManualTestCasesAdded(ComboBoxAnswers answer, String comment = null) {
+        newManualTestCasesAdded(answer.optionText, comment)
+    }
+
+    def newManualTestCasesAdded(String answer, String comment = null) {
         addInput('NewManualTestCases', answer, comment)
     }
 
