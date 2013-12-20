@@ -71,29 +71,49 @@ class ComparingJobsSpec extends JobsSpec {
     }
 
     class DifferencesSpec {
-        Map<Pattern, String> patternStringMap = new LinkedHashMap<>()
-        Pattern tempPattern
+        Map<Closure<Boolean>, String> predicates2DescriptionMap = new LinkedHashMap<>()
+        Closure<Boolean> tempPredicate
 
         DifferencesSpec matching(Pattern pattern) {
-            this.tempPattern = pattern
+            return matchingPredicate { String className -> pattern.matcher(className).matches() }
+        }
+
+        DifferencesSpec startingWith(String prefix) {
+            return matchingPredicate { String className -> className.startsWith(prefix) }
+        }
+
+        DifferencesSpec endingWith(String suffix) {
+            return matchingPredicate { String className -> className.endsWith(suffix) }
+        }
+
+        DifferencesSpec containing(String infix) {
+            return matchingPredicate { String className -> className.contains(infix) }
+        }
+
+        DifferencesSpec equalTo(String infix) {
+            return matchingPredicate { String className -> className.equals(infix) }
+        }
+
+        DifferencesSpec matchingPredicate(Closure<Boolean> predicate) {
+            this.tempPredicate = predicate
             return this
         }
 
         void areJustifiedBecause(String message) {
-            assert tempPattern != null
-            patternStringMap[tempPattern] = message
-            tempPattern = null
+            assert tempPredicate != null
+            predicates2DescriptionMap[tempPredicate] = message
+            tempPredicate = null
         }
 
         void allAreJustifiedBecause(String message) {
-            assert tempPattern == null
-            matching(~/^.*$/).areJustifiedBecause(message)
+            assert tempPredicate == null
+            matchingPredicate({ true }).areJustifiedBecause(message)
         }
 
         String getJustificationsForClassName(String className) {
             StringBuilder sb = new StringBuilder()
-            patternStringMap.each { Pattern p, String s ->
-                if (p.matcher(className).matches())
+            predicates2DescriptionMap.each { Closure<Boolean> predicate, String s ->
+                if (predicate.call(className))
                     sb.append(s).append(' ')
             }
             return sb.toString()

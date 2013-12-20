@@ -43,9 +43,9 @@ DropMergeInput.provide {
                 withJob { job 'pct-trunk-wip-frt-l-x64' on buildMasterNL; description 'Linux' }
                 comparedToJob { job 'PlatformCore-L' on jenkinsOfSVT; description 'Linux' }
                 differences {
-                    matching ~/^.*SubroleDeletingUpgradeStepTest$/ areJustifiedBecause 'SVT doesn\'t run this test yet.'
+                    endingWith '.SubroleDeletingUpgradeStepTest' areJustifiedBecause 'SVT doesn\'t run this test yet.'
                     matching ~/^com\.eibus\.sso\.authentication\.audit\.HttpURLConnectionBaseTest$/ areJustifiedBecause 'Test has been renamed to conform with SVT patterns.'
-                    matching ~/com\.eibus\.util\.system\.win32\.WindowsRegistryTest/ areJustifiedBecause 'SVT uses an old version of Ant, where skipped tests are considered successful.'
+                    equalTo 'com.eibus.util.system.win32.WindowsRegistryTest' areJustifiedBecause 'SVT uses an old version of Ant, where skipped tests are considered successful.'
                 }
 
                 withJob { job 'pct-trunk-wip-frt-w-x64' on buildMasterNL; description 'Windows' }
