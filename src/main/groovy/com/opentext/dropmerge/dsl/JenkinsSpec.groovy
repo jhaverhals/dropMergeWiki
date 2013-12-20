@@ -54,6 +54,7 @@ class JenkinsSpec {
         }
 
         use(StringClosureCategories) {
+            //TODO: This doesn't handle the com.opentext.dropmerge.dsl.ComparingJobsSpec.andJob construct
             inputs['SuccessfulRegressionTestsComment'] = TransformerProvider.withTable { WikiTableBuilder table ->
                 table.setHeaders(['Type', 'OS', 'Successful', 'Failed', 'Skipped', 'Link'])
 
@@ -77,6 +78,7 @@ class JenkinsSpec {
                 table.addRow(['All', 'All', "$passCount", "$failCount", "$skipCount", ''])
                 return
             }
+            //TODO: This doesn't handle the com.opentext.dropmerge.dsl.ComparingJobsSpec.andJob construct
             inputs['SuccessfulRegressionTestsComment'] += TransformerProvider.withTable { WikiTableBuilder table ->
                 jobSpec.comparableJobsByType.each { String type, Map<JobSpec, JobSpec> comparableJobs ->
                     comparableJobs.each { JobSpec wip, JobSpec trunk ->
@@ -96,6 +98,7 @@ class JenkinsSpec {
 
         inputs['FailedRegressionTestsComment'] = { jobSpec.extraComment.sb.toString() }
 
+        //TODO: This doesn't handle the com.opentext.dropmerge.dsl.ComparingJobsSpec.andJob construct
         inputs['TotalRegressionTestsComment'] = TransformerProvider.withTable {
             table ->
                 jobSpec.comparableJobsByType.each { String type, Map<JobSpec, JobSpec> comparableJobs ->
