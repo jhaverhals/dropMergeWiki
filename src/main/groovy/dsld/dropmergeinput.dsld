@@ -9,7 +9,6 @@ def enclosedBy(String name) {
 }
 
 contribute(dmi) {
-	property name : 'newProp', type : String, provider : provider, doc : 'This is a sample.  You should see this in content assist for GroovyObjects: <pre>newProp</pre>'
 	method name:'provide', type:'com.opentext.dropmerge.dsl.DropMergeInput', provider : provider, isStatic:true, params:[closure:Closure]
 }
 
