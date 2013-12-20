@@ -1,0 +1,62 @@
+package dsld
+
+final String provider = 'Drop merge input DSL Descriptor'
+final String dslPackage = 'com.opentext.dropmerge.dsl'
+final dmi = currentType(dslPackage+'.DropMergeInput')
+
+def enclosedBy(String name) {
+	return enclosingCallName(name) & enclosingClosure()
+}
+
+contribute(dmi) {
+	property name : 'newProp', type : String, provider : provider, doc : 'This is a sample.  You should see this in content assist for GroovyObjects: <pre>newProp</pre>'
+	method name:'provide', type:'com.opentext.dropmerge.dsl.DropMergeInput', provider : provider, isStatic:true, params:[closure:Closure]
+}
+
+[team:'TeamSpec', wiki:'WikiSpec', crucible:'CrucibleSpec', jenkins:'JenkinsSpec', qualityAndProcessQuestions:'QualityAndProcessQuestionsSpec', functionalDescription:'FreeTextSpec']
+.each { String closureName, String specName ->
+	contribute(dmi & enclosedBy(closureName)) { delegatesTo type:"$dslPackage.$specName" , provider : provider}
+}
+
+contribute(currentType(dslPackage+'.JenkinsSpec') & enclosedBy('regressionTests')) {
+	delegatesTo type: dslPackage+'.TestTypesSpec' , provider : provider
+}
+
+[
+	'pmd',
+	'mbv',
+	'compilerWarnings'
+].each{
+	contribute(currentType(dslPackage+'.JenkinsSpec') & enclosedBy(it)) {
+		delegatesTo type: dslPackage+'.ComparableJobsSpec' , provider : provider
+	}
+}
+
+[
+	'upgrade',
+	'integrationTests'
+].each {
+	contribute(currentType(dslPackage+'.JenkinsSpec') & enclosedBy(it)) {
+		delegatesTo type: dslPackage+'.JobsSpec' , provider : provider
+	}
+}
+
+contribute(currentType(dslPackage+'.TestTypesSpec') & enclosedBy( 'ofType')) {
+	delegatesTo type: dslPackage+'.ComparingJobsSpec' , provider : provider
+}
+
+['trunk', 'wip'].each {
+	contribute(currentType(dslPackage+'.ComparableJobsSpec') & enclosedBy(it)) {
+		delegatesTo type: dslPackage+'.JobSpec' , provider : provider
+	}
+}
+
+contribute(currentType(subType(dslPackage+'.JobsSpec')) & enclosedBy('withJob')) {
+	delegatesTo type: dslPackage+'.JobSpec' , provider : provider
+}
+contribute(currentType(dslPackage+'.ComparingJobsSpec') & enclosedBy('comparedToJob')) {
+	delegatesTo type: dslPackage+'.JobSpec' , provider : provider
+}
+contribute(currentType(dslPackage+'.ComparingJobsSpec') & enclosedBy('differences')) {
+	delegatesTo type: dslPackage+'.ComparingJobsSpec.DifferencesSpec' , provider : provider
+}
