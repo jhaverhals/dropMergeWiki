@@ -126,17 +126,12 @@ class JenkinsSpec {
         inputs['PMDViolationsMediumAfter'] = { jobSpec.wip.getPMDFigure(WarningLevel.Normal) }
 
         use(StringClosureCategories) {
-            inputs['PMDViolationsHighComment'] = createQualityMetricComment(jobSpec, 'pmdResult/HIGH', 'PMD results')
-            inputs['PMDViolationsHighComment'] += TransformerProvider.withTable { table ->
-                Jenkins.getPMDDiffsPerSuite(jobSpec.trunk, jobSpec.wip, ['HIGH']).each { k, v ->
-                    table.addRow('File': k, 'Difference': String.format('%+d', v))
-                }
-            }
-
-            inputs['PMDViolationsMediumComment'] = createQualityMetricComment(jobSpec, 'pmdResult/NORMAL', 'PMD results')
-            inputs['PMDViolationsMediumComment'] += TransformerProvider.withTable { table ->
-                Jenkins.getPMDDiffsPerSuite(jobSpec.trunk, jobSpec.wip, ['NORMAL']).each { k, v ->
-                    table.addRow('File': k, 'Difference': String.format('%+d', v))
+            [HIGH: 'High', NORMAL: 'Medium'].each { String jenkinsTerm, String wikiFieldTerm ->
+                inputs["PMDViolations${wikiFieldTerm}Comment"] = createQualityMetricComment(jobSpec, "pmdResult/$jenkinsTerm", 'PMD results')
+                inputs["PMDViolations${wikiFieldTerm}Comment"] += TransformerProvider.withTable { table ->
+                    Jenkins.getPMDDiffsPerSuite(jobSpec.trunk, jobSpec.wip, [jenkinsTerm]).each { k, v ->
+                        table.addRow('File': k, 'Difference': String.format('%+d', v))
+                    }
                 }
             }
         }
@@ -162,17 +157,12 @@ class JenkinsSpec {
         inputs['MBViolationsMediumAfter'] = { jobSpec.wip.getMBFigure(WarningLevel.Normal) }
 
         use(StringClosureCategories) {
-            inputs['MultibrowserViolationsHighComment'] = createQualityMetricComment(jobSpec, 'muvipluginResult/HIGH', 'MBV results')
-            inputs['MultibrowserViolationsHighComment'] += TransformerProvider.withTable { table ->
-                Jenkins.getMBVDiffsPerSuite(jobSpec.trunk, jobSpec.wip, ['HIGH']).each { k, v ->
-                    table.addRow('File': k, 'Difference': String.format('%+d', v))
-                }
-            }
-
-            inputs['MultibrowserViolationsMediumComment'] = createQualityMetricComment(jobSpec, 'muvipluginResult/NORMAL', 'MBV results')
-            inputs['MultibrowserViolationsMediumComment'] += TransformerProvider.withTable { table ->
-                Jenkins.getMBVDiffsPerSuite(jobSpec.trunk, jobSpec.wip, ['NORMAL']).each { k, v ->
-                    table.addRow('File': k, 'Difference': String.format('%+d', v))
+            [HIGH: 'High', NORMAL: 'Medium'].each { String jenkinsTerm, String wikiFieldTerm ->
+                inputs["MultibrowserViolations${wikiFieldTerm}Comment"] = createQualityMetricComment(jobSpec, "muvipluginResult/$jenkinsTerm", 'MBV results')
+                inputs["MultibrowserViolations${wikiFieldTerm}Comment"] += TransformerProvider.withTable { table ->
+                    Jenkins.getPMDDiffsPerSuite(jobSpec.trunk, jobSpec.wip, [jenkinsTerm]).each { k, v ->
+                        table.addRow('File': k, 'Difference': String.format('%+d', v))
+                    }
                 }
             }
         }
