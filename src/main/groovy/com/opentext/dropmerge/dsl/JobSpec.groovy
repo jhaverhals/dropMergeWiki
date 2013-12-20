@@ -27,6 +27,7 @@ class JobSpec {
     private Jenkins jenkinsInstance
     private String jobName
     private String description
+    private Map<String,String> matrixAxes
 
     static final Jenkins jenkinsOfSVT = new Jenkins('http://srv-ind-svt9l.vanenburg.com:8080')
 
@@ -57,13 +58,20 @@ class JobSpec {
      */
     JobSpec description(String description) { this.description = description; return this }
 
+    /**
+     * Set the job name
+     * @param jobName
+     * @return this
+     */
+    JobSpec matrixValues(Map<String,String> matrixAxes) { this.matrixAxes = matrixAxes; return this }
+
     public JenkinsJob getJenkinsJob() {
         if (jenkinsInstance == null)
             throw new IllegalStateException('jenkinsInstance should not be null')
         if (jobName == null)
             throw new IllegalStateException('jobName should not be null')
 
-        return jenkinsInstance.withJob(jobName)
+        return jenkinsInstance.withJob(jobName, matrixAxes)
     }
 
     String getDescription() {

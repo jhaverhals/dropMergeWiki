@@ -11,10 +11,27 @@ class JenkinsJob {
 
     private Jenkins onInstance;
     private String name
+    private Map<String, String> matrixAxes
 
-    JenkinsJob(Jenkins onInstance, String name) {
+    JenkinsJob(Jenkins onInstance, String name, Map<String, String> matrixAxes = null) {
         this.onInstance = onInstance
         this.name = name
+        this.matrixAxes = matrixAxes
+
+        if (matrixAxes) {
+            List<String[]> x = jsonForJob(null, null, 'activeConfigurations[name]')['activeConfigurations'].collect { it.name.split(',') }
+            def matches = x.findAll { String[] configuration ->
+                matrixAxes.every { String axis, String value ->
+                    configuration.contains("$axis=$value")
+                }
+            }
+            if (matches.size() == 0)
+                throw new IllegalArgumentException("No configuration matches $matrixAxes for job $this");
+            if (matches.size() > 1)
+                throw new IllegalArgumentException("Multiple configuration matches $matrixAxes for job $this");
+
+            this.name += '/' + matches.first().join(',')
+        }
     }
 
     public String getLastBuildResult() {
@@ -119,6 +136,12 @@ class JenkinsJob {
 
     @Override
     public java.lang.String toString() {
-        return '\'' + name + '\' on ' + new URL(onInstance.rootUrl).host.replaceFirst('.vanenburg.com$', '');
+        String n
+        if (matrixAxes) {
+            n = "'" + name.substring(0, name.indexOf('/')) + "' with $matrixAxes"
+        } else {
+            n = "'$name'"
+        }
+        return n + ' on ' + new URL(onInstance.rootUrl).host.replaceFirst('.vanenburg.com$', '');
     }
 }

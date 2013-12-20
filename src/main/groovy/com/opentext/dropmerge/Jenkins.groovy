@@ -8,8 +8,8 @@ public class Jenkins {
         this.rootUrl = rootUrl
     }
 
-    public JenkinsJob withJob(String name) {
-        return new JenkinsJob(this, name);
+    public JenkinsJob withJob(String name, Map<String,String> matrixAxes = null) {
+        return new JenkinsJob(this, name, matrixAxes);
     }
 
     String getRootUrl() {
