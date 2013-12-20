@@ -17,7 +17,7 @@ class DateDsl {
     }
 
     public DateDsl getExcludingToday() {
-        includeToday = true
+        includeToday = false
         return this
     }
 
