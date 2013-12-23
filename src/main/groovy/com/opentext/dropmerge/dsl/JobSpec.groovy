@@ -59,8 +59,8 @@ class JobSpec {
     JobSpec description(String description) { this.description = description; return this }
 
     /**
-     * Set the job name
-     * @param jobName
+     * Set the matrix axes values
+     * @param matrixAxes
      * @return this
      */
     JobSpec matrixValues(Map<String,String> matrixAxes) { this.matrixAxes = matrixAxes; return this }
