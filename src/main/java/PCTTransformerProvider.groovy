@@ -85,8 +85,8 @@ DropMergeInput.provide {
 
     qualityAndProcessQuestions {
         newManualTestCasesAdded no, 'No new manual tests added. We prefer automated tests.'
-        completedForwardPorting notApplicable, 'We always first fix in our own WIP.'
-        introducedSecurityIssues no, 'Guarded by automated ACL tests and in code reviews.'
+        forwardPortingCompleted notApplicable, 'We always first fix in our own WIP.'
+        securityIssuesIntroduced no, 'Guarded by automated ACL tests and in code reviews.'
 				
     }
 }

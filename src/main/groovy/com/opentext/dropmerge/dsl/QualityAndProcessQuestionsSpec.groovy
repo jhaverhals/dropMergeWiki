@@ -15,7 +15,7 @@ class QualityAndProcessQuestionsSpec {
         addInput('PerformanceDegradation', [yes, no, notTested], answer, comment)
     }
 
-    public void xmlMemoryManagementIssues(ComboBoxAnswers answer, String comment = null) {
+    public void xmlMemoryManagementIssuesIntroduced(ComboBoxAnswers answer, String comment = null) {
         addInput('MemoryLeaksIntroduced', [yes, no, notTested], answer, comment)
     }
 
@@ -39,7 +39,7 @@ class QualityAndProcessQuestionsSpec {
         addInput('DefectFixesRetestedByOtherPerson', [yes, no, notApplicable], answer, comment)
     }
 
-    public void documentedAlerts(ComboBoxAnswers answer, String comment = null) {
+    public void alertsDocumented(ComboBoxAnswers answer, String comment = null) {
         addInput('DocumentedAlerts', [yes, no, notApplicable], answer, comment)
     }
 
@@ -47,7 +47,7 @@ class QualityAndProcessQuestionsSpec {
         addInput('MultiplatformValidationDone', [yes, no, notApplicable], answer, comment)
     }
 
-    def completedForwardPorting(ComboBoxAnswers answer, String comment = null) {
+    def forwardPortingCompleted(ComboBoxAnswers answer, String comment = null) {
         addInput('ForwardPortingCompleted', [yes, no, notApplicable], answer, comment)
     }
 
@@ -55,11 +55,11 @@ class QualityAndProcessQuestionsSpec {
         addInput('MigrationAspectsHandled', [yes, no, notApplicable], answer, comment)
     }
 
-    def backwardCompatibilityIssues(ComboBoxAnswers answer, String comment = null) {
+    def backwardCompatibilityIssuesIntroduced(ComboBoxAnswers answer, String comment = null) {
         addInput('BackwardCompatibilityIssues', [yes, no], answer, comment)
     }
 
-    def introducedSecurityIssues(ComboBoxAnswers answer, String comment = null) {
+    def securityIssuesIntroduced(ComboBoxAnswers answer, String comment = null) {
         addInput('SecurityIssuesIntroduced', [yes, no, notTested], answer, comment)
     }
 
@@ -77,7 +77,7 @@ class QualityAndProcessQuestionsSpec {
 
     private void addInput(String fieldName, List<ComboBoxAnswers> allowed, ComboBoxAnswers answer, String comment) {
         if (!allowed.contains(answer))
-            throw new IllegalArgumentException('answer for ' + fieldName + ' must be one of these: ' + allowed)
+            throw new IllegalArgumentException("answer for $fieldName must be one of these: $allowed")
 
         inputs[fieldName] = { item -> CordysWiki.selectOption(item, answer.optionText) }
         if (comment)
