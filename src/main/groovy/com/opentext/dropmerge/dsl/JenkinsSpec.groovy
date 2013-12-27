@@ -160,7 +160,7 @@ class JenkinsSpec {
             [HIGH: 'High', NORMAL: 'Medium'].each { String jenkinsTerm, String wikiFieldTerm ->
                 inputs["MultibrowserViolations${wikiFieldTerm}Comment"] = createQualityMetricComment(jobSpec, "muvipluginResult/$jenkinsTerm", 'MBV results')
                 inputs["MultibrowserViolations${wikiFieldTerm}Comment"] += TransformerProvider.withTable { table ->
-                    Jenkins.getPMDDiffsPerSuite(jobSpec.trunk, jobSpec.wip, [jenkinsTerm]).each { k, v ->
+                    Jenkins.getMBVDiffsPerSuite(jobSpec.trunk, jobSpec.wip, [jenkinsTerm]).each { k, v ->
                         table.addRow('File': k, 'Difference': String.format('%+d', v))
                     }
                 }
