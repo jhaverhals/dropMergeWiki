@@ -78,7 +78,7 @@ class JenkinsJob {
     }
 
     public def getPMDReport() {
-        jsonForJob(LAST_SUCCESSFUL_BUILD, 'pmdResult', null, 1)
+        jsonForJob(LAST_SUCCESSFUL_BUILD, 'pmdResult', 'warnings[priority,fileName]')
     }
 
     public String getPMDFigure(WarningLevel level) {
@@ -94,7 +94,7 @@ class JenkinsJob {
     }
 
     public def getMBVReport() {
-        jsonForJob(LAST_SUCCESSFUL_BUILD, 'muvipluginResult', null, 1)
+        jsonForJob(LAST_SUCCESSFUL_BUILD, 'muvipluginResult', 'warnings[priority,fileName]')
     }
 
     private def jsonForJob(String build, String subPage, String jsonPath, Integer depth = null) {
