@@ -74,7 +74,8 @@ class JenkinsJob {
     }
 
     public def getTestReport() {
-        jsonForJob(LAST_SUCCESSFUL_BUILD, 'testReport', 'suites[name,cases[status]],childReports[result[suites[name,cases[status]]]]')
+        final String path = 'suites[name,cases[status]]'
+        jsonForJob(LAST_SUCCESSFUL_BUILD, 'testReport', "$path,childReports[result[$path]]")
     }
 
     public def getPMDReport() {
