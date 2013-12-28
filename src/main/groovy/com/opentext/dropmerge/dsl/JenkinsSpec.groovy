@@ -17,32 +17,32 @@ class JenkinsSpec {
         jobSpec.with jobsByType
 
         inputs['SuccesfulTestsBefore'] = {
-            int total = jobSpec.comparableJobsByType.sum { String type, Map<JobSpec, JobSpec> jobs ->
-                jobs.sum { JobSpec ignore, JobSpec j ->
+            int total = jobSpec.comparableJobsByType.values().sum { Map<JobSpec, JobSpec> jobs ->
+                jobs.values().sum { JobSpec j ->
                     j.jenkinsJob.getTestFigure(TestCount.Pass) as int
                 }
             }
             return "$total"
         }
         inputs['FailedTestsBefore'] = {
-            int total = jobSpec.comparableJobsByType.sum { String type, Map<JobSpec, JobSpec> jobs ->
-                jobs.sum { JobSpec ignore, JobSpec j ->
+            int total = jobSpec.comparableJobsByType.values().sum { Map<JobSpec, JobSpec> jobs ->
+                jobs.values().sum { JobSpec j ->
                     j.jenkinsJob.getTestFigure(TestCount.Fail) as int
                 }
             }
             return "$total"
         }
         inputs['SuccesfulTestsAfter'] = {
-            int total = jobSpec.comparableJobsByType.sum { String type, Map<JobSpec, JobSpec> jobs ->
-                jobs.sum { JobSpec j, JobSpec ignore ->
+            int total = jobSpec.comparableJobsByType.values().sum { Map<JobSpec, JobSpec> jobs ->
+                jobs.keySet().sum { JobSpec j ->
                     j.jenkinsJob.getTestFigure(TestCount.Pass) as int
                 }
             }
             return "$total"
         }
         inputs['FailedTestsAfter'] = {
-            int total = jobSpec.comparableJobsByType.sum { String type, Map<JobSpec, JobSpec> jobs ->
-                jobs.sum { JobSpec j, JobSpec ignore ->
+            int total = jobSpec.comparableJobsByType.values().sum { Map<JobSpec, JobSpec> jobs ->
+                jobs.keySet().sum { JobSpec j ->
                     j.jenkinsJob.getTestFigure(TestCount.Fail) as int
                 }
             }

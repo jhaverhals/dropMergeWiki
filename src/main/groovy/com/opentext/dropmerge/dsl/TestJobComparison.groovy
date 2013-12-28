@@ -30,7 +30,10 @@ class TestJobComparison {
         jobsSpec.with jobsClosure
 
         jobsSpec.comparableJobSpecs.each { JobSpec wip, JobSpec trunk ->
-            Jenkins.getTestDiffsPerSuite(jobsSpec.getJobSpecPlusLinkedJobSpecs(trunk).collect { it.jenkinsJob }, jobsSpec.getJobSpecPlusLinkedJobSpecs(wip).collect { it.jenkinsJob }).each { k, v ->
+            Jenkins.getTestDiffsPerSuite(
+                    jobsSpec.getJobSpecPlusLinkedJobSpecs(trunk).collect { it.jenkinsJob },
+                    jobsSpec.getJobSpecPlusLinkedJobSpecs(wip).collect { it.jenkinsJob }
+            ).each { k, v ->
                 table.addRow(
                         'Suite / Test': k,
                         'Difference': String.format('%+d', v),
@@ -44,9 +47,9 @@ class TestJobComparison {
     private Properties loadProperties() {
         def p = new Properties()
         def propertiesFromFile = new Properties()
-        ['team.properties', 'user.properties', 'session.properties'].each { String it ->
-            File f1 = new File(it)
-            if (f1.exists()) propertiesFromFile.load(f1.newInputStream())
+        ['team.properties', 'user.properties', 'session.properties'].collect { new File(it) }.findAll { it.exists() }
+                .each {
+            propertiesFromFile.load(it.newInputStream())
         }
 
         final String propPrefix = this.class.simpleName
@@ -54,7 +57,7 @@ class TestJobComparison {
             props.each { prop ->
                 ['.', '_'].each { sep ->
                     if (prop.key.startsWith(propPrefix + sep))
-                        p[prop.key[propPrefix.length() + 1..-1]] = prop.value
+                        p[prop.key[propPrefix.length() + sep.length()..-1]] = prop.value
                 }
             }
         }
