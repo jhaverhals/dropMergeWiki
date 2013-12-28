@@ -54,23 +54,22 @@ class JenkinsJob {
     }
 
     public String getTestFigureMultiConfig(TestCount testCount) {
-        int total = 0
-        getMatrixSubJobs().each {
-            total += it.getPropertyOfJobWithinReports('testReport', testCount) as int
+        int total = getMatrixSubJobs().sum {
+            it.getPropertyOfJobWithinReports('testReport', testCount) as int
         }
         return "$total"
     }
 
     public int getTestFigure(TestCount testCount, TestCount... minus) {
-        int total = getTestFigure(testCount) as int
-        minus.each { total -= getTestFigure(it) as int }
-        return total
+        return minus.inject(getTestFigure(testCount) as int) {
+            carry, it -> carry - (getTestFigure(it) as int)
+        }
     }
 
     public int getTestFigureMultiConfig(TestCount testCount, TestCount... minus) {
-        int total = getTestFigureMultiConfig(testCount) as int
-        minus.each { total -= getTestFigureMultiConfig(it) as int }
-        return total
+        return minus.inject(getTestFigureMultiConfig(testCount) as int) {
+            carry, it -> carry - (getTestFigureMultiConfig(it) as int)
+        }
     }
 
     public def getTestReport() {
@@ -124,11 +123,9 @@ class JenkinsJob {
     }
 
     public def getMatrixSubJobs() {
-        def subJobs = []
-        jsonForJob(null, null, "activeConfigurations[name]")["activeConfigurations"].each {
-            subJobs.add onInstance.withJob("$name/${it.name}")
+        return jsonForJob(null, null, "activeConfigurations[name]")["activeConfigurations"].collect {
+            onInstance.withJob("$name/${it.name}")
         }
-        return subJobs
     }
 
     public String getColor() {

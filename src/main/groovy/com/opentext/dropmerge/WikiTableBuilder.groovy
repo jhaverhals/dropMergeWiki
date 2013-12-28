@@ -28,10 +28,7 @@ class WikiTableBuilder {
     }
 
     void addRow(Map<String, Object> values) {
-        values.keySet().each {
-            if (!headers.contains(it))
-                headers.add(it)
-        }
+        headers.addAll values.keySet().findAll { !headers.contains(it) }
         rows.add(values)
     }
 

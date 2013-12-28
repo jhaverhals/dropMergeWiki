@@ -17,37 +17,33 @@ class JenkinsSpec {
         jobSpec.with jobsByType
 
         inputs['SuccesfulTestsBefore'] = {
-            int total = 0
-            jobSpec.comparableJobsByType.each { String type, Map<JobSpec, JobSpec> jobs ->
-                jobs.each { JobSpec ignore, JobSpec j ->
-                    total += j.jenkinsJob.getTestFigure(TestCount.Pass) as int
+            int total = jobSpec.comparableJobsByType.sum { String type, Map<JobSpec, JobSpec> jobs ->
+                jobs.sum { JobSpec ignore, JobSpec j ->
+                    j.jenkinsJob.getTestFigure(TestCount.Pass) as int
                 }
             }
             return "$total"
         }
         inputs['FailedTestsBefore'] = {
-            int total = 0
-            jobSpec.comparableJobsByType.each { String type, Map<JobSpec, JobSpec> jobs ->
-                jobs.each { JobSpec ignore, JobSpec j ->
-                    total += j.jenkinsJob.getTestFigure(TestCount.Fail) as int
+            int total = jobSpec.comparableJobsByType.sum { String type, Map<JobSpec, JobSpec> jobs ->
+                jobs.sum { JobSpec ignore, JobSpec j ->
+                    j.jenkinsJob.getTestFigure(TestCount.Fail) as int
                 }
             }
             return "$total"
         }
         inputs['SuccesfulTestsAfter'] = {
-            int total = 0
-            jobSpec.comparableJobsByType.each { String type, Map<JobSpec, JobSpec> jobs ->
-                jobs.each { JobSpec j, JobSpec ignore ->
-                    total += j.jenkinsJob.getTestFigure(TestCount.Pass) as int
+            int total = jobSpec.comparableJobsByType.sum { String type, Map<JobSpec, JobSpec> jobs ->
+                jobs.sum { JobSpec j, JobSpec ignore ->
+                    j.jenkinsJob.getTestFigure(TestCount.Pass) as int
                 }
             }
             return "$total"
         }
         inputs['FailedTestsAfter'] = {
-            int total = 0
-            jobSpec.comparableJobsByType.each { String type, Map<JobSpec, JobSpec> jobs ->
-                jobs.each { JobSpec j, JobSpec ignore ->
-                    total += j.jenkinsJob.getTestFigure(TestCount.Fail) as int
+            int total = jobSpec.comparableJobsByType.sum { String type, Map<JobSpec, JobSpec> jobs ->
+                jobs.sum { JobSpec j, JobSpec ignore ->
+                    j.jenkinsJob.getTestFigure(TestCount.Fail) as int
                 }
             }
             return "$total"
