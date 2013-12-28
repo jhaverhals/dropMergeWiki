@@ -43,6 +43,15 @@ class WikiTableBuilder {
         rows.add(m)
     }
 
+    WikiTableBuilder leftShift(Map<String, Object> values) {
+        addRow values
+        return this
+    }
+
+    WikiTableBuilder leftShift(List<Object> values) {
+        addRow values
+        return this
+    }
 
     public void process() {
         if (!headers.isEmpty()) {

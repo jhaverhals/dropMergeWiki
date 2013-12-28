@@ -152,6 +152,7 @@ class WikiTableBuilderTest {
         final builder = new WikiTableBuilder(new IndentPrinter(w, '', false))
         builder.addRow(['A': '1', 'B': '2'])
         builder.addRow(['C': '6', 'A': '4'])
+        builder << ['B': '5', 'A': '3']
         builder.process()
 
         Assert.assertEquals("<table class='confluenceTable'><tbody>" +
@@ -169,6 +170,11 @@ class WikiTableBuilderTest {
                         "<td class='confluenceTd'>4</td>" +
                         "<td class='confluenceTd' />" +
                         "<td class='confluenceTd'>6</td>" +
+                        "</tr>") +
+                ("<tr>" +
+                        "<td class='confluenceTd'>3</td>" +
+                        "<td class='confluenceTd'>5</td>" +
+                        "<td class='confluenceTd' />" +
                         "</tr>") +
                 "</tbody></table>", w.toString());
     }
