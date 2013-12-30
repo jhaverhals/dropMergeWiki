@@ -113,7 +113,7 @@ public class Jenkins {
         return result
     }
 
-    static Map<String, Integer> casesPerSuite(Object jsonRoot, final List<String> priorities = ['NORMAL', 'HIGH']) {
+    static Map<String, Integer> violationsPerSuite(Object jsonRoot, final List<String> priorities = ['NORMAL', 'HIGH']) {
         return jsonRoot.warnings
                 .findAll { priorities.contains(it.priority) }
                 .groupBy { it.fileName }
@@ -143,8 +143,8 @@ public class Jenkins {
         return getDiffsPerSuite(beforeJob.MBVReport, afterJob.MBVReport, priorities)
     }
     private static Map<String, Integer> getDiffsPerSuite(def beforeJobReport, def afterJobReport, List<String> priorities = ['NORMAL', 'HIGH']) {
-        Map<String, Integer> suitesBefore = casesPerSuite(beforeJobReport, priorities)
-        Map<String, Integer> suitesAfter = casesPerSuite(afterJobReport, priorities)
+        Map<String, Integer> suitesBefore = violationsPerSuite(beforeJobReport, priorities)
+        Map<String, Integer> suitesAfter = violationsPerSuite(afterJobReport, priorities)
 
         Map<String, String> beforeToAfter = correlateKeys(suitesBefore.keySet(), suitesAfter.keySet());
         Map<String, String> afterToBefore = correlateKeys(suitesAfter.keySet(), suitesBefore.keySet());
