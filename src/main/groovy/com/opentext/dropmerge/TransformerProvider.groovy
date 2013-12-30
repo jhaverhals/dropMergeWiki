@@ -9,14 +9,6 @@ public abstract class TransformerProvider {
     private static final String AFTER = 'After'
     private static final String BEFORE = 'Before'
 
-
-    public static Map<String, Closure<String>> loadTransformers(String transformerProviderClass, UpdateWikiProperties props) {
-        GroovyClassLoader gcl = new GroovyClassLoader();
-        Class clazz = gcl.parseClass(new File(transformerProviderClass))
-        TransformerProvider ifc = (TransformerProvider) clazz.newInstance()
-        return ifc.getTransformer(props)
-    }
-
     public static Map<String, Closure<?>> transferFromPreviousPage(UpdateWikiProperties props, String previousWikiDropMergePageId, List<String> fieldsFromPreviousPage, transformers) {
         // Read fields ending with 'After' and beginning with one of the elements of 'fieldFromPreviousPage'
         // and transfer them to the corresponding 'Before'-field of this page
@@ -29,8 +21,6 @@ public abstract class TransformerProvider {
             }
         }
     }
-
-    public abstract Map<String, Closure<String>> getTransformer(UpdateWikiProperties p);
 
     static String getUserLink(String shortName, String fullName) {
         Writer writer = new StringWriter()
@@ -105,11 +95,5 @@ public abstract class TransformerProvider {
             c(table)
             table.process()
         }
-    }
-
-    public static void main(String[] args) {
-        String jiraQuery = 'sprint = "PCT BOP 4.3 Sprint 6" AND resolution = Fixed AND issuetype not in ("Bug during story", Todo)';
-        String v = ('{jiraissues:' + COLUMNS + '|' + RENDER_MODE + '|' + TransformerProvider.URL + jiraQuery + '}')
-        println v.bytes.encodeBase64()
     }
 }
