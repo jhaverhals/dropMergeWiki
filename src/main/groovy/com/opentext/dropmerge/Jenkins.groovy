@@ -40,38 +40,6 @@ public class Jenkins {
     }
 
     public static Map<String, Integer> getTestDiffsPerSuite(List<JenkinsJob> beforeJobs, List<JenkinsJob> afterJobs) {
-
-        //Metaclass extension
-        ArrayList.metaClass.collectMap = { Closure<List<Object>> callback ->
-            def map = [:]
-            delegate.each {
-                List<Object> r = callback.call(it)
-                if (r && r.size() > 0)
-                    map[r[0]] = r[1]
-            }
-            return map
-        }
-
-        def casesPerSuite = {
-            if (it.suites) {
-                return it.suites.collectMap {
-                    int conSkippedCasesCount = it.cases.findAll { c -> c.status != 'SKIPPED' }.size() as int
-                    if (conSkippedCasesCount > 0)
-                        return [it.name, conSkippedCasesCount]
-                }
-            }
-
-            def map = [:]
-            it.childReports.each {
-                map << it.result.suites.collectMap {
-                    int conSkippedCasesCount = it.cases.findAll { c -> c.status != 'SKIPPED' }.size() as int
-                    if (conSkippedCasesCount > 0)
-                        return [it.name, conSkippedCasesCount]
-                }
-            }
-            return map
-        }
-
         def suitesBefore = join(beforeJobs.collect { casesPerSuite(it.testReport) })
         def suitesAfter = join(afterJobs.collect { casesPerSuite(it.testReport) })
 
@@ -111,6 +79,22 @@ public class Jenkins {
                 result[kvp.key] = kvp.value
         }
         return result
+    }
+
+    static Map<String, Integer> casesPerSuite(Object jsonRoot) {
+        if (jsonRoot.suites) {
+            return countCasesBySuite(jsonRoot)
+        }
+
+        return jsonRoot.childReports.inject([:]) { map, childReport ->
+            map << countCasesBySuite(childReport.result)
+        }
+    }
+
+    private static Map<String, Integer> countCasesBySuite(Object jsonRoot) {
+        return jsonRoot.suites
+                .collectEntries { [(it.name): (it.cases.findAll { c -> c.status != 'SKIPPED' }.size() as int)] }
+                .findAll { it.value > 0 }
     }
 
     static Map<String, Integer> violationsPerSuite(Object jsonRoot, final List<String> priorities = ['NORMAL', 'HIGH']) {
