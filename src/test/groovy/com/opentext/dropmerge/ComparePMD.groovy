@@ -11,15 +11,15 @@ class ComparePMD extends Specification {
         return job
     }
 
-    def "casesPerSuite: identicalPaths_identicalViolations"() {
+    def "violationsPerSuite: identicalPaths_identicalViolations"() {
 
         setup:
         JenkinsJob jobA = mockJobWithPMDReport('pmdResults1.json')
         JenkinsJob jobB = mockJobWithPMDReport('pmdResults1.json')
 
         when:
-        def casesA = Jenkins.casesPerSuite(jobA.PMDReport)
-        def casesB = Jenkins.casesPerSuite(jobB.PMDReport)
+        def casesA = Jenkins.violationsPerSuite(jobA.PMDReport)
+        def casesB = Jenkins.violationsPerSuite(jobB.PMDReport)
 
         then:
         casesA.size() > 0
@@ -33,7 +33,7 @@ class ComparePMD extends Specification {
         JenkinsJob jobA = mockJobWithPMDReport('pmdResults1.json')
 
         when:
-        def casesA = Jenkins.casesPerSuite(jobA.PMDReport).keySet()
+        def casesA = Jenkins.violationsPerSuite(jobA.PMDReport).keySet()
         def keyMap = Jenkins.correlateKeys(casesA, casesA)
 
         then:
@@ -51,8 +51,8 @@ class ComparePMD extends Specification {
         JenkinsJob jobB = mockJobWithPMDReport('pmdResults1.json')
 
         when:
-        def casesA = Jenkins.casesPerSuite(jobA.PMDReport)
-        def casesB = Jenkins.casesPerSuite(jobB.PMDReport)
+        def casesA = Jenkins.violationsPerSuite(jobA.PMDReport)
+        def casesB = Jenkins.violationsPerSuite(jobB.PMDReport)
         def keyMap = Jenkins.correlateKeys(casesA.keySet(), casesB.keySet())
 
         then:

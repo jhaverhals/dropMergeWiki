@@ -11,15 +11,15 @@ class CompareMBV extends Specification {
         return job
     }
 
-    def "casesPerSuite: identicalPaths_identicalViolations"() {
+    def "violationsPerSuite: identicalPaths_identicalViolations"() {
 
         setup:
         JenkinsJob jobA = mockJobWithMBVReport('mbvResults1.json')
         JenkinsJob jobB = mockJobWithMBVReport('mbvResults1.json')
 
         when:
-        def casesA = Jenkins.casesPerSuite(jobA.MBVReport)
-        def casesB = Jenkins.casesPerSuite(jobB.MBVReport)
+        def casesA = Jenkins.violationsPerSuite(jobA.MBVReport)
+        def casesB = Jenkins.violationsPerSuite(jobB.MBVReport)
 
         then:
         casesA.size() > 0
@@ -33,7 +33,7 @@ class CompareMBV extends Specification {
         JenkinsJob jobA = mockJobWithMBVReport('mbvResults1.json')
 
         when:
-        def casesA = Jenkins.casesPerSuite(jobA.MBVReport).keySet()
+        def casesA = Jenkins.violationsPerSuite(jobA.MBVReport).keySet()
         def keyMap = Jenkins.correlateKeys(casesA, casesA)
 
         then:
@@ -51,8 +51,8 @@ class CompareMBV extends Specification {
         JenkinsJob jobB = mockJobWithMBVReport('mbvResults1.json')
 
         when:
-        def casesA = Jenkins.casesPerSuite(jobA.MBVReport)
-        def casesB = Jenkins.casesPerSuite(jobB.MBVReport)
+        def casesA = Jenkins.violationsPerSuite(jobA.MBVReport)
+        def casesB = Jenkins.violationsPerSuite(jobB.MBVReport)
         def keyMap = Jenkins.correlateKeys(casesA.keySet(), casesB.keySet())
 
         then:
