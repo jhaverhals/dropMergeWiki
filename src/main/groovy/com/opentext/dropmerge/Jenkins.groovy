@@ -113,29 +113,11 @@ public class Jenkins {
         return result
     }
 
-    static Map<String, Integer> casesPerSuite(Object jsonRoot, List<String> priorities = ['NORMAL', 'HIGH']) {
-        ArrayList.metaClass.collectMap = { Closure<List<Object>> callback ->
-            def map = [:]
-            delegate.each {
-                List<Object> r = callback.call(it)
-                if (r && r.size() > 0) {
-                    if (map.containsKey(r[0]))
-                        map[r[0]] += r[1]
-                    else
-                        map[r[0]] = r[1]
-                }
-            }
-            return map
-        }
-
-        final List<String> prios = priorities
-        def casesPerSuite = {
-            return it.warnings.collectMap {
-                if (prios.contains(it.priority))
-                    return [it.fileName, 1]
-            }
-        }
-        return casesPerSuite(jsonRoot)
+    static Map<String, Integer> casesPerSuite(Object jsonRoot, final List<String> priorities = ['NORMAL', 'HIGH']) {
+        return jsonRoot.warnings
+                .findAll { priorities.contains(it.priority) }
+                .groupBy { it.fileName }
+                .collectEntries { [(it.key): it.value.size()] }
     }
 
     static Map<String, String> correlateKeys(Set<String> a, Set<String> b) {
