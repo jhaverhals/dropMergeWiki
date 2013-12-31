@@ -1,17 +1,15 @@
 package com.opentext.dropmerge
 
 import groovy.json.JsonSlurper
+import groovy.transform.Memoized
 
 class JenkinsJob {
-    private static int invocationCount = 0
-    private static final Map<String, Object> jsonCache = new HashMap<>()
-
     public static final String LAST_COMPLETED_BUILD = 'lastCompletedBuild'
     public static final String LAST_SUCCESSFUL_BUILD = 'lastSuccessfulBuild'
 
-    private Jenkins onInstance;
-    private String name
-    private Map<String, String> matrixAxes
+    private final Jenkins onInstance;
+    private final String name
+    private final Map<String, String> matrixAxes
 
     JenkinsJob(Jenkins onInstance, String name, Map<String, String> matrixAxes = null) {
         this.onInstance = onInstance
@@ -97,10 +95,13 @@ class JenkinsJob {
         jsonForJob(LAST_SUCCESSFUL_BUILD, 'muvipluginResult', 'warnings[priority,fileName]')
     }
 
+    @Memoized
     private def jsonForJob(String build, String subPage, String jsonPath, Integer depth = null) {
-        invocationCount++
-        final url = getBuildUrl(build) + '/' + (subPage ? subPage + '/' : '') + 'api/json' + (jsonPath ? '?tree=' + jsonPath + (depth ? '&' : '') : (depth ? '?' : '')) + (depth ? "depth=$depth" : '')
-        jsonCache[url] ?: (jsonCache[url] = new JsonSlurper().parseText(new URL(url).text))
+        String url = [getBuildUrl(build), subPage, 'api','json'].findAll {it != null }.join('/')
+        if(jsonPath)    url +="?tree=$jsonPath"
+        else if(depth)  url += "?depth=$depth"
+
+        return new JsonSlurper().parseText(new URL(url).text)
     }
 
     private def jsonForJob(String subPage, String jsonPath) {

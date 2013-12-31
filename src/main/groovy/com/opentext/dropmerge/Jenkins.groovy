@@ -1,5 +1,7 @@
 package com.opentext.dropmerge
 
+import groovy.transform.Memoized
+
 public class Jenkins {
 
     private final String rootUrl;
@@ -8,6 +10,7 @@ public class Jenkins {
         this.rootUrl = rootUrl
     }
 
+    @Memoized
     public JenkinsJob withJob(String name, Map<String, String> matrixAxes = null) {
         return new JenkinsJob(this, name, matrixAxes);
     }

@@ -1,7 +1,10 @@
 package org.jenkinsci.images
 
+import groovy.transform.Memoized
+
 class IconCSS {
 
+    @Memoized
     public static String getStyle() {
         StringBuilder sb = new StringBuilder('.jenkinsJobStatus{background-repeat: no-repeat; padding-left: 19px; width: 16px; height: 16px;}').append System.lineSeparator()
 
