@@ -111,12 +111,7 @@ class ComparingJobsSpec extends JobsSpec {
         }
 
         String getJustificationsForClassName(String className) {
-            StringBuilder sb = new StringBuilder()
-            predicates2DescriptionMap.each { Closure<Boolean> predicate, String s ->
-                if (predicate.call(className))
-                    sb.append(s).append(' ')
-            }
-            return sb.toString()
+            return predicates2DescriptionMap.findAll { it.key(className) }.values().join(' ')
         }
     }
 
