@@ -17,8 +17,9 @@ class JenkinsJob {
         this.matrixAxes = matrixAxes
 
         if (matrixAxes) {
-            List<String[]> x = jsonForJob(null, null, 'activeConfigurations[name]')['activeConfigurations'].collect { it.name.split(',') }
-            def matches = x.findAll { String[] configuration ->
+            List<String[]> matches = jsonForJob(null, null, 'activeConfigurations[name]')['activeConfigurations']
+                    .collect { it.name.split(',') }
+                    .findAll { String[] configuration ->
                 matrixAxes.every { String axis, String value ->
                     configuration.contains("$axis=$value")
                 }
@@ -97,9 +98,9 @@ class JenkinsJob {
 
     @Memoized
     private def jsonForJob(String build, String subPage, String jsonPath, Integer depth = null) {
-        String url = [getBuildUrl(build), subPage, 'api','json'].findAll {it != null }.join('/')
-        if(jsonPath)    url +="?tree=$jsonPath"
-        else if(depth)  url += "?depth=$depth"
+        String url = [getBuildUrl(build), subPage, 'api', 'json'].findAll { it != null }.join('/')
+        if (jsonPath) url += "?tree=$jsonPath"
+        else if (depth) url += "?depth=$depth"
 
         return new JsonSlurper().parseText(new URL(url).text)
     }
@@ -124,7 +125,7 @@ class JenkinsJob {
     }
 
     public def getMatrixSubJobs() {
-        return jsonForJob(null, null, "activeConfigurations[name]")["activeConfigurations"].collect {
+        return jsonForJob(null, null, 'activeConfigurations[name]')['activeConfigurations'].collect {
             onInstance.withJob("$name/${it.name}")
         }
     }
@@ -137,10 +138,10 @@ class JenkinsJob {
     public java.lang.String toString() {
         String n
         if (matrixAxes) {
-            n = "'" + name.substring(0, name.indexOf('/')) + "' with $matrixAxes"
+            n = "'${name.takeWhile { it != '/' }}' with $matrixAxes"
         } else {
             n = "'$name'"
         }
-        return n + ' on ' + new URL(onInstance.rootUrl).host.replaceFirst('.vanenburg.com$', '');
+        return "$n on " + new URL(onInstance.rootUrl).host - ~/\.vanenburg\.com$/;
     }
 }

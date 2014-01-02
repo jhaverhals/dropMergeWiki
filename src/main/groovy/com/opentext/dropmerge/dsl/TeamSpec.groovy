@@ -7,7 +7,7 @@ import com.opentext.dropmerge.TransformerProvider
 class TeamSpec {
 
     private Map<String, Closure<String>> inputs
-    private List<String> userNames = []
+    private Set<String> userNames = []
 
     TeamSpec(Map<String, Closure<String>> inputs) {
         this.inputs = inputs
