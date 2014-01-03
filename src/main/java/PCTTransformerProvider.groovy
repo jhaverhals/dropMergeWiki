@@ -51,6 +51,34 @@ DropMergeInput.provide {
                 withJob { job 'pct-trunk-wip-frt-w-x64' on buildMasterNL; description 'Windows' }
 //                comparedToJob { job 'PlatformCore-W' on jenkinsOfSVT; description 'Windows' }
             }
+            /*ofType('UIUnit') {
+                Jenkins globalUIUnits = new Jenkins('http://cin9002:8080')
+
+                withJob {
+                    job 'pct-trunk-wip-uiunit' on buildMasterNL matrixValues component: 'adminui';
+                    description 'intadminui'
+                }
+                comparedToJob { job 'Admin-FITs-Trunk' on globalUIUnits }
+                andJob { job 'Admin-WithoutFITs-Trunk' on globalUIUnits }
+
+                withJob {
+                    job 'pct-trunk-wip-uiunit' on buildMasterNL matrixValues component: 'webgateway';
+                    description 'webgateway'
+                }
+                comparedToJob { job 'WebGateway-Trunk' on globalUIUnits }
+
+                withJob {
+                    job 'pct-trunk-wip-uiunit' on buildMasterNL matrixValues component: 'artifactaudit';
+                    description 'audit'
+                }
+                comparedToJob { job 'Audit-Trunk' on globalUIUnits }
+
+                withJob {
+                    job 'pct-trunk-wip-uiunit' on buildMasterNL matrixValues component: 'ldapconn';
+                    description 'ldapconn'
+                }
+                comparedToJob { job 'LDAPConn-Trunk' on globalUIUnits }
+            } */
         }
         pmd {
             trunk { job 'pct-trunk-build-installer-l-x64' on buildMasterNL }
