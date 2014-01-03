@@ -28,13 +28,13 @@ class QualityAndProcessQuestionsSpec {
         xmlMemoryManagementIssuesIntroduced(answer, { withText comment })
     }
 
-    public void regressionTestPassWithPayloadValidation(ComboBoxAnswers answer,
+    public void regressionTestsPassWithPayloadValidation(ComboBoxAnswers answer,
                                                         @DelegatesTo(FreeTextSpec) Closure comment = null) {
         addInput('RegressionTestsPassWithPayloadValidation', [yes, no, notTested], answer, comment)
     }
 
-    public void regressionTestPassWithPayloadValidation(ComboBoxAnswers answer, String comment) {
-        regressionTestPassWithPayloadValidation(answer, { withText comment })
+    public void regressionTestsPassWithPayloadValidation(ComboBoxAnswers answer, String comment) {
+        regressionTestsPassWithPayloadValidation(answer, { withText comment })
     }
 
     public void compliantWithHorizontalComponentRequirements(ComboBoxAnswers answer,
