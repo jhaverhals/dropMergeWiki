@@ -12,12 +12,18 @@ public class DropMergeInput {
     public static final UpdateWikiProperties myProperties = loadProperties('team.properties', 'user.properties', 'session.properties')
     private WikiSpec wikiSpecification
     private boolean persist = true
+    private List<Spec> specs = new ArrayList<>()
 
 
     static DropMergeInput provide(@DelegatesTo(DropMergeInput) Closure closure) {
+        // Define data
         DropMergeInput inputDsl = new DropMergeInput()
         inputDsl.with closure
 
+        // Fetch data
+        inputDsl.specs.each { inputs << it.inputData }
+
+        // Persist to wiki
         inputDsl.persist()
 
         return inputDsl
@@ -56,8 +62,10 @@ public class DropMergeInput {
     }
 
     def team(@DelegatesTo(TeamSpec) Closure team) {
-        TeamSpec teamSpec = new TeamSpec(inputs)
+        TeamSpec teamSpec = new TeamSpec()
         teamSpec.with team
+
+        specs << teamSpec
     }
 
     DateDsl getEvery() { new DateDsl() }
@@ -84,17 +92,7 @@ public class DropMergeInput {
         CrucibleSpec crucibleSpec = new CrucibleSpec()
         crucibleSpec.with crucible
 
-        final String crucibleAuthToken = Crucible.getCrucibleAuthToken(crucibleSpec.userName, crucibleSpec.password)
-        final int openReviewCount = Crucible.getOpenReviewCount(crucibleSpec.projectKey, crucibleAuthToken)
-
-        inputs['ReviewsDone'] = { item ->
-            return CordysWiki.selectOption(item, (openReviewCount == 0 ? 'Yes' : 'No'))
-        }
-        inputs['ReviewsDoneComment'] = {
-            TransformerProvider.getLink(Crucible.getBrowseReviewsURL(crucibleSpec.projectKey),
-                    (openReviewCount > 0 ? "$openReviewCount open review(s)" : 'All reviews closed')
-            )
-        }
+        specs << crucibleSpec
     }
 
     def wiki(@DelegatesTo(WikiSpec) Closure wiki) {
@@ -105,13 +103,17 @@ public class DropMergeInput {
     }
 
     def jenkins(@DelegatesTo(JenkinsSpec) Closure jenkins) {
-        JenkinsSpec jenkinsSpec = new JenkinsSpec(inputs)
+        JenkinsSpec jenkinsSpec = new JenkinsSpec()
         jenkinsSpec.with jenkins
+
+        specs << jenkinsSpec
     }
 
     def qualityAndProcessQuestions(@DelegatesTo(QualityAndProcessQuestionsSpec) Closure jenkins) {
-        QualityAndProcessQuestionsSpec questionsSpec = new QualityAndProcessQuestionsSpec(inputs)
+        QualityAndProcessQuestionsSpec questionsSpec = new QualityAndProcessQuestionsSpec()
         questionsSpec.with jenkins
+
+        specs << questionsSpec
     }
 
     def functionalDescription(@DelegatesTo(FreeTextSpec) Closure desc) {

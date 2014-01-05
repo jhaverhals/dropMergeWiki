@@ -3,12 +3,13 @@ package com.opentext.dropmerge.dsl
 import com.opentext.dropmerge.CordysWiki
 
 
-class QualityAndProcessQuestionsSpec {
+class QualityAndProcessQuestionsSpec extends Spec {
 
-    private Map<String, Closure<String>> inputs
+    private Map<String, Closure<String>> inputs = new HashMap<>()
 
-    QualityAndProcessQuestionsSpec(Map<String, Closure<String>> inputs) {
-        this.inputs = inputs
+    @Override
+    Map<String, Closure<String>> getInputData() {
+        inputs
     }
 
     public void performanceDegraded(ComboBoxAnswers answer, @DelegatesTo(FreeTextSpec) Closure comment = null) {
@@ -29,7 +30,7 @@ class QualityAndProcessQuestionsSpec {
     }
 
     public void regressionTestsPassWithPayloadValidation(ComboBoxAnswers answer,
-                                                        @DelegatesTo(FreeTextSpec) Closure comment = null) {
+                                                         @DelegatesTo(FreeTextSpec) Closure comment = null) {
         addInput('RegressionTestsPassWithPayloadValidation', [yes, no, notTested], answer, comment)
     }
 

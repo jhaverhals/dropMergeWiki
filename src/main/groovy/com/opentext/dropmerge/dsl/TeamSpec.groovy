@@ -4,19 +4,19 @@ import com.opentext.dropmerge.CordysWiki
 import com.opentext.dropmerge.TransformerProvider
 
 
-class TeamSpec {
+class TeamSpec extends Spec{
 
-    private Map<String, Closure<String>> inputs
+    private Map<String, Closure<String>> inputs = new HashMap<>()
     private Set<String> userNames = []
 
-    TeamSpec(Map<String, Closure<String>> inputs) {
-        this.inputs = inputs
+    @Override
+    Map<String, Closure<String>> getInputData() {
+        inputs
     }
 
     def name(String name) {
         inputs['Team'] = { item -> CordysWiki.selectOption(item, name) }
     }
-
 
     def scrumMaster(String fullName, String userName) {
         handleAddition('ScrumMasterName', userName, fullName)

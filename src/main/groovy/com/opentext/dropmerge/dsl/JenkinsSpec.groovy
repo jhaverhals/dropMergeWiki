@@ -4,12 +4,13 @@ import com.opentext.dropmerge.*
 import groovy.xml.MarkupBuilder
 import org.jenkinsci.images.IconCSS
 
-class JenkinsSpec {
+class JenkinsSpec extends Spec{
 
-    private Map<String, Closure<String>> inputs
+    private Map<String, Closure<String>> inputs = new HashMap<>()
 
-    JenkinsSpec(Map<String, Closure<String>> inputs) {
-        this.inputs = inputs
+    @Override
+    Map<String, Closure<String>> getInputData() {
+        inputs
     }
 
     void regressionTests(@DelegatesTo(TestTypesSpec) Closure jobsByType) {
