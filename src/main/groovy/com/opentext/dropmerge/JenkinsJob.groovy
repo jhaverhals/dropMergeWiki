@@ -142,6 +142,6 @@ class JenkinsJob {
         } else {
             n = "'$name'"
         }
-        return "$n on " + new URL(onInstance.rootUrl).host - ~/\.vanenburg\.com$/;
+        return "$n on " + (new URL(onInstance.rootUrl).host - ~/\.vanenburg\.com$/);
     }
 }
