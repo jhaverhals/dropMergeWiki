@@ -110,13 +110,13 @@ public class Jenkins {
     static Map<String, String> correlateKeys(Set<String> a, Set<String> b) {
         Map<String, String> a2b = new TreeMap<String, String>()
         a.each { String before ->
-            int matchCount = -1
-            a2b[before] = null
-            b.each { String it ->
+            b.inject(-1) { max, it ->
                 int m = match(before, it)
-                if (m > matchCount) {
-                    matchCount = m
+                if (m > max) {
                     a2b[before] = it
+                    return m
+                } else {
+                    return max
                 }
             }
         }
