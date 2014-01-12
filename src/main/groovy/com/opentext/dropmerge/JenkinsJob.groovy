@@ -117,14 +117,14 @@ class JenkinsJob {
     }
 
     public String getJobUrl() {
-        onInstance.rootUrl + '/job/' + name
+        "$onInstance.rootUrl/job/$name"
     }
 
     public String getBuildUrl(String build) {
         if (!build)
             jobUrl
         else
-            jobUrl + '/' + build
+            "$jobUrl/$build"
     }
 
     public def getMatrixSubJobs() {
