@@ -10,6 +10,10 @@ public class Jenkins {
         this.rootUrl = rootUrl
     }
 
+    public Jenkins(URI rootUrl) {
+        this.rootUrl = rootUrl.toString()
+    }
+
     @Memoized
     public JenkinsJob withJob(String name, Map<String, String> matrixAxes = null) {
         return new JenkinsJob(this, name, matrixAxes);
