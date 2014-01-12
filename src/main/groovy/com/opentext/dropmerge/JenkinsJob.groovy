@@ -96,13 +96,17 @@ class JenkinsJob {
         jsonForJob(LAST_SUCCESSFUL_BUILD, 'muvipluginResult', 'warnings[priority,fileName]')
     }
 
-    @Memoized
     private def jsonForJob(String build, String subPage, String jsonPath, Integer depth = null) {
         String url = [getBuildUrl(build), subPage, 'api', 'json'].findAll { it != null }.join('/')
         if (jsonPath) url += "?tree=$jsonPath"
         else if (depth) url += "?depth=$depth"
 
-        return new JsonSlurper().parseText(new URL(url).text)
+        return slurpJson(url)
+    }
+
+    @Memoized
+    private static def slurpJson(String url){
+        new JsonSlurper().parseText(new URL(url).text)
     }
 
     private def jsonForJob(String subPage, String jsonPath) {
