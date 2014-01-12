@@ -47,8 +47,8 @@ public class Jenkins {
     }
 
     public static Map<String, Integer> getTestDiffsPerSuite(List<JenkinsJob> beforeJobs, List<JenkinsJob> afterJobs) {
-        def suitesBefore = join(beforeJobs.collect { casesPerSuite(it.testReport) })
-        def suitesAfter = join(afterJobs.collect { casesPerSuite(it.testReport) })
+        def suitesBefore = joinAll(beforeJobs)
+        def suitesAfter = joinAll(afterJobs)
 
         Map<String, Integer> diffsPerSuite = new TreeMap<String, Integer>()
 
@@ -64,6 +64,15 @@ public class Jenkins {
         }
 
         return diffsPerSuite
+    }
+
+    private static Map<String, Integer> joinAll(List<JenkinsJob> jobs) {
+        return join(jobs.collectMany { JenkinsJob it ->
+            if(it.matrixSubJobs.isEmpty())
+                return [countCasesBySuite(it.testReport)]
+            else
+                return it.matrixSubJobs.collect { countCasesBySuite(it.testReport) }
+        })
     }
 
     public static Map<String, Integer> join(List<Map<String, Integer>> list) {
@@ -86,16 +95,6 @@ public class Jenkins {
                 result[kvp.key] = kvp.value
         }
         return result
-    }
-
-    static Map<String, Integer> casesPerSuite(Object jsonRoot) {
-        if (jsonRoot.suites) {
-            return countCasesBySuite(jsonRoot)
-        }
-
-        return jsonRoot.childReports.inject([:]) { map, childReport ->
-            map << countCasesBySuite(childReport.result)
-        }
     }
 
     private static Map<String, Integer> countCasesBySuite(Object jsonRoot) {
