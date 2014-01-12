@@ -11,23 +11,30 @@ import javax.servlet.http.HttpServletResponse
 import static javax.servlet.http.HttpServletResponse.SC_OK
 
 public class HttpServerRule extends ExternalResource {
-    private Server generatedServer
+    private Server generatedServer = new Server(0)
     private final Map<String, byte[]> pathMapping = new HashMap<>()
+    private int invocationCounter = 0
 
     public URI getURI() {
         return generatedServer.getURI()
     }
 
+    public int getInvocationCount() {
+        return invocationCounter
+    }
+
     @Override
     public void before() throws Exception {
-        generatedServer = new Server(0)
         generatedServer.handler = new AbstractHandler() {
             @Override
             public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException {
-                if (pathMapping.containsKey(target)) {
+                invocationCounter++
+                String normalizedTarget = normalizePath "$target${request.queryString ? "?$request.queryString" : ''}"
+                if (pathMapping.containsKey(normalizedTarget)) {
+                    println normalizedTarget
                     response.status = SC_OK
-                    response.contentType = "text/xml;charset=utf-8"
-                    response.outputStream << pathMapping.get(target)
+                    response.contentType = 'application/json;charset=utf-8'
+                    response.outputStream << pathMapping.get(normalizedTarget)
                     baseRequest.handled = true
                 }
             }
@@ -44,7 +51,18 @@ public class HttpServerRule extends ExternalResource {
         }
     }
 
+    private String normalizePath(String p) {
+        p.dropWhile { it == '/' }
+    }
+
     public void addResponseForPath(String path, byte[] response) {
-        pathMapping.put(path, response)
+        pathMapping.put(normalizePath(path), response)
+    }
+
+    public void addJSONResponseForPath(String path, groovy.json.JsonBuilder jsonBuilder) {
+        new ByteArrayOutputStream().with { baos ->
+            new OutputStreamWriter(baos).with { osw -> jsonBuilder.writeTo osw; flush() }
+            addResponseForPath(path, baos.toByteArray())
+        }
     }
 }
