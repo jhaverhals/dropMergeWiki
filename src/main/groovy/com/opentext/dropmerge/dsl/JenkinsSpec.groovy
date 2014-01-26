@@ -140,8 +140,8 @@ class JenkinsSpec {
                             linkWip = getPMDFileUrl(jobSpec.wip, jenkinsTerm, k)
                         }
 
-                        table.addRow('File': {
-                            mkp.yield k + ' '
+                        table.addRow('File': k,
+                                'Link':{
                             if(linkTrunk) {
                                 a(href: linkTrunk, 'T')
                                 mkp.yield ' '
@@ -149,7 +149,7 @@ class JenkinsSpec {
                             if(linkWip) {
                                 a(href: linkWip, 'W')
                             }
-                        }, 'Difference': String.format('%+d', v))
+                        }, 'Diff': String.format('%+d', v))
                     }
                 }
             }
