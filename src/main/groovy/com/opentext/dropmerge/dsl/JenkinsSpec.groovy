@@ -133,9 +133,9 @@ class JenkinsSpec {
                             if(differenceDetails.beforeToAfter[k])
                                 linkWip = "${jobSpec.wip.getBuildUrl(JenkinsJob.LAST_SUCCESSFUL_BUILD)}/pmdResult/$jenkinsTerm/file.${differenceDetails.beforeToAfter[k].hashCode()}/"
                         } else if(differenceDetails.afterToBefore.containsKey(k))   {
-                            linkTrunk = "${jobSpec.wip.getBuildUrl(JenkinsJob.LAST_SUCCESSFUL_BUILD)}/pmdResult/$jenkinsTerm/file.${k.hashCode()}/"
+                            linkWip = "${jobSpec.wip.getBuildUrl(JenkinsJob.LAST_SUCCESSFUL_BUILD)}/pmdResult/$jenkinsTerm/file.${k.hashCode()}/"
                             if(differenceDetails.afterToBefore[k])
-                                linkWip = "${jobSpec.trunk.getBuildUrl(JenkinsJob.LAST_SUCCESSFUL_BUILD)}/pmdResult/$jenkinsTerm/file.${differenceDetails.afterToBefore[k].hashCode()}/"
+                                linkTrunk = "${jobSpec.trunk.getBuildUrl(JenkinsJob.LAST_SUCCESSFUL_BUILD)}/pmdResult/$jenkinsTerm/file.${differenceDetails.afterToBefore[k].hashCode()}/"
                         }
 
                         table.addRow('File': {

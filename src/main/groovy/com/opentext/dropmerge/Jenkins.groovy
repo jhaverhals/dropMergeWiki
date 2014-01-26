@@ -168,7 +168,7 @@ public class Jenkins {
                 diffsPerSuite.put(kvp.key, -kvp.value)
         }
 
-        return new DifferenceDetails(suitesBefore, suitesAfter, beforeToAfter,afterToBefore, diffsPerSuite)
+        return new DifferenceDetails(suitesBefore, suitesAfter, beforeToAfter, afterToBefore, diffsPerSuite)
     }
 
     static int match(String a, String b) {
