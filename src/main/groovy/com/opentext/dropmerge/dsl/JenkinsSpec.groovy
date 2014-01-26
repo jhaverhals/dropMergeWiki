@@ -135,7 +135,7 @@ class JenkinsSpec {
     private Closure buildDiffTable(WikiTableBuilder table, Jenkins.DifferenceDetails diffDetails, String reportUrl, ComparableJobsSpec jobSpec) {
         return { k, v ->
             String linkTrunk, linkWip
-            boolean b2a = false, a2b;
+            boolean b2a, a2b;
 
             if ((b2a = diffDetails.beforeToAfter.containsKey(k)) || diffDetails.onlyBefore.contains(k)) {
                 linkTrunk = getFileReportUrl(jobSpec.trunk, reportUrl, k)
@@ -150,12 +150,14 @@ class JenkinsSpec {
             table.addRow(
                     'File': k,
                     'Link': {
-                        if (linkTrunk)
-                            a(href: linkTrunk, 'T')
-                        if (linkTrunk && linkWip)
-                            mkp.yield '/'
-                        if (linkWip)
-                            a(href: linkWip, 'W')
+                        nobr {
+                            if (linkTrunk)
+                                a(href: linkTrunk, 'T')
+                            if (linkTrunk && linkWip)
+                                mkp.yield ' / '
+                            if (linkWip)
+                                a(href: linkWip, 'W')
+                        }
                     },
                     'Diff': String.format('%+d', v))
         }
