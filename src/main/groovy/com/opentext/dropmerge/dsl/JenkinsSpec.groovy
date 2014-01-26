@@ -128,30 +128,36 @@ class JenkinsSpec {
                     Jenkins.DifferenceDetails differenceDetails = Jenkins.getDetailedPMDDiffsPerSuite(jobSpec.trunk, jobSpec.wip, [jenkinsTerm])
                     differenceDetails.diffsPerSuite.each { k, v ->
                         String linkTrunk, linkWip
-                        if(differenceDetails.beforeToAfter.containsKey(k))   {
-                            linkTrunk = "${jobSpec.trunk.getBuildUrl(JenkinsJob.LAST_SUCCESSFUL_BUILD)}/pmdResult/$jenkinsTerm/file.${k.hashCode()}/"
-                            if(differenceDetails.beforeToAfter[k])
-                                linkWip = "${jobSpec.wip.getBuildUrl(JenkinsJob.LAST_SUCCESSFUL_BUILD)}/pmdResult/$jenkinsTerm/file.${differenceDetails.beforeToAfter[k].hashCode()}/"
-                        } else if(differenceDetails.afterToBefore.containsKey(k))   {
-                            linkWip = "${jobSpec.wip.getBuildUrl(JenkinsJob.LAST_SUCCESSFUL_BUILD)}/pmdResult/$jenkinsTerm/file.${k.hashCode()}/"
-                            if(differenceDetails.afterToBefore[k])
-                                linkTrunk = "${jobSpec.trunk.getBuildUrl(JenkinsJob.LAST_SUCCESSFUL_BUILD)}/pmdResult/$jenkinsTerm/file.${differenceDetails.afterToBefore[k].hashCode()}/"
+                        if(differenceDetails.beforeToAfter.containsKey(k)) {
+                            linkTrunk = getPMDFileUrl(jobSpec.trunk, jenkinsTerm, k)
+                            linkWip = getPMDFileUrl(jobSpec.wip, jenkinsTerm, differenceDetails.beforeToAfter[k])
+                        } else if(differenceDetails.afterToBefore.containsKey(k)) {
+                            linkWip = getPMDFileUrl(jobSpec.wip, jenkinsTerm, k)
+                            linkTrunk = getPMDFileUrl(jobSpec.trunk, jenkinsTerm, differenceDetails.afterToBefore[k])
+                        } else if(differenceDetails.onlyBefore.contains(k)) {
+                            linkTrunk = getPMDFileUrl(jobSpec.trunk, jenkinsTerm, k)
+                        } else if(differenceDetails.onlyAfter.contains(k)) {
+                            linkWip = getPMDFileUrl(jobSpec.wip, jenkinsTerm, k)
                         }
 
                         table.addRow('File': {
                             mkp.yield k + ' '
                             if(linkTrunk) {
-                                a(href: linkTrunk, 'trunk')
+                                a(href: linkTrunk, 'T')
                                 mkp.yield ' '
                             }
                             if(linkWip) {
-                                a(href: linkWip, 'wip')
+                                a(href: linkWip, 'W')
                             }
                         }, 'Difference': String.format('%+d', v))
                     }
                 }
             }
         }
+    }
+
+    private String getPMDFileUrl(JenkinsJob job, String prio, String fileName) {
+        return "${job.getBuildUrl(JenkinsJob.LAST_SUCCESSFUL_BUILD)}/pmdResult/$prio/file.${fileName.hashCode()}/"
     }
 
     void compilerWarnings(@DelegatesTo(ComparableJobsSpec) Closure jobs) {

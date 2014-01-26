@@ -150,12 +150,15 @@ public class Jenkins {
         Map<String, String> afterToBefore = correlateKeys(suitesAfter.keySet(), suitesBefore.keySet());
 
         Map<String, Integer> diffsPerSuite = new TreeMap<String, Integer>()
+        List<String> onlyBefore = new ArrayList<String>()
+        List<String> onlyAfter = new ArrayList<String>()
 
         for (Map.Entry<String, Integer> kvp : suitesAfter) {
             String beforeKey = afterToBefore[kvp.key]
-            if (!suitesBefore.containsKey(beforeKey))
+            if (!suitesBefore.containsKey(beforeKey)) {
                 diffsPerSuite.put(kvp.key, kvp.value)
-            else {
+                onlyAfter.add(kvp.key)
+            } else {
                 if (suitesBefore[beforeKey] != kvp.value) {
                     String name = kvp.key.substring(kvp.key.length() - match(kvp.key, beforeKey) + 1)
                     diffsPerSuite.put(kvp.key, kvp.value - suitesBefore[beforeKey])
@@ -164,11 +167,13 @@ public class Jenkins {
         }
         for (Map.Entry<String, Integer> kvp : suitesBefore) {
             String afterKey = beforeToAfter[kvp.key]
-            if (!suitesAfter.containsKey(afterKey))
+            if (!suitesAfter.containsKey(afterKey)) {
                 diffsPerSuite.put(kvp.key, -kvp.value)
+                onlyBefore.add(kvp.key)
+            }
         }
 
-        return new DifferenceDetails(suitesBefore, suitesAfter, beforeToAfter, afterToBefore, diffsPerSuite)
+        return new DifferenceDetails(suitesBefore, suitesAfter, beforeToAfter, afterToBefore, onlyBefore, onlyAfter, diffsPerSuite)
     }
 
     static int match(String a, String b) {
@@ -195,11 +200,11 @@ public class Jenkins {
 
     @TupleConstructor
     static class DifferenceDetails {
-        Map<String, Integer> suitesBefore;
-        Map<String, Integer> suitesAfter;
+        Map<String, Integer> suitesBefore, suitesAfter
 
-        Map<String, String> beforeToAfter
-        Map<String, String> afterToBefore
+        Map<String, String> beforeToAfter, afterToBefore
+
+        List<String> onlyBefore, onlyAfter
 
         Map<String, Integer> diffsPerSuite
 
