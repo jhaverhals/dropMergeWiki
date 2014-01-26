@@ -125,8 +125,29 @@ class JenkinsSpec {
             [HIGH: 'High', NORMAL: 'Medium'].each { String jenkinsTerm, String wikiFieldTerm ->
                 inputs["PMDViolations${wikiFieldTerm}Comment"] = createQualityMetricComment(jobSpec, "pmdResult/$jenkinsTerm", 'PMD results')
                 inputs["PMDViolations${wikiFieldTerm}Comment"] += TransformerProvider.withTable { table ->
-                    Jenkins.getPMDDiffsPerSuite(jobSpec.trunk, jobSpec.wip, [jenkinsTerm]).each { k, v ->
-                        table.addRow('File': k, 'Difference': String.format('%+d', v))
+                    Jenkins.DifferenceDetails differenceDetails = Jenkins.getDetailedPMDDiffsPerSuite(jobSpec.trunk, jobSpec.wip, [jenkinsTerm])
+                    differenceDetails.diffsPerSuite.each { k, v ->
+                        String linkTrunk, linkWip
+                        if(differenceDetails.beforeToAfter.containsKey(k))   {
+                            linkTrunk = "${jobSpec.trunk.getBuildUrl(JenkinsJob.LAST_SUCCESSFUL_BUILD)}/pmdResult/$jenkinsTerm/file.${k.hashCode()}/"
+                            if(differenceDetails.beforeToAfter[k])
+                                linkWip = "${jobSpec.wip.getBuildUrl(JenkinsJob.LAST_SUCCESSFUL_BUILD)}/pmdResult/$jenkinsTerm/file.${differenceDetails.beforeToAfter[k].hashCode()}/"
+                        } else if(differenceDetails.afterToBefore.containsKey(k))   {
+                            linkTrunk = "${jobSpec.wip.getBuildUrl(JenkinsJob.LAST_SUCCESSFUL_BUILD)}/pmdResult/$jenkinsTerm/file.${k.hashCode()}/"
+                            if(differenceDetails.afterToBefore[k])
+                                linkWip = "${jobSpec.trunk.getBuildUrl(JenkinsJob.LAST_SUCCESSFUL_BUILD)}/pmdResult/$jenkinsTerm/file.${differenceDetails.afterToBefore[k].hashCode()}/"
+                        }
+
+                        table.addRow('File': {
+                            mkp.yield k + ' '
+                            if(linkTrunk) {
+                                a(href: linkTrunk, 'trunk')
+                                mkp.yield ' '
+                            }
+                            if(linkWip) {
+                                a(href: linkWip, 'wip')
+                            }
+                        }, 'Difference': String.format('%+d', v))
                     }
                 }
             }

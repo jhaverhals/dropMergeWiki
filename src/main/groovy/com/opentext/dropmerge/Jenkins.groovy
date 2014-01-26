@@ -1,6 +1,7 @@
 package com.opentext.dropmerge
 
 import groovy.transform.Memoized
+import groovy.transform.TupleConstructor
 
 public class Jenkins {
 
@@ -129,10 +130,19 @@ public class Jenkins {
     public static Map<String, Integer> getPMDDiffsPerSuite(JenkinsJob beforeJob, JenkinsJob afterJob, List<String> priorities = ['NORMAL', 'HIGH']) {
         return getDiffsPerSuite(beforeJob.PMDReport, afterJob.PMDReport, priorities)
     }
+    public static DifferenceDetails getDetailedPMDDiffsPerSuite(JenkinsJob beforeJob, JenkinsJob afterJob, List<String> priorities = ['NORMAL', 'HIGH']) {
+        return getDetailedDiffsPerSuite(beforeJob.PMDReport, afterJob.PMDReport, priorities)
+    }
     public static Map<String, Integer> getMBVDiffsPerSuite(JenkinsJob beforeJob, JenkinsJob afterJob, List<String> priorities = ['NORMAL', 'HIGH']) {
         return getDiffsPerSuite(beforeJob.MBVReport, afterJob.MBVReport, priorities)
     }
+    public static DifferenceDetails getDetailedMBVDiffsPerSuite(JenkinsJob beforeJob, JenkinsJob afterJob, List<String> priorities = ['NORMAL', 'HIGH']) {
+        return getDetailedDiffsPerSuite(beforeJob.MBVReport, afterJob.MBVReport, priorities)
+    }
     private static Map<String, Integer> getDiffsPerSuite(def beforeJobReport, def afterJobReport, List<String> priorities = ['NORMAL', 'HIGH']) {
+         return getDetailedDiffsPerSuite(beforeJobReport,afterJobReport, priorities).diffsPerSuite
+    }
+    private static DifferenceDetails getDetailedDiffsPerSuite(def beforeJobReport, def afterJobReport, List<String> priorities = ['NORMAL', 'HIGH']) {
         Map<String, Integer> suitesBefore = violationsPerSuite(beforeJobReport, priorities)
         Map<String, Integer> suitesAfter = violationsPerSuite(afterJobReport, priorities)
 
@@ -158,7 +168,7 @@ public class Jenkins {
                 diffsPerSuite.put(kvp.key, -kvp.value)
         }
 
-        return diffsPerSuite
+        return new DifferenceDetails(suitesBefore, suitesAfter, beforeToAfter,afterToBefore, diffsPerSuite)
     }
 
     static int match(String a, String b) {
@@ -181,5 +191,17 @@ public class Jenkins {
         return path.reverse().takeWhile {
             it == '/' && --i == 0
         }.reverse()
+    }
+
+    @TupleConstructor
+    static class DifferenceDetails {
+        Map<String, Integer> suitesBefore;
+        Map<String, Integer> suitesAfter;
+
+        Map<String, String> beforeToAfter
+        Map<String, String> afterToBefore
+
+        Map<String, Integer> diffsPerSuite
+
     }
 }
