@@ -126,38 +126,43 @@ class JenkinsSpec {
                 inputs["PMDViolations${wikiFieldTerm}Comment"] = createQualityMetricComment(jobSpec, "pmdResult/$jenkinsTerm", 'PMD results')
                 inputs["PMDViolations${wikiFieldTerm}Comment"] += TransformerProvider.withTable { table ->
                     Jenkins.DifferenceDetails differenceDetails = Jenkins.getDetailedPMDDiffsPerSuite(jobSpec.trunk, jobSpec.wip, [jenkinsTerm])
-                    differenceDetails.diffsPerSuite.each { k, v ->
-                        String linkTrunk, linkWip
-                        if(differenceDetails.beforeToAfter.containsKey(k)) {
-                            linkTrunk = getPMDFileUrl(jobSpec.trunk, jenkinsTerm, k)
-                            linkWip = getPMDFileUrl(jobSpec.wip, jenkinsTerm, differenceDetails.beforeToAfter[k])
-                        } else if(differenceDetails.afterToBefore.containsKey(k)) {
-                            linkWip = getPMDFileUrl(jobSpec.wip, jenkinsTerm, k)
-                            linkTrunk = getPMDFileUrl(jobSpec.trunk, jenkinsTerm, differenceDetails.afterToBefore[k])
-                        } else if(differenceDetails.onlyBefore.contains(k)) {
-                            linkTrunk = getPMDFileUrl(jobSpec.trunk, jenkinsTerm, k)
-                        } else if(differenceDetails.onlyAfter.contains(k)) {
-                            linkWip = getPMDFileUrl(jobSpec.wip, jenkinsTerm, k)
-                        }
-
-                        table.addRow('File': k,
-                                'Link':{
-                            if(linkTrunk) {
-                                a(href: linkTrunk, 'T')
-                                mkp.yield ' '
-                            }
-                            if(linkWip) {
-                                a(href: linkWip, 'W')
-                            }
-                        }, 'Diff': String.format('%+d', v))
-                    }
+                    differenceDetails.diffsPerSuite.each buildDiffTable(table, differenceDetails, "pmdResult/$jenkinsTerm", jobSpec)
                 }
             }
         }
     }
 
-    private String getPMDFileUrl(JenkinsJob job, String prio, String fileName) {
-        return "${job.getBuildUrl(JenkinsJob.LAST_SUCCESSFUL_BUILD)}/pmdResult/$prio/file.${fileName.hashCode()}/"
+    private Closure buildDiffTable(WikiTableBuilder table, Jenkins.DifferenceDetails diffDetails, String reportUrl, ComparableJobsSpec jobSpec) {
+        return { k, v ->
+            String linkTrunk, linkWip
+            boolean b2a = false, a2b;
+
+            if ((b2a = diffDetails.beforeToAfter.containsKey(k)) || diffDetails.onlyBefore.contains(k)) {
+                linkTrunk = getFileReportUrl(jobSpec.trunk, reportUrl, k)
+                if (b2a)
+                    linkWip = getFileReportUrl(jobSpec.wip, reportUrl, diffDetails.beforeToAfter[k])
+            } else if ((a2b = diffDetails.afterToBefore.containsKey(k)) || diffDetails.onlyAfter.contains(k)) {
+                linkWip = getFileReportUrl(jobSpec.wip, reportUrl, k)
+                if (a2b)
+                    linkTrunk = getFileReportUrl(jobSpec.trunk, reportUrl, diffDetails.afterToBefore[k])
+            }
+
+            table.addRow(
+                    'File': k,
+                    'Link': {
+                        if (linkTrunk)
+                            a(href: linkTrunk, 'T')
+                        if (linkTrunk && linkWip)
+                            mkp.yield '/'
+                        if (linkWip)
+                            a(href: linkWip, 'W')
+                    },
+                    'Diff': String.format('%+d', v))
+        }
+    }
+
+    private String getFileReportUrl(JenkinsJob job, String reportUrl, String fileName) {
+        return "${job.getBuildUrl(JenkinsJob.LAST_SUCCESSFUL_BUILD)}/$reportUrl/file.${fileName.hashCode()}/"
     }
 
     void compilerWarnings(@DelegatesTo(ComparableJobsSpec) Closure jobs) {
@@ -183,9 +188,8 @@ class JenkinsSpec {
             [HIGH: 'High', NORMAL: 'Medium'].each { String jenkinsTerm, String wikiFieldTerm ->
                 inputs["MultibrowserViolations${wikiFieldTerm}Comment"] = createQualityMetricComment(jobSpec, "muvipluginResult/$jenkinsTerm", 'MBV results')
                 inputs["MultibrowserViolations${wikiFieldTerm}Comment"] += TransformerProvider.withTable { table ->
-                    Jenkins.getMBVDiffsPerSuite(jobSpec.trunk, jobSpec.wip, [jenkinsTerm]).each { k, v ->
-                        table.addRow('File': k, 'Difference': String.format('%+d', v))
-                    }
+                    Jenkins.DifferenceDetails differenceDetails = Jenkins.getDetailedMBVDiffsPerSuite(jobSpec.trunk, jobSpec.wip, [jenkinsTerm])
+                    differenceDetails.diffsPerSuite.each buildDiffTable(table, differenceDetails, "muvipluginResult/$jenkinsTerm", jobSpec)
                 }
             }
         }
