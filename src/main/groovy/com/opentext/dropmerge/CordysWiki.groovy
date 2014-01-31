@@ -12,11 +12,19 @@ class CordysWiki {
 
     public void authenticate(String wikiUserName, String wikiPassword) {
         String tokenKey = null
-        new HTTPBuilder('https://auth.cordys.com').post(path: '/sso/validate.do',
+
+        def cams = new HTTPBuilder('https://www.opentext.com')
+
+        cams.handler.'500' = { resp, reader ->
+            println "Error occured during authentication: ${resp.statusLine}"
+            System.exit(1)
+        }
+
+        cams.post(path: '/cams/login',
                 contentType: URLENC,
-                query: [userName: wikiUserName, password: wikiPassword, serviceUrl: 'www.cordys.com', Submit: '']) { resp, reader ->
+                body: [cams_cb_username: wikiUserName, cams_cb_password: wikiPassword, cams_security_domain: 'system', cams_login_config: 'http', cams_original_url: 'https://wiki.cordys.com/']) { resp, reader ->
             assert resp.statusLine.statusCode == 302
-            tokenKey = resp.headers.find { h -> return h.name.equals('Set-Cookie') && h.value.startsWith('auth.token_key=') }.value
+            tokenKey = resp.headers.find { h -> return h.name.equals('Set-Cookie') && h.value.startsWith('CAMS_SID_OT_SYSTEM=') }.value
             assert tokenKey != null
         }
 
