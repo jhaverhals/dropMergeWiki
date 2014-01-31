@@ -139,6 +139,9 @@ public class Jenkins {
     public static DifferenceDetails getDetailedMBVDiffsPerSuite(JenkinsJob beforeJob, JenkinsJob afterJob, List<String> priorities = ['NORMAL', 'HIGH']) {
         return getDetailedDiffsPerSuite(beforeJob.MBVReport, afterJob.MBVReport, priorities)
     }
+		public static DifferenceDetails getDetailedCompilerWarningsDiffsPerSuite(JenkinsJob beforeJob, JenkinsJob afterJob, List<String> priorities = ['NORMAL']) {
+				return getDetailedDiffsPerSuite(beforeJob.compilerWarningsReport, afterJob.compilerWarningsReport, priorities)
+		}
     private static Map<String, Integer> getDiffsPerSuite(def beforeJobReport, def afterJobReport, List<String> priorities = ['NORMAL', 'HIGH']) {
          return getDetailedDiffsPerSuite(beforeJobReport,afterJobReport, priorities).diffsPerSuite
     }

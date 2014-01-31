@@ -1,8 +1,10 @@
 package com.opentext.dropmerge.dsl
 
-import com.opentext.dropmerge.*
 import groovy.xml.MarkupBuilder
+
 import org.jenkinsci.images.IconCSS
+
+import com.opentext.dropmerge.*
 
 class JenkinsSpec {
 
@@ -174,7 +176,13 @@ class JenkinsSpec {
         inputs['CompilerWarningsBefore'] = { jobSpec.trunk.compilerWarningFigure }
         inputs['CompilerWarningsAfter'] = { jobSpec.wip.compilerWarningFigure }
 
-        inputs['CompilerWarningsComment'] = createQualityMetricComment(jobSpec, 'warnings2Result', 'Compile Warning results')
+				use(StringClosureCategories) {
+	        inputs['CompilerWarningsComment'] = createQualityMetricComment(jobSpec, 'warnings2Result', 'Compile Warning results')
+					inputs['CompilerWarningsComment'] += TransformerProvider.withTable { table ->
+							Jenkins.DifferenceDetails differenceDetails = Jenkins.getDetailedCompilerWarningsDiffsPerSuite(jobSpec.trunk, jobSpec.wip)
+							differenceDetails.diffsPerSuite.each buildDiffTable(table, differenceDetails, 'warnings2Result', jobSpec)
+					}
+        }
     }
 
     void mbv(@DelegatesTo(ComparableJobsSpec) Closure jobs) {

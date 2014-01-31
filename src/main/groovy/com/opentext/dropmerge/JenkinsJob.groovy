@@ -94,6 +94,10 @@ class JenkinsJob {
     public def getMBVReport() {
         jsonForJob(LAST_SUCCESSFUL_BUILD, 'muvipluginResult', 'warnings[priority,fileName]')
     }
+		
+    public def getCompilerWarningsReport() {
+    	jsonForJob(LAST_SUCCESSFUL_BUILD, 'warnings2Result', 'warnings[priority,fileName]')
+    }
 
     private def jsonForJob(String build, String subPage, String jsonPath, Integer depth = null) {
         String url = [getBuildUrl(build), subPage, 'api', 'json'].findAll { it != null }.join('/')
