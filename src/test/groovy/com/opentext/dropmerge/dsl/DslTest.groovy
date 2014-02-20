@@ -14,7 +14,7 @@ public class DslTest {
             skipPersist
         }.inputs
 
-        assert inputs.containsKey('Team')
+        assert inputs.containsKey('TeamLink')
         assert !inputs.containsKey('DropMergeDate')
     }
 
@@ -53,7 +53,7 @@ public class DslTest {
             skipPersist
         }.inputs
 
-        assert date.containsKey('Team')
+        assert date.containsKey('TeamLink')
         assert date.containsKey('DropMergeDate')
 
         Calendar c = Calendar.getInstance()

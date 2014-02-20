@@ -14,7 +14,7 @@ class TeamSpec {
     }
 
     def name(String name) {
-        inputs['Team'] = { item -> CordysWiki.selectOption(item, name) }
+        inputs['TeamLink'] = { item -> CordysWiki.selectOption(item, "$name team") }
     }
 
 
