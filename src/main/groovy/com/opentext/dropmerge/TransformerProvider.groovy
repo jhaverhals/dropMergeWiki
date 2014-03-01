@@ -22,23 +22,24 @@ public abstract class TransformerProvider {
         }
     }
 
-    static String getUserLink(String shortName, String fullName) {
-        Writer writer = new StringWriter()
-        MarkupBuilder htmlBuilder = newMarkupBuilder(writer)
+	static String getUserLink(String shortName) {
+		return new StringWriter().with { writer ->
+			newMarkupBuilder(writer).'ac:link' { 'ri:user'('ri:username':shortName) }
 
-        htmlBuilder.a(
-                'class': 'confluence-link confluence-userlink',
-                'href': "/display/~$shortName",
-                'username': shortName,
-                'data-username': shortName,
-                'data-linked-resource-type': 'userinfo',
-                'data-linked-resource-default-alias': fullName,
-                'data-base-url': 'https://wiki.cordys.com',
-                fullName
-        )
+			return writer.toString()
+		}
+	}
 
-        return writer.toString()
-    }
+	static String getJiraIssueLink(String key, String jiraServerName = 'Cordys JIRA') {
+		return new StringWriter().with { writer ->
+			newMarkupBuilder(writer).'ac:macro'('ac:name': 'jira' ) {
+				'ac:parameter'('ac:name':'server', jiraServerName)
+				'ac:parameter'('ac:name':'key', key)
+			}
+
+			return writer.toString()
+		}
+	}
 
     static String getLink(String url, String text) {
         Writer writer = new StringWriter()
