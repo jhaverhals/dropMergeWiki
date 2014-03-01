@@ -34,9 +34,9 @@ class TeamSpec {
         use(StringClosureCategories) {
             userNames.add userName
             if (inputs.containsKey(field)) {
-                inputs[field] += { ', ' + TransformerProvider.getUserLink(userName, fullName) }
+                inputs[field] += { ', ' + TransformerProvider.getUserLink(userName) }
             } else {
-                inputs[field] = { (field != 'ProductManagerName' ? ' ' : '') + TransformerProvider.getUserLink(userName, fullName) }
+                inputs[field] = { (field != 'ProductManagerName' ? ' ' : '') + TransformerProvider.getUserLink(userName) }
             }
         }
     }
