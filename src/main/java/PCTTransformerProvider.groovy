@@ -1,3 +1,4 @@
+import com.opentext.dropmerge.Jenkins
 import com.opentext.dropmerge.dsl.DropMergeInput
 
 DropMergeInput.provide {
@@ -6,15 +7,13 @@ DropMergeInput.provide {
         scrumMaster 'Gerwin Jansen', 'gjansen'
         architect 'Willem Jan Gerritsen', 'wjgerrit'
         productManager 'Johan Pluimers', 'jpluimer'
-        otherMembers 'astellingwerf', 'dkwakkel', 'wvplagge'
+        otherMembers 'astellingwerf', 'dkwakkel', 'jrosman', 'rdouden', 'wvplagge'
     }
 
     dropMergeOn every.odd.friday.includingToday
 
     functionalDescription {
-        // withText 'We have done stuff:'
         withJiraIssuesTable "sprint = '${myProperties['sprintName']}' AND resolution = Fixed AND issuetype not in ('Bug during story', Todo)"
-        // withHtml { html -> html.i 'That\'s what we\'ve done!' }
     }
 
     wiki {
@@ -43,16 +42,18 @@ DropMergeInput.provide {
                 withJob { job 'pct-trunk-wip-frt-l-x64' on buildMasterNL; description 'Linux' }
                 comparedToJob { job 'PlatformCore-L' on jenkinsOfSVT; description 'Linux' }
                 differences {
-                    endingWith '.SubroleDeletingUpgradeStepTest' areJustifiedBecause 'SVT doesn\'t run this test yet.'
-                    matching ~/^com\.eibus\.sso\.authentication\.audit\.HttpURLConnectionBaseTest$/ areJustifiedBecause 'Test has been renamed to conform with SVT patterns.'
-                    equalTo 'com.eibus.util.system.win32.WindowsRegistryTest' areJustifiedBecause 'SVT uses an old version of Ant, where skipped tests are considered successful.'
+                    equalTo 'com.cordys.audit.acl.AuditXMLStoreACLVerificationTest' areJustifiedBecause 'Due to test order difference, there are more items in XML Store.'
                 }
 
                 withJob { job 'pct-trunk-wip-frt-w-x64' on buildMasterNL; description 'Windows' }
-//                comparedToJob { job 'PlatformCore-W' on jenkinsOfSVT; description 'Windows' }
+                comparedToJob { job 'PlatformCore-W' on jenkinsOfSVT; description 'Windows' }
+                differences {
+                    equalTo 'com.cordys.audit.acl.AuditXMLStoreACLVerificationTest' areJustifiedBecause 'Due to test order difference, there are more items in XML Store.'
+                    containing 'ccutilTest' areJustifiedBecause 'SVT does not run CPP-unit tests.'
+                }
             }
-            /*ofType('UIUnit') {
-                Jenkins globalUIUnits = new Jenkins('http://cin9002:8080')
+            ofType('UIUnit') {
+                Jenkins globalUIUnits = new Jenkins('http://cin9002.vanenburg.com:8080')
 
                 withJob {
                     job 'pct-trunk-wip-uiunit' on buildMasterNL matrixValues component: 'adminui';
@@ -78,7 +79,7 @@ DropMergeInput.provide {
                     description 'ldapconn'
                 }
                 comparedToJob { job 'LDAPConn-Trunk' on globalUIUnits }
-            } */
+            }
         }
         pmd {
             trunk { job 'pct-trunk-build-installer-l-x64' on buildMasterNL }
@@ -115,6 +116,6 @@ DropMergeInput.provide {
         newManualTestCasesAdded no, 'No new manual tests added. We prefer automated tests.'
         forwardPortingCompleted notApplicable, 'We always first fix in our own WIP.'
         securityIssuesIntroduced no, 'Guarded by automated ACL tests and in code reviews.'
-				
+
     }
 }
