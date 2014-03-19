@@ -1,9 +1,10 @@
 package com.opentext.dropmerge.dsl
 
 
+
 class TestTypesSpec {
     private Map<String, List<JobSpec>> jobsByType = new LinkedHashMap<>()
-    private Map<String, Map<JobSpec, JobSpec>> comparableJobsByType = new TreeMap<>()
+    private Map<String, Map<List<JobSpec>, List<JobSpec>>> comparableJobsByType = new TreeMap<>()
     private Map<String, Map<JobSpec, ComparingJobsSpec.DifferencesSpec>> justifications = new TreeMap<>()
     FreeTextSpec extraComment = new FreeTextSpec()
 
@@ -12,7 +13,9 @@ class TestTypesSpec {
         jobsSpec.with jobsClosure
 
         jobsByType[typeName] = jobsSpec.jobs
-        comparableJobsByType[typeName] = jobsSpec.comparableJobSpecs
+        comparableJobsByType[typeName] = jobsSpec.comparableJobSpecs.collectEntries { key, value ->
+					[jobsSpec.getJobSpecPlusLinkedJobSpecs(key), jobsSpec.getJobSpecPlusLinkedJobSpecs(value)]
+				}
         justifications[typeName] = jobsSpec.justifications
     }
 

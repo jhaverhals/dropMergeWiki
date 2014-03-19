@@ -3,6 +3,8 @@ package com.opentext.dropmerge
 import groovy.json.JsonSlurper
 import groovy.transform.Memoized
 
+import java.text.SimpleDateFormat
+
 class JenkinsJob {
     public static final String LAST_COMPLETED_BUILD = 'lastCompletedBuild'
     public static final String LAST_SUCCESSFUL_BUILD = 'lastSuccessfulBuild'
@@ -84,7 +86,7 @@ class JenkinsJob {
     }
 
     public String getCompilerWarningFigure() {
-        getPropertyOfJobWithinReports('warnings2Result', 'numberOfWarnings')
+        getPropertyOfJobWithinReports('warnings3Result', 'numberOfWarnings')
     }
 
     public String getMBFigure(WarningLevel level) {
@@ -96,7 +98,7 @@ class JenkinsJob {
     }
 		
     public def getCompilerWarningsReport() {
-    	jsonForJob(LAST_SUCCESSFUL_BUILD, 'warnings2Result', 'warnings[priority,fileName]')
+    	jsonForJob(LAST_SUCCESSFUL_BUILD, 'warnings3Result', 'warnings[priority,fileName]')
     }
 
     private def jsonForJob(String build, String subPage, String jsonPath, Integer depth = null) {
@@ -110,6 +112,11 @@ class JenkinsJob {
     @Memoized
     private static def slurpJson(String url){
         new JsonSlurper().parseText(new URL(url).text)
+    }
+
+    @Memoized
+    private static String getText(String url) {
+        new URL(url).text
     }
 
     private def jsonForJob(String subPage, String jsonPath) {
@@ -139,6 +146,11 @@ class JenkinsJob {
 
     public String getColor() {
         return jsonForJob(null, null, 'color')['color'].toString()
+    }
+
+    public Date getBuildTimestamp(String build) {
+        final String format = 'yyMMddHHmmssZ'
+        new SimpleDateFormat(format).parse(getText(getBuildUrl(build) + "/buildTimestamp?format=$format"))
     }
 
     @Override

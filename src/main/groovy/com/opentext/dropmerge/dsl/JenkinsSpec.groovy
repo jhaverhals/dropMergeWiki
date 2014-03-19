@@ -1,6 +1,9 @@
 package com.opentext.dropmerge.dsl
 
+import groovy.time.TimeCategory
 import groovy.xml.MarkupBuilder
+
+import java.text.SimpleDateFormat
 
 import org.jenkinsci.images.IconCSS
 
@@ -19,33 +22,41 @@ class JenkinsSpec {
         jobSpec.with jobsByType
 
         inputs['SuccesfulTestsBefore'] = {
-            int total = jobSpec.comparableJobsByType.values().sum { Map<JobSpec, JobSpec> jobs ->
-                jobs.values().sum { JobSpec j ->
-                    j.jenkinsJob.getTestFigure(TestCount.Pass) as int
+            int total = jobSpec.comparableJobsByType.values().sum { Map<List<JobSpec>, List<JobSpec>> jobs ->
+                jobs.values().sum { List<JobSpec> js ->
+                    js.sum { JobSpec j ->
+                        j.jenkinsJob.getTestFigure(TestCount.Pass) as int
+                    }
                 }
             }
             return "$total"
         }
         inputs['FailedTestsBefore'] = {
-            int total = jobSpec.comparableJobsByType.values().sum { Map<JobSpec, JobSpec> jobs ->
-                jobs.values().sum { JobSpec j ->
-                    j.jenkinsJob.getTestFigure(TestCount.Fail) as int
+            int total = jobSpec.comparableJobsByType.values().sum { Map<List<JobSpec>, List<JobSpec>> jobs ->
+                jobs.values().sum { List<JobSpec> js ->
+                    js.sum { JobSpec j ->
+                        j.jenkinsJob.getTestFigure(TestCount.Fail) as int
+                    }
                 }
             }
             return "$total"
         }
         inputs['SuccesfulTestsAfter'] = {
-            int total = jobSpec.comparableJobsByType.values().sum { Map<JobSpec, JobSpec> jobs ->
-                jobs.keySet().sum { JobSpec j ->
-                    j.jenkinsJob.getTestFigure(TestCount.Pass) as int
+            int total = jobSpec.comparableJobsByType.values().sum { Map<List<JobSpec>, List<JobSpec>> jobs ->
+                jobs.keySet().sum { List<JobSpec> js ->
+                    js.sum { JobSpec j ->
+                        j.jenkinsJob.getTestFigure(TestCount.Pass) as int
+                    }
                 }
             }
             return "$total"
         }
         inputs['FailedTestsAfter'] = {
-            int total = jobSpec.comparableJobsByType.values().sum { Map<JobSpec, JobSpec> jobs ->
-                jobs.keySet().sum { JobSpec j ->
-                    j.jenkinsJob.getTestFigure(TestCount.Fail) as int
+            int total = jobSpec.comparableJobsByType.values().sum { Map<List<JobSpec>, List<JobSpec>> jobs ->
+                jobs.keySet().sum { List<JobSpec> js ->
+                    js.sum { JobSpec j ->
+                        j.jenkinsJob.getTestFigure(TestCount.Fail) as int
+                    }
                 }
             }
             return "$total"
@@ -78,12 +89,21 @@ class JenkinsSpec {
             }
             //TODO: This doesn't handle the com.opentext.dropmerge.dsl.ComparingJobsSpec.andJob construct
             inputs['SuccessfulRegressionTestsComment'] += TransformerProvider.withTable { WikiTableBuilder table ->
-                jobSpec.comparableJobsByType.each { String type, Map<JobSpec, JobSpec> comparableJobs ->
-                    comparableJobs.each { JobSpec wip, JobSpec trunk ->
-                        table.addRow('Type': type,
-                                'OS': wip.description,
-                                'WIP was compared to trunk job': getJenkinsUrlWithStatus(trunk.jenkinsJob)
-                        )
+                jobSpec.comparableJobsByType.each { String type, Map<List<JobSpec>, List<JobSpec>> comparableJobs ->
+                    comparableJobs.each { List<JobSpec> wips, List<JobSpec> trunks ->
+                        String wipOS = wips*.description.unique().join(' / ');
+                        trunks.each { JobSpec trunk ->
+                            Date ts = trunk.jenkinsJob.getBuildTimestamp(JenkinsJob.LAST_COMPLETED_BUILD)
+                            String timestampText = new SimpleDateFormat('MMM dd \'at\' HH:mm z').format(ts)
+                            def diff = TimeCategory.minus(new Date(), ts).days
+                            if(diff > 2)
+                                timestampText += ", $diff days ago"
+                            table.addRow('Type': type,
+                                    'OS': wipOS,
+                                    'WIP was compared to trunk job': getJenkinsUrlWithStatus(trunk.jenkinsJob),
+                                    'Timestamp': timestampText
+                            )
+                        }
                     }
                 }
 
@@ -99,14 +119,16 @@ class JenkinsSpec {
         //TODO: This doesn't handle the com.opentext.dropmerge.dsl.ComparingJobsSpec.andJob construct
         inputs['TotalRegressionTestsComment'] = TransformerProvider.withTable {
             table ->
-                jobSpec.comparableJobsByType.each { String type, Map<JobSpec, JobSpec> comparableJobs ->
-                    comparableJobs.each { JobSpec wip, JobSpec trunk ->
-                        Jenkins.getTestDiffsPerSuite(trunk.jenkinsJob, wip.jenkinsJob).each { k, v ->
+                jobSpec.comparableJobsByType.each { String type, Map<List<JobSpec>, List<JobSpec>> comparableJobs ->
+                    comparableJobs.each { List<JobSpec> wip, List<JobSpec> trunk ->
+                        String wipOS = wip*.description.unique().join(' / ')
+                        Jenkins.getTestDiffsPerSuite(trunk*.jenkinsJob, wip*.jenkinsJob).each { k, v ->
                             table.addRow(
                                     'Suite / Test': k,
                                     'Difference': String.format('%+d', v),
                                     'Type': type,
-                                    'Justification': jobSpec.justifications[type][wip]?.getJustificationsForClassName(k)
+                                    'OS': wipOS,
+                                    'Justification': jobSpec.justifications[type][wip.first()]?.getJustificationsForClassName(k)
                             )
                         }
                     }
@@ -176,12 +198,12 @@ class JenkinsSpec {
         inputs['CompilerWarningsBefore'] = { jobSpec.trunk.compilerWarningFigure }
         inputs['CompilerWarningsAfter'] = { jobSpec.wip.compilerWarningFigure }
 
-				use(StringClosureCategories) {
-	        inputs['CompilerWarningsComment'] = createQualityMetricComment(jobSpec, 'warnings2Result', 'Compile Warning results')
-					inputs['CompilerWarningsComment'] += TransformerProvider.withTable { table ->
-							Jenkins.DifferenceDetails differenceDetails = Jenkins.getDetailedCompilerWarningsDiffsPerSuite(jobSpec.trunk, jobSpec.wip)
-							differenceDetails.diffsPerSuite.each buildDiffTable(table, differenceDetails, 'warnings2Result', jobSpec)
-					}
+        use(StringClosureCategories) {
+            inputs['CompilerWarningsComment'] = createQualityMetricComment(jobSpec, 'warnings3Result', 'Compile Warning results')
+            inputs['CompilerWarningsComment'] += TransformerProvider.withTable { table ->
+                Jenkins.DifferenceDetails differenceDetails = Jenkins.getDetailedCompilerWarningsDiffsPerSuite(jobSpec.trunk, jobSpec.wip)
+                differenceDetails.diffsPerSuite.each buildDiffTable(table, differenceDetails, 'warnings3Result', jobSpec)
+            }
         }
     }
 
