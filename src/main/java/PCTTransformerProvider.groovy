@@ -33,6 +33,9 @@ DropMergeInput.provide {
             ofType('BVT') {
                 withJob { job 'pct-trunk-wip-build-installer-l-x64' on buildMasterNL; description 'Linux' }
                 comparedToJob { job 'Trunk-Lin64-Java7' on jenkinsOfCMT; description 'Linux' }
+                differences {
+                  equalTo 'com.eibus.sso.applicationconnector.ACLTest' areJustifiedBecause 'Rewritten into com.eibus.sso.acl.SSOACLVerificationTest.'
+                }
 
                 withJob { job 'pct-trunk-wip-build-installer-w-x64' on buildMasterNL; description 'Windows' }
                 withJob { job 'pct-trunk-wip-build-installer-a-x64' on buildMasterNL; description 'AIX' }
@@ -53,7 +56,7 @@ DropMergeInput.provide {
                 }
             }
             ofType('UIUnit') {
-                Jenkins globalUIUnits = new Jenkins('http://cin9002.vanenburg.com:8080')
+                Jenkins globalUIUnits = new Jenkins('http://10.192.69.9:8080')
 
                 withJob {
                     job 'pct-trunk-wip-uiunit' on buildMasterNL matrixValues component: 'adminui';
