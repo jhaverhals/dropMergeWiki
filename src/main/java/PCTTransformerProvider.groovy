@@ -4,9 +4,9 @@ import com.opentext.dropmerge.dsl.DropMergeInput
 DropMergeInput.provide {
     team {
         name 'Platform core'
-        scrumMaster 'Gerwin Jansen', 'gjansen'
-        architect 'Willem Jan Gerritsen', 'wjgerrit'
-        productManager 'Johan Pluimers', 'jpluimer'
+        scrumMaster 'gjansen'
+        architect 'wjgerrit'
+        productManager 'jpluimer'
         otherMembers 'astellingwerf', 'dkwakkel', 'jrosman', 'rdouden', 'wvplagge'
     }
 

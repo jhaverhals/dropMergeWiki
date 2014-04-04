@@ -17,26 +17,27 @@ class TeamSpec {
         inputs['TeamLink'] = { item -> CordysWiki.selectOption(item, "$name team") }
     }
 
-
-    def scrumMaster(String fullName, String userName) {
-        handleAddition('ScrumMasterName', userName, fullName)
+    def scrumMaster(String... userName) {
+        handleAddition('ScrumMasterName', userName)
     }
 
-    def architect(String fullName, String userName) {
-        handleAddition('ArchitectName', userName, fullName)
+    def architect(String... userName) {
+        handleAddition('ArchitectName', userName)
     }
 
-    def productManager(String fullName, String userName) {
-        handleAddition('ProductManagerName', userName, fullName)
+    def productManager(String... userName) {
+        handleAddition('ProductManagerName', userName)
     }
 
-    private void handleAddition(String field, String userName, String fullName) {
+    private void handleAddition(String field, String... userNamesParam) {
         use(StringClosureCategories) {
-            userNames.add userName
-            if (inputs.containsKey(field)) {
-                inputs[field] += { ', ' + TransformerProvider.getUserLink(userName) }
-            } else {
-                inputs[field] = { (field != 'ProductManagerName' ? ' ' : '') + TransformerProvider.getUserLink(userName) }
+            userNames << userNamesParam
+            userNamesParam.each {userName ->
+                if (inputs.containsKey(field)) {
+                    inputs[field] += { ', ' + TransformerProvider.getUserLink(userName) }
+                } else {
+                    inputs[field] = { (field == 'ProductManagerName' ? '' : ' ') + TransformerProvider.getUserLink(userName) }
+                }
             }
         }
     }

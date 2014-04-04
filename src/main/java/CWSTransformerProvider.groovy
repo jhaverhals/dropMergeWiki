@@ -6,10 +6,9 @@ class CWSTransformerProvider {
         DropMergeInput.provide {
             team {
                 name 'CWS'
-                productManager 'Harmen Kastenberg', 'hkastenb'
-                architect 'Rene Prins', 'rprins'
-                architect 'Arjen Wisse', 'awisse'
-                scrumMaster 'Rene Prins', 'rprins'
+                productManager 'hkastenb'
+                architect 'rprins', 'awisse'
+                scrumMaster 'rprins'
             }
 
             wiki {
