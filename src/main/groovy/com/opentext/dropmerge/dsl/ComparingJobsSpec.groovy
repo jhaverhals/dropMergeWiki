@@ -67,7 +67,11 @@ class ComparingJobsSpec extends JobsSpec {
         DifferencesSpec diffSpec = new DifferencesSpec()
         diffSpec.with diff
 
-        justifications[this.jobs.last()] = diffSpec;
+        def key = this.jobs.last()
+        if(justifications.containsKey(key))
+            justifications[key] += diffSpec
+        else
+            justifications[key] = diffSpec
     }
 
     class DifferencesSpec {
@@ -112,6 +116,13 @@ class ComparingJobsSpec extends JobsSpec {
 
         String getJustificationsForClassName(String className) {
             return predicates2DescriptionMap.findAll { it.key(className) }.values().join(' ')
+        }
+
+        DifferencesSpec plus(DifferencesSpec other) {
+            return new DifferencesSpec().with {
+                it.predicates2DescriptionMap = this.predicates2DescriptionMap + other.predicates2DescriptionMap
+                return it
+            }
         }
     }
 
