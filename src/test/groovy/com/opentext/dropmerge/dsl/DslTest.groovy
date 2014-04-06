@@ -18,6 +18,15 @@ public class DslTest {
         assert !inputs.containsKey('DropMergeDate')
     }
 
+
+    Set<String> getDifference(Collection<String> s1, Set<String> s2) {
+        def diff = s1 + s2
+        def tmp = s1.clone()
+        tmp.retainAll(s2)
+        diff.removeAll(tmp)
+        return diff as Set<String>
+    }
+
     @Test
     public void testMuchMore() {
         Map<String, Closure<String>> date = DropMergeInput.provide {
@@ -26,7 +35,9 @@ public class DslTest {
                 scrumMaster 'gjansen'
                 architect 'wjgerrit'
                 productManager 'jpluimer'
+                otherMembers 'a', 'b'
             }
+            assert getDifference(['gjansen', 'jpluimer', 'wjgerrit','a', 'b'], team.allUserNames).isEmpty()
 
             dropMergeOn every.odd.friday.includingToday
 

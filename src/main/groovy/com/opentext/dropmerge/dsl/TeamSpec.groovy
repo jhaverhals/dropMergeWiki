@@ -13,6 +13,10 @@ class TeamSpec {
         this.inputs = inputs
     }
 
+    Set<String> getAllUserNames() {
+        return Collections.unmodifiableSet(userNames)
+    }
+
     def name(String name) {
         inputs['TeamLink'] = { item -> CordysWiki.selectOption(item, "$name team") }
     }
@@ -31,7 +35,7 @@ class TeamSpec {
 
     private void handleAddition(String field, String... userNamesParam) {
         use(StringClosureCategories) {
-            userNames << userNamesParam
+            userNames.addAll userNamesParam
             userNamesParam.each {userName ->
                 if (inputs.containsKey(field)) {
                     inputs[field] += { ', ' + TransformerProvider.getUserLink(userName) }
@@ -43,6 +47,6 @@ class TeamSpec {
     }
 
     def otherMembers(String... otherUserNames) {
-        userNames << otherUserNames
+        userNames.addAll otherUserNames
     }
 }

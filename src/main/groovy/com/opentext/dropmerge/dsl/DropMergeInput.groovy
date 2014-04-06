@@ -11,6 +11,7 @@ public class DropMergeInput {
     public Map<String, Closure<String>> inputs = new HashMap<String, Closure<String>>()
     public static final UpdateWikiProperties myProperties = loadProperties('team.properties', 'user.properties', 'session.properties')
     private WikiSpec wikiSpecification
+    private TeamSpec teamSpecification
     private boolean persist = true
 
 
@@ -56,8 +57,14 @@ public class DropMergeInput {
     }
 
     def team(@DelegatesTo(TeamSpec) Closure team) {
-        TeamSpec teamSpec = new TeamSpec(inputs)
-        teamSpec.with team
+        if(!teamSpecification) {
+            teamSpecification = new TeamSpec(inputs)
+        }
+        teamSpecification.with team
+    }
+
+    TeamSpec getTeam() {
+        return teamSpecification
     }
 
     DateDsl getEvery() { new DateDsl() }
