@@ -42,16 +42,19 @@ DropMergeInput.provide {
                 withJob { job 'pct-trunk-wip-build-installer-s-x64' on buildMasterNL; description 'Solaris' }
             }
             ofType('FRT') {
+                def sharedAcrossOSes = {
+                    equalTo 'com.cordys.audit.acl.AuditXMLStoreACLVerificationTest' areJustifiedBecause 'Due to test order difference, there are more items in XML Store.'
+                    equalTo 'com.eibus.secadmin.applicationconnector.ActivateResourceCommandTest' areJustifiedBecause 'SVT hasn\'t configured it\'s job correctly.'
+                }
+
                 withJob { job 'pct-trunk-wip-frt-l-x64' on buildMasterNL; description 'Linux' }
                 comparedToJob { job 'PlatformCore-L' on jenkinsOfSVT; description 'Linux' }
-                differences {
-                    equalTo 'com.cordys.audit.acl.AuditXMLStoreACLVerificationTest' areJustifiedBecause 'Due to test order difference, there are more items in XML Store.'
-                }
+                differences sharedAcrossOSes
 
                 withJob { job 'pct-trunk-wip-frt-w-x64' on buildMasterNL; description 'Windows' }
                 comparedToJob { job 'PlatformCore-W' on jenkinsOfSVT; description 'Windows' }
+                differences sharedAcrossOSes
                 differences {
-                    equalTo 'com.cordys.audit.acl.AuditXMLStoreACLVerificationTest' areJustifiedBecause 'Due to test order difference, there are more items in XML Store.'
                     containing 'ccutilTest' areJustifiedBecause 'SVT does not run CPP-unit tests.'
                 }
             }
