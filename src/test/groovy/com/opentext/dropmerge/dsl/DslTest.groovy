@@ -23,9 +23,9 @@ public class DslTest {
         Map<String, Closure<String>> date = DropMergeInput.provide {
             team {
                 name 'Platform Core'
-                scrumMaster 'Gerwin Jansen', 'gjansen'
-                architect 'Willem Jan Gerritsen', 'wjgerrit'
-                productManager 'Johan Pluimers', 'jpluimer'
+                scrumMaster 'gjansen'
+                architect 'wjgerrit'
+                productManager 'jpluimer'
             }
 
             dropMergeOn every.odd.friday.includingToday
