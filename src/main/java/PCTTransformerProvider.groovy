@@ -33,9 +33,6 @@ DropMergeInput.provide {
             ofType('BVT') {
                 withJob { job 'pct-trunk-wip-build-installer-l-x64' on buildMasterNL; description 'Linux' }
                 comparedToJob { job 'Trunk-Lin64-Java7' on jenkinsOfCMT; description 'Linux' }
-                differences {
-                  equalTo 'com.eibus.sso.applicationconnector.ACLTest' areJustifiedBecause 'Rewritten into com.eibus.sso.acl.SSOACLVerificationTest.'
-                }
 
                 withJob { job 'pct-trunk-wip-build-installer-w-x64' on buildMasterNL; description 'Windows' }
             }
