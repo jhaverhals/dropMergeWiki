@@ -38,8 +38,6 @@ DropMergeInput.provide {
                 }
 
                 withJob { job 'pct-trunk-wip-build-installer-w-x64' on buildMasterNL; description 'Windows' }
-                withJob { job 'pct-trunk-wip-build-installer-a-x64' on buildMasterNL; description 'AIX' }
-                withJob { job 'pct-trunk-wip-build-installer-s-x64' on buildMasterNL; description 'Solaris' }
             }
             ofType('FRT') {
                 def sharedAcrossOSes = {
