@@ -105,7 +105,7 @@ DropMergeInput.provide {
             }
             withJob {
                 job 'pct-upgrade-trigger-l' on buildMasterNL;
-                description 'from latest GA (BOP 4.3.1) to latest wip.'
+                description 'from latest GA (10.5) to latest wip.'
             }
         }
         integrationTests {
