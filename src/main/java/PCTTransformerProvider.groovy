@@ -39,7 +39,7 @@ DropMergeInput.provide {
             ofType('FRT') {
                 def sharedAcrossOSes = {
                     equalTo 'com.cordys.audit.acl.AuditXMLStoreACLVerificationTest' areJustifiedBecause 'Due to test order difference, there are more items in XML Store.'
-                    equalTo 'com.eibus.secadmin.applicationconnector.ActivateResourceCommandTest' areJustifiedBecause 'SVT hasn\'t configured it\'s job correctly.'
+                    equalTo 'com.cordys.esbserver.acl.AppConnectorXMLStoreACLVerificationTest' areJustifiedBecause 'Due to test order difference, there are more items in XML Store.'
                 }
 
                 withJob { job 'pct-trunk-wip-frt-l-x64' on buildMasterNL; description 'Linux' }
@@ -102,7 +102,7 @@ DropMergeInput.provide {
             }
             withJob {
                 job 'pct-upgrade-trigger-l' on buildMasterNL;
-                description 'from latest GA (10.5) to latest wip.'
+                description 'from latest GA (10.6) to latest wip.'
             }
         }
         integrationTests {
