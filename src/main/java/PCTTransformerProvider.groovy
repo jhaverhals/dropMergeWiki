@@ -60,8 +60,7 @@ DropMergeInput.provide {
                     job 'pct-trunk-wip-uiunit' on buildMasterNL matrixValues component: 'adminui';
                     description 'intadminui'
                 }
-                comparedToJob { job 'Admin-FITs-Trunk' on globalUIUnits }
-                andJob { job 'Admin-WithoutFITs-Trunk' on globalUIUnits }
+                comparedToJob { job 'AdminUI-Trunk' on globalUIUnits }
 
                 withJob {
                     job 'pct-trunk-wip-uiunit' on buildMasterNL matrixValues component: 'webgateway';
