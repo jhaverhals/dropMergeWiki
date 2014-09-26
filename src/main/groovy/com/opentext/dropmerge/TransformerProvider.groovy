@@ -5,7 +5,7 @@ import groovy.xml.MarkupBuilder
 public abstract class TransformerProvider {
     private static final String COLUMNS = 'columns=type,key,summary,status'
     private static final String RENDER_MODE = 'renderMode=static'
-    private static final String URL = 'url=https://jira.cordys.com/jira/sr/jira.issueviews:searchrequest-xml/temp/SearchRequest.xml?jqlQuery'
+    private static final String URL = 'url=https://jira.opentext.com/sr/jira.issueviews:searchrequest-xml/temp/SearchRequest.xml?jqlQuery'
     private static final String AFTER = 'After'
     private static final String BEFORE = 'Before'
 

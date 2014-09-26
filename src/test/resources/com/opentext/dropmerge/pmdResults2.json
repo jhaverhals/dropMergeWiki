@@ -34278,7 +34278,7 @@
       "message" : "Position literals first in String comparisons.",
       "primaryLineNumber" : 164,
       "priority" : "NORMAL"
-    },
+    }
   ],
   "warningsDelta" : 17,
   "zeroWarningsHighScore" : 0,

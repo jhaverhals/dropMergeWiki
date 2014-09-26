@@ -8,7 +8,7 @@ defaultTasks 'publishReport'
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
 
-tasks.withType(Compile) {
+tasks.withType(JavaCompile) {
     options.encoding = "ISO-8859-1"
 }
 
@@ -37,7 +37,7 @@ repositories {
 }
 
 dependencies {
-    compile 'org.codehaus.groovy:groovy-all:2.2.+'
+    compile 'org.codehaus.groovy:groovy-all:2.3.+'
     compile 'org.codehaus.groovy.modules.http-builder:http-builder:0.6'
     testCompile 'junit:junit:4.11'
     testCompile 'org.spockframework:spock-core:0.7-groovy-2.0'
@@ -48,18 +48,16 @@ dependencies {
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '1.10'
+    gradleVersion = '2.0'
 }
 
-task publishReport(dependsOn: build, type: JavaExec)
-publishReport {
+task publishReport(dependsOn: build, type: JavaExec) {
     main = 'updateWiki'
     classpath = sourceSets.main.runtimeClasspath
     defaultCharacterEncoding 'UTF-8'
 }
 
-task compareSVTTestsToWIP(dependsOn: build, type: JavaExec)
-compareSVTTestsToWIP {
+task compareSVTTestsToWIP(dependsOn: build, type: JavaExec) {
     main = 'SVTTestJobComparison'
     classpath = sourceSets.main.runtimeClasspath
     defaultCharacterEncoding 'UTF-8'

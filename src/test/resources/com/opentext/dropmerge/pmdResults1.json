@@ -34233,7 +34233,7 @@
       "message" : "In most cases, the Logger can be declared static and final.",
       "primaryLineNumber" : 112,
       "priority" : "NORMAL"
-    },
+    }
   ],
   "warningsDelta" : 0,
   "zeroWarningsHighScore" : 0,
