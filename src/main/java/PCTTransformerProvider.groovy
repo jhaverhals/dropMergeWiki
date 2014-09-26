@@ -34,6 +34,8 @@ DropMergeInput.provide {
                 withJob { job 'pct-trunk-wip-build-installer-l-x64' on buildMasterNL; description 'Linux' }
                 comparedToJob { job 'Trunk-Lin64-Java7' on jenkinsOfCMT; description 'Linux' }
 
+				withJob { job 'pct-trunk-wip-build-installer-l-j8' on buildMasterNL; description 'Linux - Java 8' }
+
                 withJob { job 'pct-trunk-wip-build-installer-w-x64' on buildMasterNL; description 'Windows' }
             }
             ofType('FRT') {
@@ -45,6 +47,8 @@ DropMergeInput.provide {
                 withJob { job 'pct-trunk-wip-frt-l-x64' on buildMasterNL; description 'Linux' }
                 comparedToJob { job 'PlatformCore-L' on jenkinsOfSVT; description 'Linux' }
                 differences sharedAcrossOSes
+
+				withJob { job 'pct-trunk-wip-frt-l-j8' on buildMasterNL; description 'Linux - Java 8' }
 
                 withJob { job 'pct-trunk-wip-frt-w-x64' on buildMasterNL; description 'Windows' }
                 comparedToJob { job 'PlatformCore-W' on jenkinsOfSVT; description 'Windows' }
@@ -116,6 +120,5 @@ DropMergeInput.provide {
         newManualTestCasesAdded no, 'No new manual tests added. We prefer automated tests.'
         forwardPortingCompleted notApplicable, 'We always first fix in our own WIP.'
         securityIssuesIntroduced no, 'Guarded by automated ACL tests and in code reviews.'
-
     }
 }
