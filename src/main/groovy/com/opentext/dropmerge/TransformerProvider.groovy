@@ -30,7 +30,7 @@ public abstract class TransformerProvider {
 		}
 	}
 
-	static String getJiraIssueLink(String key, String jiraServerName = 'Cordys JIRA') {
+	static String getJiraIssueLink(String key, String jiraServerName = 'OpenText JIRA') {
 		return new StringWriter().with { writer ->
 			newMarkupBuilder(writer).'ac:macro'('ac:name': 'jira' ) {
 				'ac:parameter'('ac:name':'server', jiraServerName)
