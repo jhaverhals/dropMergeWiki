@@ -9,10 +9,12 @@ public class UpdateWikiProperties {
         this.inner = inner
     }
 
+    @Override
     public String getAt(String key) {
         inner[key]
     }
 
+    @Override
     public String getProperty(String key) {
         validate()
         getAt(key)
