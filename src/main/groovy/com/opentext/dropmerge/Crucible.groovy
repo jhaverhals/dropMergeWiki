@@ -10,7 +10,7 @@ class Crucible {
     }
 
     public static String getBrowseReviewsURL(String project) {
-        return crucibleServer + 'cru/browse/' + project
+        return crucibleServer + 'browse/' + project
     }
 
     public static def getXMLForOpenReview(String project, String authToken) {
