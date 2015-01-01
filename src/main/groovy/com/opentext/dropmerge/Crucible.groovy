@@ -3,12 +3,14 @@ package com.opentext.dropmerge
 import groovyx.net.http.HTTPBuilder
 
 class Crucible {
+    public static final String crucibleServer = 'http://codereview.vanenburg.com:8060/'
+
     private static URL getOpenReviewsRSSURL(String project, String authToken) {
-        return new URL('http://srv-ind-scrat.vanenburg.com:8060/cru/rssReviewFilter?filter=allOpenReviews&project=' + project + '&FEAUTH=' + authToken)
+        return new URL(crucibleServer + 'cru/rssReviewFilter?filter=allOpenReviews&project=' + project + '&FEAUTH=' + authToken)
     }
 
     public static String getBrowseReviewsURL(String project) {
-        return 'http://srv-ind-scrat.vanenburg.com:8060/cru/browse/' + project
+        return crucibleServer + 'cru/browse/' + project
     }
 
     public static def getXMLForOpenReview(String project, String authToken) {
@@ -23,7 +25,7 @@ class Crucible {
 
     public static String getCrucibleAuthToken(String username, String password) {
         String authToken = null
-        new HTTPBuilder('http://srv-ind-scrat.vanenburg.com:8060/').get(path: '/rest-service/auth-v1/login',
+        new HTTPBuilder(crucibleServer).get(path: '/rest-service/auth-v1/login',
                 query: [userName: username, password: password]) { resp, reader ->
             assert resp.statusLine.statusCode == 200
             authToken = reader.token.text()
