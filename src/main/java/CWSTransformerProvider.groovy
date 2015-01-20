@@ -8,7 +8,7 @@ class CWSTransformerProvider {
             team {
                 name 'CWS'
                 productManager 'hkastenb'
-                architect 'rprins', 'awisse', 'gjlubber'
+                architect 'rprins', 'awisse'
                 scrumMaster 'rprins'
             }
             
@@ -33,7 +33,7 @@ class CWSTransformerProvider {
 
             jenkins {
                 regressionTests {
-                    Jenkins globalUIUnits = new Jenkins('http://10.192.69.9:8080')
+                    Jenkins globalUIUnits = new Jenkins('http://cin9002.vanenburg.com:8080')
                     ofType('JUnit') {
                         withJob { job 'cws-wip-junit-l' on buildMasterNL; description 'Linux' }
                         comparedToJob { job 'CWS-L' on jenkinsOfSVT; description 'Linux' }
