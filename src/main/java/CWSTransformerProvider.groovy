@@ -36,14 +36,14 @@ class CWSTransformerProvider {
                     Jenkins globalUIUnits = new Jenkins('http://cin9002.vanenburg.com:8080')
                     ofType('JUnit') {
                         withJob { job 'cws-wip-junit-l' on buildMasterNL; description 'Linux' }
-                        /*comparedToJob { job 'CWS-L' on jenkinsOfSVT; description 'Linux' }
+                        comparedToJob { job 'CWS-L' on jenkinsOfSVT; description 'Linux' }
                         andJob { job 'CWSOldBuild-L' on jenkinsOfSVT; description 'Linux' }
-                        andJob { job 'CAP-CWS-L' on jenkinsOfSVT; description 'Linux' }*/
+                        andJob { job 'CAP-CWS-L' on jenkinsOfSVT; description 'Linux' }
 
                         withJob { job 'cws-wip-junit-w' on buildMasterNL; description 'Windows' }
-                        /*comparedToJob { job 'CWS-W' on jenkinsOfSVT; description 'Windows' }
+                        comparedToJob { job 'CWS-W' on jenkinsOfSVT; description 'Windows' }
                         andJob { job 'CWSOldBuild-W' on jenkinsOfSVT; description 'Windows' }
-                        andJob { job 'CAP-CWS-W' on jenkinsOfSVT; description 'Windows' }*/
+                        andJob { job 'CAP-CWS-W' on jenkinsOfSVT; description 'Windows' }
                     }
                     ofType('UIUnits') {
                     
