@@ -8,7 +8,7 @@ class CWSTransformerProvider {
             team {
                 name 'CWS'
                 productManager 'hkastenb'
-                architect 'rprins', 'awisse'
+                architect 'rprins'
                 scrumMaster 'rprins'
             }
             
@@ -36,14 +36,14 @@ class CWSTransformerProvider {
                     Jenkins globalUIUnits = new Jenkins('http://cin9002.vanenburg.com:8080')
                     ofType('JUnit') {
                         withJob { job 'cws-wip-junit-l' on buildMasterNL; description 'Linux' }
-                        comparedToJob { job 'CWS-L' on jenkinsOfSVT; description 'Linux' }
+                        /*comparedToJob { job 'CWS-L' on jenkinsOfSVT; description 'Linux' }
                         andJob { job 'CWSOldBuild-L' on jenkinsOfSVT; description 'Linux' }
-                        andJob { job 'CAP-CWS-L' on jenkinsOfSVT; description 'Linux' }
+                        andJob { job 'CAP-CWS-L' on jenkinsOfSVT; description 'Linux' }*/
 
                         withJob { job 'cws-wip-junit-w' on buildMasterNL; description 'Windows' }
-                        comparedToJob { job 'CWS-W' on jenkinsOfSVT; description 'Windows' }
+                        /*comparedToJob { job 'CWS-W' on jenkinsOfSVT; description 'Windows' }
                         andJob { job 'CWSOldBuild-W' on jenkinsOfSVT; description 'Windows' }
-                        andJob { job 'CAP-CWS-W' on jenkinsOfSVT; description 'Windows' }
+                        andJob { job 'CAP-CWS-W' on jenkinsOfSVT; description 'Windows' }*/
                     }
                     ofType('UIUnits') {
                     
@@ -78,13 +78,15 @@ class CWSTransformerProvider {
                     }
                 }
                 upgrade {
-                    withJob { on buildMasterNL job 'A_UP_4.1CU7.1-WIP_W'; description 'on Windows from BOP 4.1 CU7.1 to WIP' }
-                    withJob { on buildMasterNL job 'B_UP_4.1CU6-4.1CU7.1_L'; description 'on Linux from BOP 4.1 CU6 to BOP 4.1 CU7.1' }
-                    withJob { on buildMasterNL job 'C_UP_4.1CU7.1-WIP_L'; description 'on Linux from BOP 4.1 CU7.1 to WIP' }
-                    withJob { on buildMasterNL job 'D_UP_4.2CU1-WIP_L'; description 'on Linux from BOP 4.2 CU1' }
-                    withJob { on buildMasterNL job 'E_UP_4.1CU7.1-WIP_W'; description 'on Windows from BOP 4.1 CU7.1' }
-                    withJob { on buildMasterNL job 'F_UP_4.2CU1-WIP_W'; description 'on Windows from BOP 4.2 CU1' }
-                    withJob { on buildMasterNL job 'wip-content-upgrade'; description 'on Windows from BOP4.1 CU7.1 to WIP with design-time content' }
+                    withJob { on buildMasterNL job 'A_UP_4.1CU7.1-WIP_W'; 	description '(A) on Windows from BOP 4.1 CU7.1 to WIP for wip-content-upgrade' }
+                    withJob { on buildMasterNL job 'B_UP_4.1CU6-4.1CU7.1_L';description '(B) on Linux from BOP 4.1 CU6 to BOP 4.1 CU7.1' }
+                    withJob { on buildMasterNL job 'C_UP_4.1CU7.1-WIP_L'; 	description '(C) on Linux from BOP 4.1 CU7.1 to WIP' }
+                    withJob { on buildMasterNL job 'D_UP_4.2CU1-WIP_L'; 	description '(D) on Linux from BOP 4.2 CU1' }
+                    withJob { on buildMasterNL job 'E_UP_4.1CU7.1-WIP_W';  	description '(E) on Windows from BOP 4.1 CU7.1 to WIP' }
+                    withJob { on buildMasterNL job 'F_UP_4.2CU1-WIP_W'; 	description '(F) on Windows from BOP 4.2 CU1 to WIP' }
+					withJob { on buildMasterNL job 'G_UP_10.5_WIP_L'; 		description '(G) on Linux from 10.5 to WIP' }
+					withJob { on buildMasterNL job 'H_UP_10.5_WIP_W'; 		description '(H) on Windows from 10.5 to WIP' }
+                    withJob { on buildMasterNL job 'wip-content-upgrade'; 	description 'on Windows from BOP4.1 CU7.1 to WIP with design-time content' }
                 }
                 pmd {
 		            trunk { job 'cws-wip-metrics' on buildMasterNL }
