@@ -35,7 +35,7 @@ class JobSpec {
 
     static final Jenkins buildMasterHYD = new Jenkins('http://buildmaster-hyd.vanenburg.com/jenkins')
 
-    static final Jenkins buildMasterNL = new Jenkins('http://buildmaster-nl.vanenburg.com/jenkins')
+    static final Jenkins buildMasterNL = new Jenkins('http://buildmaster-nl.opentext.net/jenkins')
 
     /**
      * Set the Jenkins instance on which the job runs
