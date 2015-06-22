@@ -44,6 +44,8 @@ class CWSTransformerProvider {
                         comparedToJob { job 'CWS-W' on jenkinsOfSVT; description 'Windows' }
                         andJob { job 'CWSOldBuild-W' on jenkinsOfSVT; description 'Windows' }
                         andJob { job 'CAP-CWS-W' on jenkinsOfSVT; description 'Windows' }
+						
+						withJob { job 'cws-entity-test' on buildMasterNL; description 'Linux' }
                     }
                     ofType('UIUnits') {
                     
@@ -57,6 +59,10 @@ class CWSTransformerProvider {
                             description 'Firefox'
                         }
                         comparedToJob{ job 'CWS-Trunk' on globalUIUnits}
+						
+						withJob { on buildMasterNL job 'cws-entity-uiunit' matrixValues browser: 'Chrome'; description 'Chrome' }
+						
+						withJob { on buildMasterNL job 'cws-entity-uiunit' matrixValues browser: 'Firefox'; description 'Firefox' }
                      }
                     ofType('UIUnits Runtime Ref') {
                         withJob {
@@ -91,14 +97,17 @@ class CWSTransformerProvider {
                 pmd {
 		            trunk { job 'cws-wip-metrics' on buildMasterNL }
 		            wip { job 'cws-wip-metrics' on buildMasterNL }
+					wip { job 'cws-entity-metrics' on buildMasterNL }
 		        }
 		        compilerWarnings {
 		            trunk { job 'cws-wip-metrics' on buildMasterNL }
 		            wip { job 'cws-wip-metrics' on buildMasterNL }
+					wip { job 'cws-entity-metrics' on buildMasterNL }
 		        }
 		        mbv {
 		            trunk { job 'cws-wip-metrics' on buildMasterNL }
 		            wip { job 'cws-wip-metrics' on buildMasterNL }
+					wip { job 'cws-entity-metrics' on buildMasterNL }
 		        }
                 integrationTests {
                     withJob { job 'cws-wip-uiunit-EW-NewBuildEngine' on buildMasterNL; description 'Eastwind' }
