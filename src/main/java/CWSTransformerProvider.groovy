@@ -33,7 +33,7 @@ class CWSTransformerProvider {
 
             jenkins {
                 regressionTests {
-                    Jenkins globalUIUnits = new Jenkins('http://cin9002.vanenburg.com:8080')
+                    Jenkins globalUIUnits = new Jenkins('http://cin9002.opentext.net:8080')
                     ofType('JUnit') {
                         withJob { job 'cws-wip-junit-l' on buildMasterNL; description 'Linux' }
                         comparedToJob { job 'CWS-L' on jenkinsOfSVT; description 'Linux' }
