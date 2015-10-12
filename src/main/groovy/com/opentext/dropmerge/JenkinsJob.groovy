@@ -86,7 +86,7 @@ class JenkinsJob {
     }
 
     public String getCompilerWarningFigure() {
-        getPropertyOfJobWithinReports('warnings3Result', 'numberOfWarnings')
+        getPropertyOfJobWithinReports('warningsResult', 'numberOfWarnings')
     }
 
     public String getMBFigure(WarningLevel level) {
@@ -98,7 +98,7 @@ class JenkinsJob {
     }
 		
     public def getCompilerWarningsReport() {
-    	jsonForJob(LAST_SUCCESSFUL_BUILD, 'warnings3Result', 'warnings[priority,fileName]')
+    	jsonForJob(LAST_SUCCESSFUL_BUILD, 'warningsResult', 'warnings[priority,fileName]')
     }
 
     private def jsonForJob(String build, String subPage, String jsonPath, Integer depth = null) {

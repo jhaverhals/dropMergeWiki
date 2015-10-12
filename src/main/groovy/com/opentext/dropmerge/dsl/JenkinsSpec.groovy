@@ -199,10 +199,10 @@ class JenkinsSpec {
         inputs['CompilerWarningsAfter'] = { jobSpec.wip.compilerWarningFigure }
 
         use(StringClosureCategories) {
-            inputs['CompilerWarningsComment'] = createQualityMetricComment(jobSpec, 'warnings3Result', 'Compile Warning results')
+            inputs['CompilerWarningsComment'] = createQualityMetricComment(jobSpec, 'warningsResult', 'Compile Warning results')
             inputs['CompilerWarningsComment'] += TransformerProvider.withTable { table ->
                 Jenkins.DifferenceDetails differenceDetails = Jenkins.getDetailedCompilerWarningsDiffsPerSuite(jobSpec.trunk, jobSpec.wip)
-                differenceDetails.diffsPerSuite.each buildDiffTable(table, differenceDetails, 'warnings3Result', jobSpec)
+                differenceDetails.diffsPerSuite.each buildDiffTable(table, differenceDetails, 'warningsResult', jobSpec)
             }
         }
     }
