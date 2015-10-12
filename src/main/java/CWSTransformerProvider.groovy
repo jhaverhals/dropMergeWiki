@@ -16,7 +16,7 @@ class CWSTransformerProvider {
 		
 		    functionalDescription {
 //		        withJiraIssuesTable "sprint = '${myProperties['sprintName']}' AND resolution = Fixed AND issuetype not in ('Bug during story', Todo)"
-		        withJiraIssuesTable "filter='CWS team' AND resolution = Fixed AND issuetype not in (Escalation-Sub, Sub-task) and status in (Verified, Closed) and resolutionDate>'${myProperties['wipStartDate']}' and resolutionDate<='${myProperties['wipEndDate']}'"
+		        withJiraIssuesTable "filter='EMNL team' AND resolution = Fixed AND issuetype not in (Escalation-Sub, Sub-task) and status in (Verified, Closed) and resolutionDate>'${myProperties['wipStartDate']}' and resolutionDate<='${myProperties['wipEndDate']}'"
 		    }
 
             wiki {
@@ -84,15 +84,12 @@ class CWSTransformerProvider {
                     }
                 }
                 upgrade {
-                    withJob { on buildMasterNL job 'A_UP_4.1CU7.1-WIP_W'; 	description '(A) on Windows from BOP 4.1 CU7.1 to WIP for cws-wip-content-upgrade' }
-                    withJob { on buildMasterNL job 'B_UP_4.1CU6-4.1CU7.1_L';description '(B) on Linux from BOP 4.1 CU6 to BOP 4.1 CU7.1' }
-                    withJob { on buildMasterNL job 'C_UP_4.1CU7.1-WIP_L'; 	description '(C) on Linux from BOP 4.1 CU7.1 to WIP' }
-                    withJob { on buildMasterNL job 'D_UP_4.2CU1-WIP_L'; 	description '(D) on Linux from BOP 4.2 CU1' }
-                    withJob { on buildMasterNL job 'E_UP_4.1CU7.1-WIP_W';  	description '(E) on Windows from BOP 4.1 CU7.1 to WIP' }
-                    withJob { on buildMasterNL job 'F_UP_4.2CU1-WIP_W'; 	description '(F) on Windows from BOP 4.2 CU1 to WIP' }
-					withJob { on buildMasterNL job 'G_UP_10.5_WIP_L'; 		description '(G) on Linux from 10.5 to WIP' }
-					withJob { on buildMasterNL job 'H_UP_10.5_WIP_W'; 		description '(H) on Windows from 10.5 to WIP' }
-                    withJob { on buildMasterNL job 'cws-wip-content-upgrade'; 	description 'on Windows from BOP4.1 CU7.1 to WIP with design-time content' }
+                    //withJob { on buildMasterNL job 'UP_A_10.7_WIP_W'; description '(A) on Windows from PP 10.7 to WIP for cws-wip-content-upgrade' }
+                    withJob { on buildMasterNL job 'UP_B_10.7_WIP_W';   description '(B) on Windows from PP 10.7 to WIP' }
+                    withJob { on buildMasterNL job 'UP_C_10.7_WIP_L';   description '(C) on Linux from PP 10.7 to WIP' }
+                    withJob { on buildMasterNL job 'UP_D_10.8_WIP_W';   description '(D) on Windows from PP 10.8 to WIP' }
+                    withJob { on buildMasterNL job 'UP_E_10.8_WIP_L';   description '(E) on Linux from PP 10.8 to WIP' }
+                    withJob { on buildMasterNL job 'cws-wip-content-upgrade'; 	description 'on Windows from PP 10.7 to WIP with design-time content' }
                 }
                 pmd {
 		            trunk { job 'cws-wip-metrics' on buildMasterNL }
