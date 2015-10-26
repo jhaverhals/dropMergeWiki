@@ -84,12 +84,12 @@ class CWSTransformerProvider {
                     }
                 }
                 upgrade {
-                    //withJob { on buildMasterNL job 'UP_A_10.7_WIP_W'; description '(A) on Windows from PP 10.7 to WIP for cws-wip-content-upgrade' }
-                    withJob { on buildMasterNL job 'UP_B_10.7_WIP_W';   description '(B) on Windows from PP 10.7 to WIP' }
-                    withJob { on buildMasterNL job 'UP_C_10.7_WIP_L';   description '(C) on Linux from PP 10.7 to WIP' }
-                    withJob { on buildMasterNL job 'UP_D_10.8_WIP_W';   description '(D) on Windows from PP 10.8 to WIP' }
-                    withJob { on buildMasterNL job 'UP_E_10.8_WIP_L';   description '(E) on Linux from PP 10.8 to WIP' }
-                    withJob { on buildMasterNL job 'cws-wip-content-upgrade'; 	description 'on Windows from PP 10.7 to WIP with design-time content' }
+                    withJob { on buildMasterNL job 'UP_A_10.8_WIP_W_content'; description '(A) on Windows from PP 10.8 to WIP for cws-wip-upgrade-content' }
+                    withJob { on buildMasterNL job 'UP_B_10.7_WIP_W';         description '(B) on Windows from PP 10.7 to WIP' }
+                    withJob { on buildMasterNL job 'UP_C_10.7_WIP_L';         description '(C) on Linux from PP 10.7 to WIP' }
+                    withJob { on buildMasterNL job 'UP_D_10.8_WIP_W';         description '(D) on Windows from PP 10.8 to WIP' }
+                    withJob { on buildMasterNL job 'UP_E_10.8_WIP_L';         description '(E) on Linux from PP 10.8 to WIP' }
+                    withJob { on buildMasterNL job 'cws-wip-upgrade-content'; description 'on Windows from PP 10.8 to WIP with design-time content' }
                 }
                 pmd {
 		            trunk { job 'cws-wip-metrics' on buildMasterNL }
