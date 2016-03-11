@@ -89,7 +89,7 @@ class CWSTransformerProvider {
                     withJob { on buildMasterNL job 'UP_C_10.7_WIP_L';         description '(C) on Linux from PP 10.7 to WIP' }
                     withJob { on buildMasterNL job 'UP_D_10.8_WIP_W';         description '(D) on Windows from PP 10.8 to WIP' }
                     withJob { on buildMasterNL job 'UP_E_10.8_WIP_L';         description '(E) on Linux from PP 10.8 to WIP' }
-                    withJob { on buildMasterNL job 'cws-wip-upgrade-content'; description 'on Windows from PP 10.8 to WIP with design-time content' }
+                    withJob { on buildMasterNL job 'cws-wip-content-upgrade'; description 'on Windows from PP 10.8 to WIP with design-time content' }
                 }
                 pmd {
 		            trunk { job 'cws-wip-metrics' on buildMasterNL }
