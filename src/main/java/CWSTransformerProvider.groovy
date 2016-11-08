@@ -112,6 +112,11 @@ class CWSTransformerProvider {
                     withJob { job 'cws-wip-uiunit-EW' on buildMasterNL; description 'Eastwind' }
                     withJob { job 'cws-wip-smoketest' on buildMasterNL; description 'Smoke Test'}
                 }
+                performanceTests {
+                    withJob { job 'cws-performance-test-mysql' on buildMasterNL; description 'MySQL' }
+                    withJob { job 'cws-performance-test-sqlserver' on buildMasterNL; description 'SQLServer' }
+                    withJob { job 'cws-performance-test-oracle' on buildMasterNL; description 'Oracle' }
+                }
             }
         qualityAndProcessQuestions {
         	xmlMemoryManagementIssuesIntroduced no, 'INU detection enabled.'

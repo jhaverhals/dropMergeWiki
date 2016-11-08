@@ -295,6 +295,30 @@ class JenkinsSpec {
         }
     }
 
+    void performanceTests(@DelegatesTo(JobsSpec) Closure jobsClosure) {
+        JobsSpec jobsSpec = new JobsSpec()
+        jobsSpec.with jobsClosure;
+
+        List<JobSpec> jobs = jobsSpec.jobs
+        inputs['PerformanceTestsPass'] = { item ->
+            CordysWiki.selectOption(item, (jobs.every { JobSpec j -> j.jenkinsJob.lastBuildResult == 'SUCCESS' } ? 'Yes' : 'No'))
+        }
+        inputs['PerformanceTestsPassComment'] = TransformerProvider.withHtml { html ->
+            html.p {
+                jobs.each { JobSpec j ->
+                    getJenkinsUrlWithStatus(j.jenkinsJob, JenkinsJob.LAST_COMPLETED_BUILD, 'Performance test job').with {
+                        it.delegate = html
+                        it.call()
+                    }
+                    if (j.description) {
+                        html.mkp.yield ' ' + j.description
+                    }
+                    html.br()
+                }
+            }
+        }
+    }
+
     private Closure getJenkinsUrl(JenkinsJob job, String build = null, String linkText = null) {
         return { a(href: job.getBuildUrl(build), linkText ?: job.toString()) }
     }
