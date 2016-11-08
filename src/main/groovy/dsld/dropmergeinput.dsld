@@ -33,7 +33,8 @@ contribute(currentType(dslPackage+'.JenkinsSpec') & enclosedBy('regressionTests'
 
 [
 	'upgrade',
-	'integrationTests'
+	'integrationTests',
+	'performanceTests'
 ].each {
 	contribute(currentType(dslPackage+'.JenkinsSpec') & enclosedBy(it)) {
 		delegatesTo type: dslPackage+'.JobsSpec' , provider : provider
