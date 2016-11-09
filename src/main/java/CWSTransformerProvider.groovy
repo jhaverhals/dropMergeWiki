@@ -112,7 +112,7 @@ class CWSTransformerProvider {
                     withJob { job 'cws-wip-uiunit-EW' on buildMasterNL; description 'Eastwind' }
                     withJob { job 'cws-wip-smoketest' on buildMasterNL; description 'Smoke Test'}
                 }
-                performanceTests {
+                performanceDegraded {
                     withJob { job 'cws-performance-test-mysql' on buildMasterNL; description 'MySQL' }
                     withJob { job 'cws-performance-test-sqlserver' on buildMasterNL; description 'SQLServer' }
                     withJob { job 'cws-performance-test-oracle' on buildMasterNL; description 'Oracle' }
@@ -132,8 +132,7 @@ class CWSTransformerProvider {
         	forwardPortingCompleted yes, 'We always first fix in our own WIP.'
         	securityIssuesIntroduced no, 'Guarded by code reviews.'
         	migrationAspectsHandled yes
-        	performanceDegraded no
-					backwardCompatibilityIssuesIntroduced no
+			backwardCompatibilityIssuesIntroduced no
         	/*{
         		withHtml JenkinsSpec.getJenkinsUrlWithStatus(new Jenkins('http://buildmaster-nl/jenkins').withJob('FP1-LOADTEST-MYSQL'))
         	}*/

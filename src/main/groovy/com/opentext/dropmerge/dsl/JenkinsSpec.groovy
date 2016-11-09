@@ -295,15 +295,15 @@ class JenkinsSpec {
         }
     }
 
-    void performanceTests(@DelegatesTo(JobsSpec) Closure jobsClosure) {
+    void performanceDegraded(@DelegatesTo(JobsSpec) Closure jobsClosure) {
         JobsSpec jobsSpec = new JobsSpec()
         jobsSpec.with jobsClosure;
 
         List<JobSpec> jobs = jobsSpec.jobs
-        inputs['PerformanceTestsPass'] = { item ->
-            CordysWiki.selectOption(item, (jobs.every { JobSpec j -> j.jenkinsJob.lastBuildResult == 'SUCCESS' } ? 'Yes' : 'No'))
+        inputs['PerformanceDegradation'] = { item ->
+            CordysWiki.selectOption(item, (jobs.every { JobSpec j -> j.jenkinsJob.lastBuildResult == 'SUCCESS' } ? 'No' : 'Yes'))
         }
-        inputs['PerformanceTestsPassComment'] = TransformerProvider.withHtml { html ->
+        inputs['PerformanceDegradationComment'] = TransformerProvider.withHtml { html ->
             html.p {
                 jobs.each { JobSpec j ->
                     getJenkinsUrlWithStatus(j.jenkinsJob, JenkinsJob.LAST_COMPLETED_BUILD, 'Performance test job').with {
@@ -324,7 +324,16 @@ class JenkinsSpec {
     }
 
     private Closure getJenkinsUrlWithStatus(JenkinsJob job, String build = null, String linkText = null) {
-        return { span(class: "jenkinsJobStatus jenkinsJobStatus_${job.color}", getJenkinsUrl(job, build, linkText)) }
+        String resultClass='tick'
+        String imageName='check'
+        if (job.lastBuildResult == 'UNSTABLE') {
+            resultClass='warning'
+            imageName='warning'
+        } else if (job.lastBuildResult == 'FAILURE') {
+            resultClass='cross'
+            imageName='error'
+        }
+        return { img(class: "emoticon emoticon-"+resultClass, src: "/images/icons/emoticons/"+imageName+".png") + span(getJenkinsUrl(job, build, linkText)) }
     }
 
 }
