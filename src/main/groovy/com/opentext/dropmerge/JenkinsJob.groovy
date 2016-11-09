@@ -35,6 +35,10 @@ class JenkinsJob {
         }
     }
 
+    public String getName() {
+        "$name"
+    }
+
     public String getLastBuildResult() {
         jsonForJob(LAST_COMPLETED_BUILD, null, 'result')['result'].toString()
     }

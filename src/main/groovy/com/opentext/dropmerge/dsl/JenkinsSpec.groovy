@@ -79,7 +79,7 @@ class JenkinsSpec {
                                 job.jenkinsJob.getTestFigure(TestCount.Pass),
                                 job.jenkinsJob.getTestFigure(TestCount.Fail),
                                 job.jenkinsJob.getTestFigure(TestCount.Skip),
-                                getJenkinsUrlWithStatus(job.jenkinsJob)
+                                getJenkinsUrlWithStatus(job.jenkinsJob, null, job.jenkinsJob.getName())
                         ])
                     }
                 }
@@ -333,7 +333,10 @@ class JenkinsSpec {
             resultClass='cross'
             imageName='error'
         }
-        return { img(class: "emoticon emoticon-"+resultClass, src: "/images/icons/emoticons/"+imageName+".png") + span(getJenkinsUrl(job, build, linkText)) }
+        return { img(class: "emoticon emoticon-"+resultClass, src: "/images/icons/emoticons/"+imageName+".png") + 
+                span(" ") +
+                span(getJenkinsUrl(job, build, linkText)) 
+        }
     }
 
 }
