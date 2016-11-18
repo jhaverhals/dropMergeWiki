@@ -112,6 +112,22 @@ class QualityAndProcessQuestionsSpec {
         backwardCompatibilityIssuesIntroduced(answer, { withText comment })
     }
 
+    public void usabilityAcceptedByPM(ComboBoxAnswers answer, @DelegatesTo(FreeTextSpec) Closure comment = null) {
+        addInput('UsabilityAcceptedByPM', [yes, no], answer, comment)
+    }
+
+    public void usabilityAcceptedByPM(ComboBoxAnswers answer, String comment) {
+        usabilityAcceptedByPM(answer, { withText comment })
+    }
+
+    public void userStoriesAcceptedByPM(ComboBoxAnswers answer, @DelegatesTo(FreeTextSpec) Closure comment = null) {
+        addInput('UserStoriesAcceptedByPM', [yes, no], answer, comment)
+    }
+
+    public void userStoriesAcceptedByPM(ComboBoxAnswers answer, String comment) {
+        userStoriesAcceptedByPM(answer, { withText comment })
+    }
+
     public void securityIssuesIntroduced(ComboBoxAnswers answer, @DelegatesTo(FreeTextSpec) Closure comment = null) {
         addInput('SecurityIssuesIntroduced', [yes, no, notTested], answer, comment)
     }

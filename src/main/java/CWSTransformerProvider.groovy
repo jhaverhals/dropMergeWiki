@@ -94,19 +94,16 @@ class CWSTransformerProvider {
 									withJob { on buildMasterNL job 'UP_I_16.1_WIP_L';  		  description '(I) on Linux from PP 16.1 to WIP' }
                 }
                 pmd {
-		            trunk { job 'cws-wip-metrics' on buildMasterNL }
+		            trunk { job 'cws-trunk-metrics' on buildMasterNL }
 		            wip { job 'cws-wip-metrics' on buildMasterNL }
-					wip { job 'cws-entity-metrics' on buildMasterNL }
 		        }
 		        compilerWarnings {
-		            trunk { job 'cws-wip-metrics' on buildMasterNL }
-		            wip { job 'cws-wip-metrics' on buildMasterNL }
-					wip { job 'cws-entity-metrics' on buildMasterNL }
+		            trunk { job 'cws-trunk-build-installer-l' on buildMasterNL }
+		            wip { job 'cws-wip-build-installer-l' on buildMasterNL }
 		        }
 		        mbv {
-		            trunk { job 'cws-wip-metrics' on buildMasterNL }
+		            trunk { job 'cws-trunk-metrics' on buildMasterNL }
 		            wip { job 'cws-wip-metrics' on buildMasterNL }
-					wip { job 'cws-entity-metrics' on buildMasterNL }
 		        }
                 integrationTests {
                     withJob { job 'cws-wip-uiunit-EW' on buildMasterNL; description 'Eastwind' }
@@ -133,6 +130,8 @@ class CWSTransformerProvider {
         	securityIssuesIntroduced no, 'Guarded by code reviews.'
         	migrationAspectsHandled yes
 			backwardCompatibilityIssuesIntroduced no
+			usabilityAcceptedByPM yes
+			userStoriesAcceptedByPM yes
         	/*{
         		withHtml JenkinsSpec.getJenkinsUrlWithStatus(new Jenkins('http://buildmaster-nl/jenkins').withJob('FP1-LOADTEST-MYSQL'))
         	}*/
