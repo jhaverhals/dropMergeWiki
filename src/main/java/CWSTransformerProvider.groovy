@@ -98,8 +98,8 @@ class CWSTransformerProvider {
 		            wip { job 'cws-wip-metrics' on buildMasterNL }
 		        }
 		        compilerWarnings {
-		            trunk { job 'cws-trunk-build-installer-l' on buildMasterNL }
-		            wip { job 'cws-wip-build-installer-l' on buildMasterNL }
+		            trunk { job 'cws-trunk-metrics' on buildMasterNL }
+		            wip { job 'cws-wip-metrics' on buildMasterNL }
 		        }
 		        mbv {
 		            trunk { job 'cws-trunk-metrics' on buildMasterNL }
