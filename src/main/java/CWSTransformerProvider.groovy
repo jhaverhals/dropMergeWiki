@@ -61,10 +61,20 @@ class CWSTransformerProvider {
                             description 'Firefox'
                         }
                         comparedToJob{ job 'CWS-Trunk' on globalUIUnits}
+                        withJob {
+                            on buildMasterNL job 'cws-wip-uiunit-IE11' matrixValues browser: 'IE11-on-Windows7';
+                            description 'IE11'
+                        }
+                        comparedToJob{ job 'CWS-Trunk' on globalUIUnits}
 						
 						withJob { on buildMasterNL job 'cws-entity-uiunit' matrixValues browser: 'Chrome'; description 'Chrome' }
 						
 						withJob { on buildMasterNL job 'cws-entity-uiunit' matrixValues browser: 'Firefox'; description 'Firefox' }
+
+                        withJob { 
+                            on buildMasterNL job 'cws-entity-uiunit-IE11' matrixValues browser: 'IE11-on-Windows7';
+                            description 'IE11'
+                        }
                      }
                     ofType('UIUnits Runtime Ref') {
                         withJob {
