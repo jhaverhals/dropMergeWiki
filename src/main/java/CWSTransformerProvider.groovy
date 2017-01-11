@@ -71,10 +71,10 @@ class CWSTransformerProvider {
 						
 						withJob { on buildMasterNL job 'cws-entity-uiunit' matrixValues browser: 'Firefox'; description 'Firefox' }
 
-                        withJob { 
-                            on buildMasterNL job 'cws-entity-uiunit-IE11' matrixValues browser: 'IE11-on-Windows7';
-                            description 'IE11'
-                        }
+                        // withJob { 
+                        //     on buildMasterNL job 'cws-entity-uiunit-IE11' matrixValues browser: 'IE11-on-Windows7';
+                        //     description 'IE11'
+                        // }
                      }
                     ofType('UIUnits Runtime Ref') {
                         withJob {
