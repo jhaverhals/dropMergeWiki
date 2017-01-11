@@ -33,6 +33,10 @@ class TeamSpec {
         handleAddition('ProductManagerName', userName)
     }
 
+    def developmentManager(String... userName) {
+        handleAddition('ManagerName', userName)
+    }
+
     private void handleAddition(String field, String... userNamesParam) {
         use(StringClosureCategories) {
             userNames.addAll userNamesParam

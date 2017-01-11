@@ -10,9 +10,10 @@ class CWSTransformerProvider {
                 productManager 'hkastenb'
                 architect 'rprins'
                 scrumMaster 'rprins'
+                developmentManager 'gligtenb'
             }
 
-		    dropMergeOn every.even.monday //.includingToday
+		    dropMergeOn every.even.monday.includingToday
 
 					functionalDescription {
 //		        withJiraIssuesTable "sprint = '${myProperties['sprintName']}' AND resolution = Fixed AND issuetype not in ('Bug during story', Todo)"
@@ -71,10 +72,10 @@ class CWSTransformerProvider {
 						
 						withJob { on buildMasterNL job 'cws-entity-uiunit' matrixValues browser: 'Firefox'; description 'Firefox' }
 
-                        // withJob { 
-                        //     on buildMasterNL job 'cws-entity-uiunit-IE11' matrixValues browser: 'IE11-on-Windows7';
-                        //     description 'IE11'
-                        // }
+                        withJob { 
+                            on buildMasterNL job 'cws-entity-uiunit-IE11' matrixValues browser: 'IE11-on-Windows7';
+                            description 'IE11'
+                        }
                      }
                     ofType('UIUnits Runtime Ref') {
                         withJob {
@@ -144,6 +145,7 @@ class CWSTransformerProvider {
 			backwardCompatibilityIssuesIntroduced no
 			usabilityAcceptedByPM yes
 			userStoriesAcceptedByPM yes
+            buildModelersSucceeds yes
         	/*{
         		withHtml JenkinsSpec.getJenkinsUrlWithStatus(new Jenkins('http://buildmaster-nl/jenkins').withJob('FP1-LOADTEST-MYSQL'))
         	}*/

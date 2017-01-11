@@ -128,6 +128,14 @@ class QualityAndProcessQuestionsSpec {
         userStoriesAcceptedByPM(answer, { withText comment })
     }
 
+    public void buildModelersSucceeds(ComboBoxAnswers answer, @DelegatesTo(FreeTextSpec) Closure comment = null) {
+        addInput('BuildModelersSucceeds', [yes, no], answer, comment)
+    }
+
+    public void buildModelersSucceeds(ComboBoxAnswers answer, String comment) {
+        buildModelersSucceeds(answer, { withText comment })
+    }
+
     public void securityIssuesIntroduced(ComboBoxAnswers answer, @DelegatesTo(FreeTextSpec) Closure comment = null) {
         addInput('SecurityIssuesIntroduced', [yes, no, notTested], answer, comment)
     }
