@@ -17,7 +17,7 @@ class CWSTransformerProvider {
 
 					functionalDescription {
 //		        withJiraIssuesTable "sprint = '${myProperties['sprintName']}' AND resolution = Fixed AND issuetype not in ('Bug during story', Todo)"
-		        withJiraIssuesTable "filter='EMNL Team' AND resolution = Fixed AND issuetype not in (Escalation-Sub, 'QA Sub-task', Sub-task) and status in (Verified) and resolutionDate>'${myProperties['wipStartDate']}' and resolutionDate<='${myProperties['wipEndDate']}'"
+		        withJiraIssuesTable "filter='EMNL Team' AND resolution = Fixed AND issuetype not in (Escalation-Sub, 'QA Sub-task', Sub-task) and status in (Verified, Closed) and resolutionDate>'${myProperties['wipStartDate']}' and resolutionDate<='${myProperties['wipEndDate']}' ORDER BY status ASC"
 		    }
 
             wiki {
