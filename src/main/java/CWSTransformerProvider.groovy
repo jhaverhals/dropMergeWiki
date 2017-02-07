@@ -37,16 +37,14 @@ class CWSTransformerProvider {
                     Jenkins globalUIUnits = new Jenkins('http://cin9002.opentext.net:8080')
                     ofType('JUnit') {
                         withJob { job 'cws-wip-junit-l' on buildMasterNL; description 'Linux' }
-                        comparedToJob { job 'cws-wip-junit-l' on buildMasterNL; description 'Linux' }
-                        // comparedToJob { job 'CWS-L' on jenkinsOfSVT; description 'Linux' }
-                        // andJob { job 'CWSOldBuild-L' on jenkinsOfSVT; description 'Linux' }
-                        // andJob { job 'CAP-CWS-L' on jenkinsOfSVT; description 'Linux' }
+                        comparedToJob { job 'CWS-L' on jenkinsOfSVT; description 'Linux' }
+                    //    andJob { job 'CWSOldBuild-L' on jenkinsOfSVT; description 'Linux' }
+                    //    andJob { job 'CAP-CWS-L' on jenkinsOfSVT; description 'Linux' }
 
                         withJob { job 'cws-wip-junit-w' on buildMasterNL; description 'Windows' }
-                        comparedToJob { job 'cws-wip-junit-w' on buildMasterNL; description 'Windows' }
-                        // comparedToJob { job 'CWS-W' on jenkinsOfSVT; description 'Windows' }
-                        // andJob { job 'CWSOldBuild-W' on jenkinsOfSVT; description 'Windows' }
-                        // andJob { job 'CAP-CWS-W' on jenkinsOfSVT; description 'Windows' }
+                        comparedToJob { job 'CWS-W' on jenkinsOfSVT; description 'Windows' }
+                    //    andJob { job 'CWSOldBuild-W' on jenkinsOfSVT; description 'Windows' }
+                    //    andJob { job 'CAP-CWS-W' on jenkinsOfSVT; description 'Windows' }
 						
 						withJob { job 'cws-entity-test' on buildMasterNL; description 'Linux' }
                     }
@@ -61,19 +59,19 @@ class CWSTransformerProvider {
                             on buildMasterNL job 'cws-wip-uiunit' matrixValues browser: 'Firefox';
                             description 'Firefox'
                         }
-                        comparedToJob{ job 'CWS-Trunk' on globalUIUnits}
+                    //    comparedToJob{ job 'CWS-Trunk' on globalUIUnits}
                         withJob {
                             on buildMasterNL job 'cws-wip-uiunit-IE11' matrixValues browser: 'IE11-on-Windows7';
                             description 'IE11'
                         }
-                        comparedToJob{ job 'CWS-Trunk' on globalUIUnits}
+                    //    comparedToJob{ job 'CWS-Trunk' on globalUIUnits}
+		
+						withJob { job 'cws-entity-uiunit' on buildMasterNL matrixValues browser: 'Chrome'; description 'Chrome' }
 						
-						withJob { on buildMasterNL job 'cws-entity-uiunit' matrixValues browser: 'Chrome'; description 'Chrome' }
-						
-						withJob { on buildMasterNL job 'cws-entity-uiunit' matrixValues browser: 'Firefox'; description 'Firefox' }
+						withJob { job 'cws-entity-uiunit' on buildMasterNL matrixValues browser: 'Firefox'; description 'Firefox' }
 
                         withJob { 
-                            on buildMasterNL job 'cws-entity-uiunit-IE11' matrixValues browser: 'IE11-on-Windows7';
+                            job 'cws-entity-uiunit-IE11' on buildMasterNL matrixValues browser: 'IE11-on-Windows7';
                             description 'IE11'
                         }
                      }
@@ -87,13 +85,14 @@ class CWSTransformerProvider {
                             job 'cws-wip-uiunit-runtime-ref-test' on buildMasterNL matrixValues browser: 'Firefox';
                             description 'Firefox'
                         }
-                        comparedToJob{ job 'CWS-Runtime-Trunk' on globalUIUnits}
+                    //    comparedToJob{ job 'CWS-Runtime-Trunk' on globalUIUnits}
                     }
                     ofType('GMF') {
                         withJob { on buildMasterNL job 'cws-wip-gmf-chrome'; description 'Chrome' }
                         comparedToJob{job 'GraphicalModelingFramework-Trunk' on globalUIUnits }
                         withJob { on buildMasterNL job 'cws-wip-gmf-ff'; description 'Firefox' }
-                        comparedToJob{job 'GraphicalModelingFramework-Trunk' on globalUIUnits }
+                    //    comparedToJob{job 'GraphicalModelingFramework-Trunk' on globalUIUnits }
+                        withJob { on buildMasterNL job 'cws-wip-gmf-ie11'; description 'IE11' }
                     }
                 }
                 upgrade {

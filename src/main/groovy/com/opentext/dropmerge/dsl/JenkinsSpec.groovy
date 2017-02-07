@@ -87,7 +87,7 @@ class JenkinsSpec {
                 table.addRow(['All', 'All', "$passCount", "$failCount", "$skipCount", ''])
                 return
             }
-/* This table is not used
+
             //TODO: This doesn't handle the com.opentext.dropmerge.dsl.ComparingJobsSpec.andJob construct
             inputs['SuccessfulRegressionTestsComment'] += TransformerProvider.withTable { WikiTableBuilder table ->
                 jobSpec.comparableJobsByType.each { String type, Map<List<JobSpec>, List<JobSpec>> comparableJobs ->
@@ -110,7 +110,7 @@ class JenkinsSpec {
 
                 return
             }
-*/
+
             inputs['SuccessfulRegressionTestsComment'] += TransformerProvider.withHtml { MarkupBuilder html ->
                 html.style IconCSS.style
             }

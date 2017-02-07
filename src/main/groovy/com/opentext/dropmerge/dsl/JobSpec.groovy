@@ -29,7 +29,7 @@ class JobSpec {
     private String description
     private Map<String,String> matrixAxes
 
-    static final Jenkins jenkinsOfSVT = new Jenkins('http://srv-ind-svt9l.vanenburg.com:8080')
+    static final Jenkins jenkinsOfSVT = new Jenkins('http://10.96.73.33:8080')
 
     static final Jenkins jenkinsOfCMT = new Jenkins('http://cmt-jenkins.vanenburg.com/jenkins')
 
