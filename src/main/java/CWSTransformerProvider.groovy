@@ -96,14 +96,16 @@ class CWSTransformerProvider {
                     }
                 }
                 upgrade {
-									withJob { on buildMasterNL job 'UP_A_10.8_WIP_W_content'; description '(A) on Windows from PP 10.8 to WIP for cws-wip-upgrade-content' }
-									withJob { on buildMasterNL job 'cws-wip-content-upgrade'; description 'on Windows from PP 10.8 to WIP with design-time content' }
-									withJob { on buildMasterNL job 'UP_B_10.7_WIP_W';         description '(B) on Windows from PP 10.7 to WIP' }
-									withJob { on buildMasterNL job 'UP_C_10.7_WIP_L';         description '(C) on Linux from PP 10.7 to WIP' }
-									withJob { on buildMasterNL job 'UP_F_16_WIP_W';   	      description '(F) on Windows from PP 16 to WIP' }
-									withJob { on buildMasterNL job 'UP_G_16_WIP_L';     	  description '(G) on Linux from PP 16 to WIP' }
-									withJob { on buildMasterNL job 'UP_H_16.1_WIP_W';  		  description '(H) on Windows from PP 16.1 to WIP' }
-									withJob { on buildMasterNL job 'UP_I_16.1_WIP_L';  		  description '(I) on Linux from PP 16.1 to WIP' }
+					withJob { on buildMasterNL job 'UP_A_10.8_WIP_W_content'; description '(A) on Windows from PP 10.8 to WIP for cws-wip-upgrade-content' }
+					withJob { on buildMasterNL job 'cws-wip-content-upgrade'; description 'on Windows from PP 10.8 to WIP with design-time content' }
+					withJob { on buildMasterNL job 'UP_B_10.7_WIP_W';         description '(B) on Windows from PP 10.7 to WIP' }
+					withJob { on buildMasterNL job 'UP_C_10.7_WIP_L';         description '(C) on Linux from PP 10.7 to WIP' }
+					withJob { on buildMasterNL job 'UP_F_16_WIP_W';   	      description '(F) on Windows from PP 16 to WIP' }
+					withJob { on buildMasterNL job 'UP_G_16_WIP_L';     	  description '(G) on Linux from PP 16 to WIP' }
+					withJob { on buildMasterNL job 'UP_H_16.1_WIP_W';  		  description '(H) on Windows from PP 16.1 to WIP' }
+					withJob { on buildMasterNL job 'UP_I_16.1_WIP_L';  		  description '(I) on Linux from PP 16.1 to WIP' }
+					withJob { on buildMasterNL job 'UP_J_16.1.1_WIP_W';       description '(J) on Windows from PP 16.1.1 to WIP' }
+					withJob { on buildMasterNL job 'UP_K_16.1.1_WIP_L';       description '(K) on Linux from PP 16.1.1 to WIP' }
                 }
                 pmd {
 		            trunk { job 'cws-trunk-metrics' on buildMasterNL }
