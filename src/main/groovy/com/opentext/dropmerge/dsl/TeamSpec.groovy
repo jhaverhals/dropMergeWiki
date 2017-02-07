@@ -34,7 +34,7 @@ class TeamSpec {
     }
 
     def developmentManager(String... userName) {
-        handleAddition('ManagerName', userName)
+        handleAddition('ManagerName', userName) 
     }
 
     private void handleAddition(String field, String... userNamesParam) {

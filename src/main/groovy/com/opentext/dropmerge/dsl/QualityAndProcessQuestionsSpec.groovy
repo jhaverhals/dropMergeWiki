@@ -129,7 +129,7 @@ class QualityAndProcessQuestionsSpec {
     }
 
     public void buildModelersSucceeds(ComboBoxAnswers answer, @DelegatesTo(FreeTextSpec) Closure comment = null) {
-        addInput('BuildModelersSucceeds', [yes, no], answer, comment)
+        addInput('BuildModelersSucceeds', [yes, no], answer, comment) 
     }
 
     public void buildModelersSucceeds(ComboBoxAnswers answer, String comment) {
