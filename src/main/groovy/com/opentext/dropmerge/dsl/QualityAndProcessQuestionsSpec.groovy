@@ -136,6 +136,14 @@ class QualityAndProcessQuestionsSpec {
         buildModelersSucceeds(answer, { withText comment })
     }
 
+    public void fullDropMerge(ComboBoxAnswers answer, @DelegatesTo(FreeTextSpec) Closure comment = null) {
+        addInput('FullDropMerge', [yes, no], answer, comment) 
+    }
+
+    public void fullDropMerge(ComboBoxAnswers answer, String comment) {
+        fullDropMerge(answer, { withText comment })
+    }
+
     public void securityIssuesIntroduced(ComboBoxAnswers answer, @DelegatesTo(FreeTextSpec) Closure comment = null) {
         addInput('SecurityIssuesIntroduced', [yes, no, notTested], answer, comment)
     }

@@ -9,7 +9,7 @@ class CWSTransformerProvider {
                 name 'CWS'
                 productManager 'hkastenb'
                 architect 'rprins'
-                scrumMaster 'rprins'
+                scrumMaster 'jhoegee'
                 developmentManager 'gligtenb'
             }
 
@@ -147,6 +147,7 @@ class CWSTransformerProvider {
 			usabilityAcceptedByPM yes
 			userStoriesAcceptedByPM yes
             buildModelersSucceeds yes
+            fullDropMerge yes
         	/*{
         		withHtml JenkinsSpec.getJenkinsUrlWithStatus(new Jenkins('http://buildmaster-nl/jenkins').withJob('FP1-LOADTEST-MYSQL'))
         	}*/
