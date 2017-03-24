@@ -104,8 +104,8 @@ class CWSTransformerProvider {
 					withJob { on buildMasterNL job 'UP_G_16_WIP_L';     	  description '(G) on Linux from PP 16 to WIP' }
 					withJob { on buildMasterNL job 'UP_H_16.1_WIP_W';  		  description '(H) on Windows from PP 16.1 to WIP' }
 					withJob { on buildMasterNL job 'UP_I_16.1_WIP_L';  		  description '(I) on Linux from PP 16.1 to WIP' }
-					withJob { on buildMasterNL job 'UP_J_16.1.1_WIP_W';       description '(J) on Windows from PP 16.1.1 to WIP' }
-					withJob { on buildMasterNL job 'UP_K_16.1.1_WIP_L';       description '(K) on Linux from PP 16.1.1 to WIP' }
+					withJob { on buildMasterNL job 'UP_J_16.1.2_WIP_W';       description '(J) on Windows from PP 16.1.2 to WIP' }
+					withJob { on buildMasterNL job 'UP_K_16.1.2_WIP_L';       description '(K) on Linux from PP 16.1.2 to WIP' }
                 }
                 pmd {
 		            trunk { job 'cws-trunk-metrics' on buildMasterNL }
